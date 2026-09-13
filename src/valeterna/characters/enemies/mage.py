@@ -9,6 +9,10 @@ from valeterna.ui import console
 
 
 class Mago(Enemy):
+    # Domina lo arcano, así que se protege bien de ello; su fragilidad es
+    # física (ya reflejada en su armadura, la más baja de su tramo).
+    RESISTANCES = frozenset({"arcano"})
+
     def __init__(self):
         super().__init__(
             "Mago",

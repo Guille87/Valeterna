@@ -9,6 +9,12 @@ from valeterna.ui import console
 
 
 class Skeleton(Enemy):
+    # No-muerto: lo sagrado le hace mella, y sin sangre ni órganos el veneno le
+    # afecta poco y no puede envenenarle ni hacerle sangrar en absoluto.
+    WEAKNESSES = frozenset({"sagrado"})
+    RESISTANCES = frozenset({"veneno"})
+    IMMUNE_STATUSES = frozenset({"veneno", "sangrado"})
+
     def __init__(self):
         # Los esqueletos tienen buena defensa pero poca vida
         super().__init__(

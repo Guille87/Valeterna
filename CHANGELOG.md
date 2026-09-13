@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **Real elemental affinities for all 14 enemies** (GDD §5, v0.11.0-a): every
+  enemy now declares actual weaknesses, resistances, and immunities instead of
+  the old single-element ×2.0 legacy dict (now removed entirely). See
+  `CLAUDE.md` for the full table.
+
 ### Changed
 
 - **Project renamed from "JuegoRolTexto" to Valeterna** (the kingdom name from

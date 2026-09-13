@@ -13,14 +13,11 @@ def status_label(name: str) -> str:
 
 class Enemy:
     # --- Afinidades elementales (GDD §5). Las subclases sobrescriben estos
-    # conjuntos de clase. `ELEMENTAL_WEAKNESSES` es el modelo antiguo (un dict
-    # con multiplicadores explícitos); se mantiene como compatibilidad hasta que
-    # cada enemigo migre a los conjuntos nuevos.
+    # conjuntos de clase.
     WEAKNESSES: frozenset = frozenset()
     RESISTANCES: frozenset = frozenset()
     IMMUNE_ELEMENTS: frozenset = frozenset()
     IMMUNE_STATUSES: frozenset = frozenset()
-    ELEMENTAL_WEAKNESSES: dict = {}
 
     def __init__(self, name: str, stats: Stats, gold_min: int, gold_max: int):
         self.name = name
@@ -50,19 +47,12 @@ class Enemy:
         """Multiplicador de daño del ataque (`elements`: normalmente 1 elemento)
         contra este enemigo, combinando debilidades/resistencias/inmunidades."""
         cls = type(self)
-        multiplier = affinity_multiplier(
+        return affinity_multiplier(
             elements,
             weaknesses=cls.WEAKNESSES,
             resistances=cls.RESISTANCES,
             immune_elements=cls.IMMUNE_ELEMENTS,
         )
-        # Compat: si el modelo nuevo no dice nada (neutral) y hay un
-        # ELEMENTAL_WEAKNESSES antiguo, usar su multiplicador.
-        if multiplier == 1.0 and cls.ELEMENTAL_WEAKNESSES:
-            for element in elements:
-                if element in cls.ELEMENTAL_WEAKNESSES:
-                    return cls.ELEMENTAL_WEAKNESSES[element]
-        return multiplier
 
     def resists_element(self, element: str | None) -> bool:
         return bool(element) and element in type(self).RESISTANCES

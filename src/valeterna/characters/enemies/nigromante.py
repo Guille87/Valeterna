@@ -9,6 +9,12 @@ from valeterna.ui import console
 
 
 class Nigromante(Enemy):
+    # Nigromante clásico: lo sagrado es su némesis; la oscuridad es su propio
+    # dominio, tanto que ni el estado que inflige puede afectarle.
+    WEAKNESSES = frozenset({"sagrado"})
+    IMMUNE_ELEMENTS = frozenset({"oscuridad"})
+    IMMUNE_STATUSES = frozenset({"marchito"})
+
     def __init__(self):
         # Hechicero oscuro: su ataque habitual es mágico, no físico.
         super().__init__(

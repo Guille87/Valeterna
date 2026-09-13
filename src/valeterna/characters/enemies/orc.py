@@ -9,6 +9,9 @@ from valeterna.ui import console
 
 
 class Orc(Enemy):
+    # Piel gruesa curtida: el veneno le cuesta más hacer mella.
+    RESISTANCES = frozenset({"veneno"})
+
     def __init__(self):
         super().__init__(
             "Orco",

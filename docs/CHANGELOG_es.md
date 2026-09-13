@@ -9,6 +9,13 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Añadido
+
+- **Afinidades elementales reales para los 14 enemigos** (GDD §5, v0.11.0-a):
+  cada enemigo declara ya debilidades, resistencias e inmunidades de verdad en
+  vez del antiguo dict de un solo elemento a ×2.0 (eliminado por completo).
+  Tabla completa en `CLAUDE.md`.
+
 ### Cambiado
 
 - **El proyecto pasa de llamarse "JuegoRolTexto" a Valeterna** (el nombre del

@@ -9,8 +9,11 @@ from valeterna.ui import console
 
 
 class Dragon(Enemy):
-    # Un dragón de fuego es el clásico débil al hielo.
-    ELEMENTAL_WEAKNESSES = {"hielo": 2.0}
+    # El Dragón de Ceniza es una criatura de fuego: inmune a las llamas (y a
+    # que lo quemen), pero el hielo es justo lo que su naturaleza no soporta.
+    WEAKNESSES = frozenset({"hielo"})
+    IMMUNE_ELEMENTS = frozenset({"fuego"})
+    IMMUNE_STATUSES = frozenset({"quemado"})
 
     def __init__(self):
         # Jefe final: vida masiva y mucha evasión ("esquiva volando"), además

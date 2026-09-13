@@ -9,6 +9,12 @@ from valeterna.ui import console
 
 
 class EspirituVengativo(Enemy):
+    # Incorpóreo y sin sangre: el veneno no tiene nada que corromper. Sigue
+    # siendo un espectro atado al mundo, así que lo sagrado lo hiere de verdad.
+    WEAKNESSES = frozenset({"sagrado"})
+    IMMUNE_ELEMENTS = frozenset({"veneno"})
+    IMMUNE_STATUSES = frozenset({"veneno"})
+
     def __init__(self):
         # Incorpóreo: poca armadura propia, pero sus proyectiles espectrales
         # ignoran buena parte de la del objetivo (armor_penetration alto).

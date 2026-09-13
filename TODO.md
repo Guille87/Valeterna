@@ -194,6 +194,39 @@ el cambio a mitigación multiplicativa.
   guardianes de zona en la fase de mundo/presupuesto de poder.
 - [ ] **Guardado**: v0.10.0 solo añade `clase` (back-fill "vagabundo") y
   `habilidades_equipadas` (back-fill []). El bloque `mundo` completo va en v0.12.0.
+- [x] **v0.11.0-a: afinidades elementales reales para los 14 enemigos**
+  (GDD §5). Antes solo el Gólem usaba el modelo nuevo (`WEAKNESSES`/
+  `RESISTANCES`/`IMMUNE_ELEMENTS`/`IMMUNE_STATUSES`); Bandido, Troll y Dragón
+  usaban el `ELEMENTAL_WEAKNESSES` antiguo (un único elemento a ×2.0, sin
+  resistencias ni inmunidades); el resto no tenía ninguna afinidad. Migrados
+  los 14 y **eliminado el modelo antiguo por completo** (ya no queda ningún
+  `ELEMENTAL_WEAKNESSES` en el código). Tabla acordada con el usuario:
+  Goblin/Huargo neutrales; Esqueleto débil sagrado, resiste veneno, inmune
+  (estado) veneno/sangrado; Bandido débil veneno; Orco resiste veneno; Espíritu
+  Vengativo débil sagrado, inmune (elemento+estado) veneno; Troll débil fuego;
+  Gárgola débil arcano, inmune (elemento+estado) veneno; Gólem débil hielo,
+  inmune (elemento+estado) rayo/paralizado; Mago resiste arcano, sin debilidad
+  (su fragilidad ya está en su armadura, la más baja de su tramo — comprobado:
+  6, frente a Gárgola 14 y Gólem 20 justo antes en la cadena); Nigromante débil
+  sagrado, inmune (elemento+estado) oscuridad/marchito; Ángel Caído débil
+  oscuridad, resiste sagrado; Demonio débil sagrado, resiste (no inmune, para
+  diferenciarlo del Nigromante) oscuridad; Dragón débil hielo, inmune
+  (elemento+estado) fuego/quemado (el "Dragón de Ceniza" del GDD es de fuego).
+  **Regla de diseño fijada por el usuario:** inmune a un elemento implica
+  inmune también al estado de ese elemento (`IMMUNE_STATUSES`), pero inmune a
+  un estado NO implica inmune al elemento (el Esqueleto solo *resiste* el
+  elemento veneno pero es inmune al *estado* veneno). Esto no es solo
+  conceptual: la pasiva Veneno de Contacto del Pícaro llama a
+  `enemy.apply_status("veneno", ...)` directamente en `_execute_turn` sin
+  comprobar `affinity_for()` antes, así que sin el flag de estado explícito un
+  enemigo "inmune al elemento" podría ser envenenado igualmente por esa vía.
+  Como cambio de balance esperado: al pasar del ×2.0 fijo del modelo antiguo al
+  ×1.5 estándar de una sola debilidad, Bandido/Troll/Dragón ahora reciben menos
+  bonus por arma elemental que antes (subiría a ×2.0 solo si el golpe combinase
+  dos elementos de debilidad a la vez, que hoy ninguno tiene). Sets de
+  armadura (§6.3) y las nuevas armas elementales sagrado/oscuridad/arcano se
+  aplazan a v0.11.0-b/v0.12.0 (los sets dependen de zonas/élites que no
+  existen todavía).
 
 ## Pulido final (casi lo último antes de 1.0)
 

@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class AngelCaido(Enemy):
+    # Conserva su naturaleza sagrada pese a la caída, pero esa misma caída —su
+    # corrupción— es la grieta que la oscuridad explota.
+    WEAKNESSES = frozenset({"oscuridad"})
+    RESISTANCES = frozenset({"sagrado"})
+
     def __init__(self):
         # Divinidad corrupta: ataque habitual mágico, con autocuración y un
         # golpe de "Juicio" ocasional mucho más fuerte que lo normal.
