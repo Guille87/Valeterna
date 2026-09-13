@@ -14,7 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **Real elemental affinities for all 14 enemies** (GDD §5, v0.11.0-a): every
   enemy now declares actual weaknesses, resistances, and immunities instead of
   the old single-element ×2.0 legacy dict (now removed entirely). See
-  `CLAUDE.md` for the full table.
+  `CLAUDE.md` for the full table. Follow-up polish from playtesting: reworded
+  the "resists" message so it doesn't read as full immunity, dropped a
+  redundant "blocked the attack" line when a hit is already elemental-immune,
+  Veneno de Contacto now announces immunity instead of staying silent, and
+  Espíritu Vengativo can no longer bleed (incorporeal).
 
 ### Changed
 

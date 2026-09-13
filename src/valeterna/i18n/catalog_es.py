@@ -35,7 +35,7 @@ CATALOG: dict[str, str] = {
     # --- Combate: afinidades elementales ---
     "combat.super_effective": "¡Es supereficaz! El {element} causa estragos en {name}.",
     "combat.immune_hit": "{name} es inmune al {element}: el ataque no le hace nada.",
-    "combat.resisted_hit": "{name} resiste el {element}.",
+    "combat.resisted_hit": "{name} es resistente al {element}.",
     "combat.status_inflicted": "¡{name} ha sido {verb}!",
     "combat.status_inflicted.fractura_magica": "¡La magia que escuda a {name} se resquebraja!",
     # --- Combate: estados en el enemigo ---

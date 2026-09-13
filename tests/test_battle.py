@@ -615,6 +615,47 @@ def test_execute_turn_uses_element_from_bracers_when_no_elemental_weapon(player,
     assert dealt == 15  # 10 base * 1.5 (débil al fuego, heredado de los brazales)
 
 
+def _strip_ansi(text: str) -> str:
+    import re
+
+    return re.sub(r"\x1b\[[0-9;]*m", "", text)
+
+
+def test_immune_element_hit_does_not_also_print_a_blocked_message(player, monkeypatch, capsys):
+    from valeterna.characters.enemies.gargola import Gargola
+
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+
+    player.equipped_weapon = Weapon("Colmillo Venenoso", "desc", 14, damage=0, element="veneno")
+
+    gargola = Gargola()  # inmune al veneno
+    _execute_turn(player, gargola, defeated_enemies=[])
+
+    out = _strip_ansi(capsys.readouterr().out)
+    assert "inmune al veneno" in out
+    assert "ha bloqueado el ataque" not in out
+
+
+def test_veneno_de_contacto_announces_immunity_instead_of_staying_silent(player, monkeypatch, capsys):
+    from valeterna.characters.enemies.espiritu_vengativo import EspirituVengativo
+
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta y siempre procs
+    monkeypatch.setattr(player, "passive_param", lambda skill_id, key, default=0.0: 1.0)
+
+    player.equipped_weapon = Weapon("Espada de Hierro", "desc", 10, damage=0)  # sin elemento
+
+    espiritu = EspirituVengativo()  # inmune al veneno
+    _execute_turn(player, espiritu, defeated_enemies=[])
+
+    out = _strip_ansi(capsys.readouterr().out)
+    assert "inmune al veneno" in out
+    assert "envenena" not in out
+
+
 def test_execute_turn_deals_no_damage_on_a_miss(player, monkeypatch):
     monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
     monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")

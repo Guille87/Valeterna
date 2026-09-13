@@ -227,6 +227,37 @@ el cambio a mitigación multiplicativa.
   armadura (§6.3) y las nuevas armas elementales sagrado/oscuridad/arcano se
   aplazan a v0.11.0-b/v0.12.0 (los sets dependen de zonas/élites que no
   existen todavía).
+- [x] **Ronda de feedback de v0.11.0-a** (probando veneno vs. Bandido/Esqueleto/
+  Gárgola/Espíritu Vengativo, Veneno de Contacto y el Bestiario):
+  - Reformulado el mensaje de resistencia: "{enemigo} resiste el {elemento}."
+    → "{enemigo} es resistente al {elemento}." (a petición del usuario: el
+    original daba a entender que no se le podía aplicar el elemento en
+    absoluto, en vez de simplemente hacer menos daño — confusión especial con
+    el Esqueleto, que sí resiste el elemento veneno pero además es inmune al
+    *estado* veneno, el único caso hoy donde coinciden ambas cosas).
+  - Quitado el mensaje redundante "{enemigo} ha bloqueado el ataque." cuando
+    el golpe ya salió como inmune ("es inmune al {elemento}: el ataque no le
+    hace nada.") — antes salían los dos seguidos y no quedaba claro a qué se
+    refería cada uno. El mensaje de "bloqueado" se queda como red genérica
+    para cualquier otra causa futura de daño 0 que no sea inmunidad elemental.
+  - La pasiva Veneno de Contacto del Pícaro ahora avisa explícitamente
+    ("{enemigo} es inmune al veneno.") cuando la tirada de probabilidad
+    acierta pero el enemigo es inmune — antes se quedaba en silencio total,
+    y el jugador no tenía forma de saber si la pasiva había fallado la tirada
+    o si el enemigo era inmune.
+  - Espíritu Vengativo, además de inmune al veneno, ahora también es inmune
+    al estado `sangrado` (a petición del usuario: es incorpóreo, sin cuerpo
+    físico que sangre, aunque el sangrado no está ligado a ningún elemento).
+  - Quitada una línea en blanco de sobra en `_player_menu()` que aparecía
+    entre la cabecera de turno (o el aviso "Eres más rápido") y las opciones
+    numeradas — el turno del jugador quedaba con más aire que el del enemigo
+    (que nunca tuvo ese hueco); ahora las opciones quedan pegadas igual en
+    ambos casos.
+  - Confirmado con el usuario que el modelo sí soporta que un enemigo tenga
+    **tres** elementos distintos repartidos entre débil/resiste/inmune a la
+    vez (p. ej. débil a rayo, resiste veneno e inmune a oscuridad) — los tres
+    conjuntos son independientes; simplemente ningún enemigo actual usa esa
+    combinación todavía. Posible ajuste para la pasada de 70 enemigos.
 
 ## Pulido final (casi lo último antes de 1.0)
 

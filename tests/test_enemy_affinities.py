@@ -63,6 +63,14 @@ def test_espiritu_vengativo_is_immune_to_poison_element_and_status():
     assert espiritu.apply_status("veneno", 3) is False
 
 
+def test_espiritu_vengativo_cannot_bleed_either():
+    # Incorpóreo, sin cuerpo físico: aunque no es un elemento, tampoco puede
+    # sangrar (la habilidad Golpe Bajo del Pícaro aplica "sangrado" directo).
+    espiritu = EspirituVengativo()
+    assert espiritu.is_immune_to_status("sangrado") is True
+    assert espiritu.apply_status("sangrado", 3) is False
+
+
 def test_troll_is_weak_to_fire():
     troll = Troll()
     assert troll.affinity_for({"fuego"}) == 1.5
