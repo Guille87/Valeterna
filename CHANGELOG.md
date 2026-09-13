@@ -29,6 +29,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   (`Valeterna.spec` → `Valeterna.exe`), the GitHub repository, and every doc/CI
   reference now use the new name.
 
+### Fixed
+
+- **Admin login no longer hangs on non-terminal consoles** (e.g. PyCharm's
+  "Run" panel, as opposed to its "Terminal" tab): `getpass.getpass()` needs a
+  real terminal to hide input, and on some IDE consoles it doesn't raise an
+  exception when it can't get one — it just hangs, accepting Enter as if it
+  were part of the password, never returning. `_check_admin_password()` now
+  checks `sys.stdin.isatty()` first and goes straight to the visible fallback
+  when there's no real terminal, instead of relying on an exception that might
+  never come.
+
 ## [0.10.0] - 2026-09-09
 
 ### Added

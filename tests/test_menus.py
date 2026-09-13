@@ -53,3 +53,53 @@ def test_check_updates_now_reports_up_to_date(monkeypatch, capsys):
     monkeypatch.setattr(menus.updater, "_current_version", lambda: "0.3.0")
     menus._check_updates_now()
     assert "0.3.0" in capsys.readouterr().out
+
+
+def test_check_admin_password_returns_false_without_a_configured_hash(monkeypatch):
+    monkeypatch.setattr(menus, "_ADMIN_PASSWORD_HASH", "")
+    assert menus._check_admin_password() is False
+
+
+def test_check_admin_password_uses_getpass_on_a_real_terminal(monkeypatch):
+    monkeypatch.setattr(menus, "_ADMIN_PASSWORD_HASH", menus.hashlib.sha256(b"secreto").hexdigest())
+    monkeypatch.setattr(menus.sys.stdin, "isatty", lambda: True)
+    monkeypatch.setattr(menus.getpass, "getpass", lambda _prompt: "secreto")
+    monkeypatch.setattr(
+        menus.console, "ask", lambda _prompt: (_ for _ in ()).throw(AssertionError("no debería usarse"))
+    )
+
+    assert menus._check_admin_password() is True
+
+
+def test_check_admin_password_falls_back_to_getpass_exceptions(monkeypatch):
+    monkeypatch.setattr(menus, "_ADMIN_PASSWORD_HASH", menus.hashlib.sha256(b"secreto").hexdigest())
+    monkeypatch.setattr(menus.sys.stdin, "isatty", lambda: True)
+
+    def _boom(_prompt):
+        raise RuntimeError("getpass no soportado")
+
+    monkeypatch.setattr(menus.getpass, "getpass", _boom)
+    monkeypatch.setattr(menus.console, "ask", lambda _prompt: "secreto")
+
+    assert menus._check_admin_password() is True
+
+
+def test_check_admin_password_skips_getpass_without_a_real_terminal(monkeypatch):
+    # Sin terminal real (p. ej. el panel "Run" de PyCharm), `getpass` puede
+    # quedarse colgado sin lanzar excepción, así que ni se intenta.
+    monkeypatch.setattr(menus, "_ADMIN_PASSWORD_HASH", menus.hashlib.sha256(b"secreto").hexdigest())
+    monkeypatch.setattr(menus.sys.stdin, "isatty", lambda: False)
+    monkeypatch.setattr(
+        menus.getpass, "getpass", lambda _prompt: (_ for _ in ()).throw(AssertionError("no debería llamarse"))
+    )
+    monkeypatch.setattr(menus.console, "ask", lambda _prompt: "secreto")
+
+    assert menus._check_admin_password() is True
+
+
+def test_check_admin_password_rejects_a_wrong_password(monkeypatch):
+    monkeypatch.setattr(menus, "_ADMIN_PASSWORD_HASH", menus.hashlib.sha256(b"secreto").hexdigest())
+    monkeypatch.setattr(menus.sys.stdin, "isatty", lambda: False)
+    monkeypatch.setattr(menus.console, "ask", lambda _prompt: "incorrecta")
+
+    assert menus._check_admin_password() is False

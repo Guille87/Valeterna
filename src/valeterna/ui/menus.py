@@ -69,11 +69,20 @@ def _check_admin_password() -> bool:
     plano más que en el momento de teclearla."""
     if not _ADMIN_PASSWORD_HASH:
         return False
-    try:
-        entered = getpass.getpass("Contraseña de administrador: ")
-    except Exception:
-        # getpass puede fallar en consolas sin terminal real (p. ej. algunos
-        # IDEs); recurrimos a una entrada visible antes que bloquear el acceso.
+    # `getpass` necesita un terminal real (lee la entrada en modo "crudo" para
+    # ocultarla). En consolas que no lo son —p. ej. el panel "Run" de
+    # PyCharm, distinto de su pestaña "Terminal"— no siempre lanza una
+    # excepción: puede quedarse colgado aceptando Intro como si fuera texto
+    # normal, sin terminar nunca la entrada. Comprobamos `isatty()` primero y,
+    # si no hay terminal real, vamos directos a la entrada visible en vez de
+    # arriesgarnos a ese cuelgue; el `try/except` sigue de red para otros
+    # fallos de `getpass` en consolas que sí pasan la comprobación.
+    if sys.stdin.isatty():
+        try:
+            entered = getpass.getpass("Contraseña de administrador: ")
+        except Exception:
+            entered = console.ask("Contraseña de administrador: ")
+    else:
         entered = console.ask("Contraseña de administrador: ")
     return hashlib.sha256(entered.encode("utf-8")).hexdigest() == _ADMIN_PASSWORD_HASH
 
