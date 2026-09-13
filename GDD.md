@@ -258,9 +258,19 @@ useful when you deal magical damage, never a hard shutdown, and thematically
   or two.
 - Damage: `final = base × affinity`, then armour / magic-resist mitigation
   (magical elements mitigated by `magic_resist`).
-- Player elemental defence: `Armor` may carry `resist` (a small dict, a %
-  reduction per element), summed as `Player.get_total_resist(element)` — a few
-  pieces and a set grant it.
+- **Implemented in v0.11.0-b.** Player elemental defence: `Armor` may carry
+  `resist` (a small dict, a % reduction per element), summed as
+  `Player.get_total_resist(element)`, capped at 75% total, and applied in
+  `Player.take_damage()` before armour/magic-resist mitigation. So far granted
+  by three crafted pieces (Cinturón de Resistencia → arcano, Amuleto de
+  Resistencia → oscuridad, Anillo de Vitalidad → sagrado); broader
+  distribution (more items, a themed set) is left for a later balance pass.
+  Also fixed a related gap: whether an attack is physical or magical is a
+  property of its *element* (per this section), not of the attacker's class —
+  `combat/battle.py::_execute_turn` only checked the Arcanista's innate
+  magic/a skill's `magical` flag, so a non-Arcanista wielding a
+  sagrado/oscuridad/arcano weapon was still mitigated by armour instead of
+  magic resist. Now `is_magical_element(element)` also triggers it.
 
 ### Elemental reactions *(planned — balance carefully)*
 

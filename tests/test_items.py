@@ -19,6 +19,7 @@ ITEM_SAMPLES = [
     Armor("Amuleto de Resistencia", "desc", 28, slot="amuleto", defense=2, magic_resist=5),
     Armor("Anillo de Vitalidad", "desc", 14, slot="anillo", regen=2),
     Armor("Botas Ligeras", "desc", 10, slot="botas", crit_damage=0.10, speed=3),
+    Armor("Cinturón de Resistencia", "desc", 12, slot="cinturon", magic_resist=4, resist={"arcano": 0.10}),
     HealingPotion("Poción de Salud", "desc", 2, heal_amount=20),
     StatBuffPotion("Poción de Fuerza", "desc", 5, stat_name="max_atk", boost=5, duration=3),
     RegenPotion("Poción de Regeneración", "desc", 8, regen_amount=10, duration=3),

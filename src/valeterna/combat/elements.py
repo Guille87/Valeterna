@@ -67,3 +67,24 @@ def affinity_multiplier(elements, *, weaknesses, resistances, immune_elements) -
         multiplier *= _RESIST_SINGLE
 
     return multiplier
+
+
+# Género gramatical de cada elemento, para construir frases en español que
+# concuerden ("la oscuridad", no "el oscuridad"). Todos son masculinos salvo
+# "oscuridad"; si se añaden elementos nuevos que sean femeninos, listarlos aquí.
+_FEMININE_ELEMENTS = frozenset({"oscuridad"})
+
+
+def element_phrase(element: str, *, capitalize: bool = False) -> str:
+    """'el fuego' / 'la oscuridad' (o 'El'/'La' con `capitalize=True`, para
+    empezar una frase)."""
+    article = "la" if element in _FEMININE_ELEMENTS else "el"
+    if capitalize:
+        article = article.capitalize()
+    return f"{article} {element}"
+
+
+def element_al(element: str) -> str:
+    """'al fuego' / 'a la oscuridad' (contracción a+el, o 'a la' si el
+    elemento es femenino)."""
+    return f"a la {element}" if element in _FEMININE_ELEMENTS else f"al {element}"

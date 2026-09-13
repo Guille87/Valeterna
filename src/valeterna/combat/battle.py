@@ -6,6 +6,7 @@ from valeterna import i18n
 from valeterna.audio.resource_manager import ResourceManager
 from valeterna.characters.enemies.enemy_base import status_label
 from valeterna.characters.stats import resolve_hit
+from valeterna.combat.elements import element_al, element_phrase, is_magical_element
 from valeterna.ui import console
 from valeterna.ui.formatting import print_combatant_bar, print_player_enemy_info, print_status
 from valeterna.ui.keyboard import key_pressed
@@ -703,18 +704,23 @@ def _execute_turn(
     if p.get("damage_mult"):
         damage = int(damage * p["damage_mult"])
 
-    # Arcanista: su ataque estándar es mágico (escala con poder mágico, no con el
-    # arma) y su elemento es "arcano" por defecto si nada más lo fija. Una
-    # habilidad puede hacer mágico el golpe de cualquier clase (`magical`).
-    is_magical_attack = (isinstance(attacker, Player) and attacker.is_magical_attacker()) or p.get("magical", False)
-    if is_magical_attack:
+    # Lo mágico/físico es propiedad del ELEMENTO (GDD §5), no de quién lo
+    # empuña: cualquier clase con un arma sagrado/oscuridad/arcano golpea
+    # mágico (mitigado con resistencia mágica), no solo el Arcanista. El
+    # Arcanista además es mágico "por defecto" (su ataque estándar escala con
+    # poder mágico, no con el arma) y cae en "arcano" si no lleva ningún
+    # elemento equipado. Una habilidad puede forzar el golpe a mágico
+    # (`magical`) sin importar el arma.
+    element = attacker.get_equipped_element() if isinstance(attacker, Player) else None
+    is_magical_attack = (
+        (isinstance(attacker, Player) and attacker.is_magical_attacker())
+        or p.get("magical", False)
+        or is_magical_element(element)
+    )
+    if isinstance(attacker, Player) and attacker.is_magical_attacker() and not element:
         from valeterna.characters.classes import ARCANIST_DEFAULT_ELEMENT
 
-        element = attacker.get_equipped_element() or ARCANIST_DEFAULT_ELEMENT
-    elif isinstance(attacker, Player):
-        element = attacker.get_equipped_element()
-    else:
-        element = None
+        element = ARCANIST_DEFAULT_ELEMENT
 
     # Golpe crítico: el jugador suma el bonus de su equipo, los enemigos usan su stat base
     attacker_crit_chance = (
@@ -761,18 +767,28 @@ def _execute_turn(
     if is_super_effective:
         print(
             console.colorize(
-                i18n.t("combat.super_effective", element=element_name, name=defender.name),
+                i18n.t(
+                    "combat.super_effective",
+                    element_phrase=element_phrase(element_name, capitalize=True),
+                    name=defender.name,
+                ),
                 console.Fore.RED,
                 bright=True,
             )
         )
     elif is_immune_hit:
         print(
-            console.colorize(i18n.t("combat.immune_hit", element=element_name, name=defender.name), console.Fore.BLUE)
+            console.colorize(
+                i18n.t("combat.immune_hit", element_al=element_al(element_name), name=defender.name),
+                console.Fore.BLUE,
+            )
         )
     elif is_resisted_hit:
         print(
-            console.colorize(i18n.t("combat.resisted_hit", element=element_name, name=defender.name), console.Fore.BLUE)
+            console.colorize(
+                i18n.t("combat.resisted_hit", element_al=element_al(element_name), name=defender.name),
+                console.Fore.BLUE,
+            )
         )
 
     if final_dmg > 0:

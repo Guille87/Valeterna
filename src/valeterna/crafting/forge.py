@@ -84,6 +84,46 @@ class Forge:
                 ),
             ),
             CraftingRecipe(
+                name="Espada Consagrada",
+                # Primera arma craftable de sagrado/oscuridad/arcano (v0.11.0-b).
+                # Forjada con los restos de dos criaturas que ahora son débiles
+                # a lo sagrado (Esqueleto, Espíritu Vengativo) — la luz que las
+                # castiga a ellas se queda impregnada en el metal.
+                materials={"Fragmento de Hueso": 25, "Esencia Espectral": 25},
+                gold_cost=75,
+                result_template=Weapon(
+                    "Espada Consagrada",
+                    "Una hoja purificada con los restos de quienes la luz ya castigó.",
+                    value=32,
+                    damage=14,
+                    element="sagrado",
+                ),
+            ),
+            CraftingRecipe(
+                name="Daga Umbría",
+                materials={"Capa de Sombras": 25, "Pluma Corrupta": 15},
+                gold_cost=95,
+                result_template=Weapon(
+                    "Daga Umbría",
+                    "Forjada fundiendo la sombra de un bandido con la corrupción de un ángel caído.",
+                    value=40,
+                    damage=18,
+                    element="oscuridad",
+                ),
+            ),
+            CraftingRecipe(
+                name="Vara Arcana",
+                materials={"Esencia Arcana": 8, "Núcleo de Gólem": 15},
+                gold_cost=110,
+                result_template=Weapon(
+                    "Vara Arcana",
+                    "Un núcleo de piedra imbuido con energía arcana que apenas logra contener.",
+                    value=45,
+                    damage=16,
+                    element="arcano",
+                ),
+            ),
+            CraftingRecipe(
                 name="Guantes de Combate",
                 materials={"Colmillo de Goblin": 25, "Colmillo de Orco": 25},
                 gold_cost=60,
@@ -136,6 +176,9 @@ class Forge:
                     defense=3,
                     max_health=15,
                     magic_resist=4,
+                    # "tanto físico como arcano" ya lo decía la descripción original;
+                    # primera fuente de resistencia elemental del jugador (v0.11.0-b).
+                    resist={"arcano": 0.10},
                 ),
             ),
             CraftingRecipe(
@@ -201,6 +244,9 @@ class Forge:
                     slot="amuleto",
                     defense=2,
                     magic_resist=5,
+                    # Pluma Corrupta (Ángel Caído): un rastro de esa misma corrupción
+                    # protege de la oscuridad (v0.11.0-b).
+                    resist={"oscuridad": 0.10},
                 ),
             ),
             CraftingRecipe(
@@ -217,6 +263,11 @@ class Forge:
                     slot="anillo",
                     crit_damage=0.16,
                     regen=2,
+                    # Un anillo de sanación defiende bien contra lo sagrado: el
+                    # estado que inflige ("consagrado") bloquea la autocuración,
+                    # así que menos daño de ese elemento es una defensa afín
+                    # (v0.11.0-b).
+                    resist={"sagrado": 0.10},
                 ),
             ),
         ]

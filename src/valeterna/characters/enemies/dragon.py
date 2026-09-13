@@ -82,7 +82,9 @@ class Dragon(Enemy):
             return
 
         damage = self.get_attack_damage()
-        final_damage = player.take_damage(damage, is_fire=True, armor_penetration=self.stats.armor_penetration)
+        final_damage = player.take_damage(
+            damage, is_fire=True, armor_penetration=self.stats.armor_penetration, element="fuego"
+        )
         print(f"¡Aliento de Fuego! {console.colorize(str(final_damage), console.Fore.RED)} de daño.")
 
         if random.random() < 0.6:

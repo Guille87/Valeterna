@@ -102,6 +102,80 @@ def test_craft_amuleto_de_resistencia(player):
     assert amuleto.slot == "amuleto"
     assert amuleto.magic_resist == 5
     assert amuleto.defense == 2
+    assert amuleto.resist == {"oscuridad": 0.10}
+
+
+def test_craft_cinturon_de_resistencia_grants_arcane_resist(player):
+    forge = Forge()
+    recipe = _find_recipe(forge, "Cinturón de Resistencia")
+    _give(player, "Fragmento de Hueso", 25)
+    _give(player, "Núcleo de Gólem", 15, rarity="Raro")
+    player.inventory.gold = 40
+
+    assert recipe.can_craft(player) is True
+    forge._craft(player, recipe)
+    cinturon = next(i for i in player.inventory.items if i.name == "Cinturón de Resistencia")
+
+    assert cinturon.resist == {"arcano": 0.10}
+
+
+def test_craft_anillo_de_vitalidad_grants_sagrado_resist(player):
+    forge = Forge()
+    recipe = _find_recipe(forge, "Anillo de Vitalidad")
+    _give(player, "Fragmento de Hueso", 25)
+    _give(player, "Escama de Dragón", 5, rarity="Legendario")
+    player.inventory.gold = 45
+
+    assert recipe.can_craft(player) is True
+    forge._craft(player, recipe)
+    anillo = next(i for i in player.inventory.items if i.name == "Anillo de Vitalidad")
+
+    assert anillo.resist == {"sagrado": 0.10}
+
+
+def test_craft_espada_consagrada(player):
+    forge = Forge()
+    recipe = _find_recipe(forge, "Espada Consagrada")
+    _give(player, "Fragmento de Hueso", 25)
+    _give(player, "Esencia Espectral", 25, rarity="Raro")
+    player.inventory.gold = 75
+
+    assert recipe.can_craft(player) is True
+    forge._craft(player, recipe)
+    espada = next(i for i in player.inventory.items if i.name == "Espada Consagrada")
+
+    assert espada.element == "sagrado"
+    assert espada.damage == 14
+
+
+def test_craft_daga_umbria(player):
+    forge = Forge()
+    recipe = _find_recipe(forge, "Daga Umbría")
+    _give(player, "Capa de Sombras", 25)
+    _give(player, "Pluma Corrupta", 15, rarity="Raro")
+    player.inventory.gold = 95
+
+    assert recipe.can_craft(player) is True
+    forge._craft(player, recipe)
+    daga = next(i for i in player.inventory.items if i.name == "Daga Umbría")
+
+    assert daga.element == "oscuridad"
+    assert daga.damage == 18
+
+
+def test_craft_vara_arcana(player):
+    forge = Forge()
+    recipe = _find_recipe(forge, "Vara Arcana")
+    _give(player, "Esencia Arcana", 8, rarity="Raro")
+    _give(player, "Núcleo de Gólem", 15, rarity="Raro")
+    player.inventory.gold = 110
+
+    assert recipe.can_craft(player) is True
+    forge._craft(player, recipe)
+    vara = next(i for i in player.inventory.items if i.name == "Vara Arcana")
+
+    assert vara.element == "arcano"
+    assert vara.damage == 16
 
 
 def test_recipe_hidden_until_all_its_materials_are_discovered(player):

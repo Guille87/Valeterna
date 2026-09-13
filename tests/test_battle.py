@@ -621,6 +621,71 @@ def _strip_ansi(text: str) -> str:
     return re.sub(r"\x1b\[[0-9;]*m", "", text)
 
 
+def test_super_effective_message_uses_correct_gender_for_oscuridad(player, monkeypatch, capsys):
+    # A petición del usuario: "la oscuridad", no "el oscuridad" (el resto de
+    # elementos son masculinos y ya funcionaban bien).
+    from valeterna.characters.enemies.angel_caido import AngelCaido
+
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+
+    player.equipped_weapon = Weapon("Daga Umbría", "desc", 14, damage=0, element="oscuridad")
+    angel = AngelCaido()  # débil a oscuridad
+    _execute_turn(player, angel, defeated_enemies=[])
+
+    out = _strip_ansi(capsys.readouterr().out)
+    assert "La oscuridad causa estragos" in out
+    assert "El oscuridad" not in out
+
+
+def test_non_arcanista_wielding_a_magical_element_weapon_deals_magical_damage(player, monkeypatch):
+    # v0.11.0-b: lo mágico/físico es propiedad del elemento, no de la clase —
+    # cualquiera con un arma sagrado/oscuridad/arcano golpea mágico.
+    from valeterna.characters.enemies.goblin import Goblin
+
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+
+    player.equipped_weapon = Weapon("Espada Consagrada", "desc", 14, damage=0, element="sagrado")
+    assert player.is_magical_attacker() is False  # el jugador de pruebas no es Arcanista
+
+    goblin = Goblin()
+    calls = {}
+    original_take_damage = goblin.take_damage
+    monkeypatch.setattr(
+        goblin, "take_damage", lambda damage, **kw: (calls.update(kw), original_take_damage(damage, **kw))[1]
+    )
+
+    _execute_turn(player, goblin, defeated_enemies=[])
+
+    assert calls.get("is_magical") is True
+    assert calls.get("element") == "sagrado"
+
+
+def test_non_arcanista_wielding_a_physical_element_weapon_deals_physical_damage(player, monkeypatch):
+    from valeterna.characters.enemies.goblin import Goblin
+
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+
+    player.equipped_weapon = Weapon("Espada Flamígera", "desc", 14, damage=0, element="fuego")
+
+    goblin = Goblin()
+    calls = {}
+    original_take_damage = goblin.take_damage
+    monkeypatch.setattr(
+        goblin, "take_damage", lambda damage, **kw: (calls.update(kw), original_take_damage(damage, **kw))[1]
+    )
+
+    _execute_turn(player, goblin, defeated_enemies=[])
+
+    assert not calls.get("is_magical")  # ni pasado ni True: se mitiga con armadura
+    assert calls.get("element") == "fuego"
+
+
 def test_immune_element_hit_does_not_also_print_a_blocked_message(player, monkeypatch, capsys):
     from valeterna.characters.enemies.gargola import Gargola
 

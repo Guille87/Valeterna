@@ -74,7 +74,9 @@ class AngelCaido(Enemy):
         if is_crit:
             damage = int(damage * self.stats.crit_damage)
 
-        final_damage = player.take_damage(damage, is_magical=True, magic_penetration=self.stats.magic_penetration)
+        final_damage = player.take_damage(
+            damage, is_magical=True, magic_penetration=self.stats.magic_penetration, element="sagrado"
+        )
 
         if is_crit:
             print(console.colorize("¡Golpe crítico!", console.Fore.YELLOW, bright=True))
@@ -95,7 +97,9 @@ class AngelCaido(Enemy):
             return
 
         damage = int(self.get_attack_damage() * 1.6)
-        final_damage = player.take_damage(damage, is_magical=True, magic_penetration=self.stats.magic_penetration)
+        final_damage = player.take_damage(
+            damage, is_magical=True, magic_penetration=self.stats.magic_penetration, element="sagrado"
+        )
         print(f"¡Juicio Divino! {console.colorize(str(final_damage), console.Fore.MAGENTA)} de daño.")
 
     def drop_item(self) -> list:

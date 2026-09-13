@@ -58,7 +58,9 @@ class Nigromante(Enemy):
         if is_crit:
             damage = int(damage * self.stats.crit_damage)
 
-        final_damage = player.take_damage(damage, is_magical=True, magic_penetration=self.stats.magic_penetration)
+        final_damage = player.take_damage(
+            damage, is_magical=True, magic_penetration=self.stats.magic_penetration, element="oscuridad"
+        )
 
         if is_crit:
             print(console.colorize("¡Golpe crítico!", console.Fore.YELLOW, bright=True))
