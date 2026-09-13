@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **Real elemental affinities for all 14 enemies** (GDD §5, v0.11.0-a): every
+  enemy now declares actual weaknesses, resistances, and immunities instead of
+  the old single-element ×2.0 legacy dict (now removed entirely). See
+  `CLAUDE.md` for the full table. Follow-up polish from playtesting: reworded
+  the "resists" message so it doesn't read as full immunity, dropped a
+  redundant "blocked the attack" line when a hit is already elemental-immune,
+  Veneno de Contacto now announces immunity instead of staying silent, and
+  Espíritu Vengativo can no longer bleed (incorporeal).
+
+### Changed
+
+- **Project renamed from "JuegoRolTexto" to Valeterna** (the kingdom name from
+  the GDD) — nobody had downloaded a build yet, so this was a clean cut with no
+  compatibility shim: the Python package (`src/valeterna/`, all imports),
+  distribution/script name (`valeterna`), the PyInstaller spec/executable
+  (`Valeterna.spec` → `Valeterna.exe`), the GitHub repository, and every doc/CI
+  reference now use the new name.
+
 ### Fixed
 
 - **Admin login no longer hangs on non-terminal consoles** (e.g. PyCharm's
@@ -19,15 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   checks `sys.stdin.isatty()` first and goes straight to the visible fallback
   when there's no real terminal, instead of relying on an exception that might
   never come.
-
-### Changed
-
-- **Project renamed from "JuegoRolTexto" to Valeterna** (the kingdom name from
-  the GDD) — nobody had downloaded a build yet, so this was a clean cut with no
-  compatibility shim: the Python package (`src/valeterna/`, all imports),
-  distribution/script name (`valeterna`), the PyInstaller spec/executable
-  (`Valeterna.spec` → `Valeterna.exe`), the GitHub repository, and every doc/CI
-  reference now use the new name.
 
 ## [0.10.0] - 2026-09-09
 

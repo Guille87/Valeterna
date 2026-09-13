@@ -9,6 +9,27 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Añadido
+
+- **Afinidades elementales reales para los 14 enemigos** (GDD §5, v0.11.0-a):
+  cada enemigo declara ya debilidades, resistencias e inmunidades de verdad en
+  vez del antiguo dict de un solo elemento a ×2.0 (eliminado por completo).
+  Tabla completa en `CLAUDE.md`. Pulido tras las pruebas: reformulado el
+  mensaje de "resiste" para que no parezca inmunidad total, quitada una línea
+  redundante de "bloqueó el ataque" cuando el golpe ya era inmune, Veneno de
+  Contacto ahora avisa de la inmunidad en vez de quedarse en silencio, y el
+  Espíritu Vengativo ya no puede sangrar (es incorpóreo).
+
+### Cambiado
+
+- **El proyecto pasa de llamarse "JuegoRolTexto" a Valeterna** (el nombre del
+  reino en el GDD) — nadie se había descargado todavía ninguna build, así que ha
+  sido un corte limpio sin capa de compatibilidad: el paquete de Python
+  (`src/valeterna/`, todos los imports), el nombre de distribución/script
+  (`valeterna`), el spec/ejecutable de PyInstaller (`Valeterna.spec` →
+  `Valeterna.exe`), el repositorio de GitHub y toda la documentación/CI usan ya
+  el nombre nuevo.
+
 ### Arreglado
 
 - **El login de admin ya no se queda colgado en consolas sin terminal real**
@@ -20,16 +41,6 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
   `sys.stdin.isatty()` primero y va directa a la entrada visible cuando no
   hay terminal real, en vez de depender de una excepción que puede no llegar
   nunca.
-
-### Cambiado
-
-- **El proyecto pasa de llamarse "JuegoRolTexto" a Valeterna** (el nombre del
-  reino en el GDD) — nadie se había descargado todavía ninguna build, así que ha
-  sido un corte limpio sin capa de compatibilidad: el paquete de Python
-  (`src/valeterna/`, todos los imports), el nombre de distribución/script
-  (`valeterna`), el spec/ejecutable de PyInstaller (`Valeterna.spec` →
-  `Valeterna.exe`), el repositorio de GitHub y toda la documentación/CI usan ya
-  el nombre nuevo.
 
 ## [0.10.0] - 2026-09-09
 

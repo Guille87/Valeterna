@@ -95,9 +95,8 @@ def print_bestiary_entry(enemy, kill_count: int = 0) -> None:
         return ", ".join(console.colorize(e.capitalize(), console.element_color(e), bright=True) for e in sorted(names))
 
     cls = type(enemy)
-    weak = set(getattr(cls, "WEAKNESSES", ())) | set(getattr(cls, "ELEMENTAL_WEAKNESSES", {}))
-    if weak:
-        print(f"  Débil a: {_elements(weak)}")
+    if getattr(cls, "WEAKNESSES", ()):
+        print(f"  Débil a: {_elements(cls.WEAKNESSES)}")
     if getattr(cls, "RESISTANCES", ()):
         print(f"  Resiste: {_elements(cls.RESISTANCES)}")
     if getattr(cls, "IMMUNE_ELEMENTS", ()):

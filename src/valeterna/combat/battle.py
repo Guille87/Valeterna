@@ -365,7 +365,7 @@ def _player_menu(player, enemy, defeated_enemies: list, immobilized: bool = Fals
             options.append(("Auto-Batalla", "auto"))
             options.append(("Auto-Batalla Turbo", "turbo"))
 
-        print("\n" + " | ".join(f"{i}. {label}" for i, (label, _) in enumerate(options, 1)))
+        print(" | ".join(f"{i}. {label}" for i, (label, _) in enumerate(options, 1)))
         choice = console.ask("Selección: ").strip()
         if not choice.isdigit() or not (1 <= int(choice) <= len(options)):
             console.error("Opción no válida.")
@@ -783,7 +783,10 @@ def _execute_turn(
             f"{console.colorize(str(final_dmg), dmg_color, bright=is_crit)} de daño"
             f"{console.crit_suffix(is_crit)}"
         )
-    else:
+    elif not is_immune_hit:
+        # Inmunidad ya lo explica arriba ("el ataque no le hace nada"); un
+        # segundo mensaje sería redundante. "Bloqueado" queda para cualquier
+        # otra causa futura de daño 0 que no sea inmunidad elemental.
         print(f"{console.colorize(defender.name, console.Fore.BLUE)} ha bloqueado el ataque.")
 
     # Estado alterado del arma elemental, DESPUÉS de anunciar el golpe. Solo el
@@ -805,8 +808,13 @@ def _execute_turn(
             if hasattr(attacker, "passive_param")
             else 0.0
         )
-        if poison_chance and random.random() < poison_chance and defender.apply_status("veneno", 3):
-            print(console.colorize(f"🧪 ¡Tu contacto envenena a {defender.name}!", console.Fore.GREEN))
+        if poison_chance and random.random() < poison_chance:
+            if defender.apply_status("veneno", 3):
+                print(console.colorize(f"🧪 ¡Tu contacto envenena a {defender.name}!", console.Fore.GREEN))
+            else:
+                # La probabilidad acertó, pero el objetivo es inmune: decirlo,
+                # si no parece que la pasiva nunca llegó siquiera a intentarlo.
+                print(console.colorize(f"🧪 {defender.name} es inmune al veneno.", console.Fore.BLUE))
 
     if isinstance(attacker, Player):
         print_status(attacker, defender, defeated_enemies)

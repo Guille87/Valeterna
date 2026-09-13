@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class Demonio(Enemy):
+    # Demonio clásico: lo sagrado lo hiere de verdad; la oscuridad es su
+    # elemento natal, pero (a diferencia del Nigromante) no domina del todo.
+    WEAKNESSES = frozenset({"sagrado"})
+    RESISTANCES = frozenset({"oscuridad"})
+
     def __init__(self):
         super().__init__(
             "Demonio",

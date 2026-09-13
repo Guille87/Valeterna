@@ -375,7 +375,17 @@ and will be revisited in the v0.14 power-budget phase (tracked in `TODO.md`).
    actives resolve through a dispatch in the battle loop. Lives in
    `characters/skills.py` (§9.3).
 
-### 6.3 Equipment set bonuses *(design under review by the maintainer)*
+### 6.3 Equipment set bonuses *(design under review by the maintainer — deferred to v0.12.0+)*
+
+Confirmed with the maintainer during v0.11.0 planning: this design depends on
+zones, elite enemies and guardians (tiers 5/7/9/10 per zone) and the Arena
+(§6.5), none of which exist yet — the current game is still the flat 14-enemy
+chain. Rather than draft a throwaway "4 sets on the current chain" version now
+and redo it once zones land, set bonuses stay unimplemented until v0.12.0+,
+when they can be built once against the real zone/elite/guardian structure.
+v0.11.0 instead covers the rest of "Gear & real affinities": real per-enemy
+weaknesses/resistances/immunities (done, see `TODO.md`), elemental resistance
+on armour, new elemental weapons, and elemental reactions.
 
 `Armor` gains optional `set_name`. `Player` counts equipped pieces per set and
 applies bonuses at **2, 4 and 6 pieces** — **tiers stack** (with 6 pieces you

@@ -47,10 +47,9 @@ def test_every_element_has_a_status():
     assert set(ELEMENT_STATUS) == {"fuego", "veneno", "rayo", "hielo", "sagrado", "oscuridad", "arcano"}
 
 
-def test_enemy_affinity_falls_back_to_legacy_weaknesses():
-    # El Troll todavía usa el modelo antiguo `ELEMENTAL_WEAKNESSES = {"fuego": 2.0}`.
+def test_enemy_affinity_uses_declared_weaknesses():
     troll = Troll()
-    assert troll.affinity_for({"fuego"}) == 2.0
+    assert troll.affinity_for({"fuego"}) == 1.5
     assert troll.affinity_for({"hielo"}) == 1.0
     assert troll.resists_element("fuego") is False
 
@@ -61,7 +60,7 @@ def test_enemy_take_damage_applies_the_affinity_multiplier():
     normal = Troll()
     normal.stats.armor = 0
 
-    assert troll.take_damage(20, element="fuego") == normal.take_damage(20) * 2
+    assert troll.take_damage(20, element="fuego") == round(normal.take_damage(20) * 1.5)
 
 
 def test_goblin_is_neutral_to_everything_by_default():

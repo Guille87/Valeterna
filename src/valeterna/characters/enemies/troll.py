@@ -9,7 +9,8 @@ from valeterna.ui import console
 
 
 class Troll(Enemy):
-    ELEMENTAL_WEAKNESSES = {"fuego": 2.0}
+    # El fuego es lo único que impide que se regenere de verdad.
+    WEAKNESSES = frozenset({"fuego"})
 
     def __init__(self):
         super().__init__(

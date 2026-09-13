@@ -10,7 +10,7 @@ from valeterna.ui import console
 
 class Bandido(Enemy):
     # Humano de carne y hueso: el veneno le afecta igual que a cualquier persona.
-    ELEMENTAL_WEAKNESSES = {"veneno": 2.0}
+    WEAKNESSES = frozenset({"veneno"})
 
     def __init__(self):
         super().__init__(

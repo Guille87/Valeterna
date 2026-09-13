@@ -9,6 +9,12 @@ from valeterna.ui import console
 
 
 class Gargola(Enemy):
+    # Constructo de piedra animado por magia: sin sangre que envenenar, pero lo
+    # arcano resquebraja el hechizo que la mantiene en pie.
+    WEAKNESSES = frozenset({"arcano"})
+    IMMUNE_ELEMENTS = frozenset({"veneno"})
+    IMMUNE_STATUSES = frozenset({"veneno"})
+
     def __init__(self):
         # Tanque de piedra: mucha vida y armadura, muy lenta.
         super().__init__(

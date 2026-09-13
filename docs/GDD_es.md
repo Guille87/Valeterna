@@ -390,7 +390,19 @@ revisarán en la fase de presupuesto de poder de v0.14 (anotado en `TODO.md`).
    procesado de estados); las activas se resuelven con un dispatch en el bucle de
    combate. Vive en `characters/skills.py` (§9.3).
 
-### 6.3 Bonus de conjunto de armadura *(diseño en revisión por el mantenedor)*
+### 6.3 Bonus de conjunto de armadura *(diseño en revisión por el mantenedor — aplazado a v0.12.0+)*
+
+Confirmado con el mantenedor al planificar v0.11.0: este diseño depende de
+zonas, enemigos élite y guardianes (tiers 5/7/9/10 de cada zona) y de la Arena
+(§6.5), y nada de eso existe todavía — el juego actual sigue siendo la cadena
+plana de 14 enemigos. En vez de diseñar una versión provisional de "4
+conjuntos sobre la cadena actual" para tener que rehacerla cuando lleguen las
+zonas, los bonus de conjunto se quedan sin implementar hasta v0.12.0+, cuando
+se puedan construir ya sobre la estructura real de zonas/élites/guardianes.
+v0.11.0 cubre en su lugar el resto de "Equipo y afinidades reales":
+debilidades/resistencias/inmunidades reales por enemigo (hecho, ver
+`TODO.md`), resistencia elemental en armadura, armas elementales nuevas y
+reacciones elementales.
 
 `Armor` gana un `set_name` opcional. `Player` cuenta las piezas equipadas por
 conjunto y aplica bonus a **2, 4 y 6 piezas** — **los tramos se acumulan** (con

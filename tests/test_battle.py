@@ -310,7 +310,7 @@ def test_troll_takes_double_damage_from_fire():
     another_troll.stats.armor = 0
     fire_dmg = another_troll.take_damage(20, element="fuego")
 
-    assert fire_dmg == physical_dmg * 2
+    assert fire_dmg == round(physical_dmg * 1.5)
 
 
 def test_goblin_is_not_affected_by_fire_element():
@@ -413,7 +413,7 @@ def test_execute_turn_applies_elemental_bonus_against_weak_enemy(player, monkeyp
     _execute_turn(player, troll, defeated_enemies=[])
     dealt = before - troll.stats.health
 
-    assert dealt == 20  # 10 base * 2.0 (débil al fuego) - 0 armadura
+    assert dealt == 15  # 10 base * 1.5 (débil al fuego) - 0 armadura
 
 
 def test_elemental_weapon_can_inflict_its_status_on_the_enemy(player, monkeypatch):
@@ -438,7 +438,7 @@ def test_disarmed_player_weapon_applies_no_element_or_status(player, monkeypatch
 
     player.equipped_weapon = Weapon("Colmillo Venenoso", "desc", 14, damage=0, element="veneno")
     player.apply_status("desarmado", 2)
-    bandido = Bandido()  # débil a veneno x2
+    bandido = Bandido()  # débil a veneno x1.5
     bandido.stats.armor = 0
     bandido.stats.health = bandido.stats.max_health = 500
 
@@ -446,7 +446,7 @@ def test_disarmed_player_weapon_applies_no_element_or_status(player, monkeypatch
     _execute_turn(player, bandido, defeated_enemies=["Bandido"])
 
     assert bandido.status_effects == []  # sin veneno
-    assert before - bandido.stats.health == 10  # 10 base, sin el x2 del elemento
+    assert before - bandido.stats.health == 10  # 10 base, sin el x1.5 del elemento
 
 
 def test_bandit_does_not_disarm_an_already_disarmed_player(player, monkeypatch):
@@ -549,7 +549,7 @@ def test_execute_turn_applies_elemental_bonus_for_newer_elements(player, monkeyp
     _execute_turn(player, bandido, defeated_enemies=[])
     dealt = before - bandido.stats.health
 
-    assert dealt == 20  # 10 base * 2.0 (débil al veneno) - 0 armadura
+    assert dealt == 15  # 10 base * 1.5 (débil al veneno) - 0 armadura
 
 
 def test_execute_turn_applies_crit_multiplier(player, monkeypatch):
@@ -612,7 +612,48 @@ def test_execute_turn_uses_element_from_bracers_when_no_elemental_weapon(player,
     _execute_turn(player, troll, defeated_enemies=[])
     dealt = before - troll.stats.health
 
-    assert dealt == 20  # 10 base * 2.0 (débil al fuego, heredado de los brazales)
+    assert dealt == 15  # 10 base * 1.5 (débil al fuego, heredado de los brazales)
+
+
+def _strip_ansi(text: str) -> str:
+    import re
+
+    return re.sub(r"\x1b\[[0-9;]*m", "", text)
+
+
+def test_immune_element_hit_does_not_also_print_a_blocked_message(player, monkeypatch, capsys):
+    from valeterna.characters.enemies.gargola import Gargola
+
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+
+    player.equipped_weapon = Weapon("Colmillo Venenoso", "desc", 14, damage=0, element="veneno")
+
+    gargola = Gargola()  # inmune al veneno
+    _execute_turn(player, gargola, defeated_enemies=[])
+
+    out = _strip_ansi(capsys.readouterr().out)
+    assert "inmune al veneno" in out
+    assert "ha bloqueado el ataque" not in out
+
+
+def test_veneno_de_contacto_announces_immunity_instead_of_staying_silent(player, monkeypatch, capsys):
+    from valeterna.characters.enemies.espiritu_vengativo import EspirituVengativo
+
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta y siempre procs
+    monkeypatch.setattr(player, "passive_param", lambda skill_id, key, default=0.0: 1.0)
+
+    player.equipped_weapon = Weapon("Espada de Hierro", "desc", 10, damage=0)  # sin elemento
+
+    espiritu = EspirituVengativo()  # inmune al veneno
+    _execute_turn(player, espiritu, defeated_enemies=[])
+
+    out = _strip_ansi(capsys.readouterr().out)
+    assert "inmune al veneno" in out
+    assert "envenena" not in out
 
 
 def test_execute_turn_deals_no_damage_on_a_miss(player, monkeypatch):
