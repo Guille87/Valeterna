@@ -621,6 +621,24 @@ def _strip_ansi(text: str) -> str:
     return re.sub(r"\x1b\[[0-9;]*m", "", text)
 
 
+def test_super_effective_message_uses_correct_gender_for_oscuridad(player, monkeypatch, capsys):
+    # A petición del usuario: "la oscuridad", no "el oscuridad" (el resto de
+    # elementos son masculinos y ya funcionaban bien).
+    from valeterna.characters.enemies.angel_caido import AngelCaido
+
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+
+    player.equipped_weapon = Weapon("Daga Umbría", "desc", 14, damage=0, element="oscuridad")
+    angel = AngelCaido()  # débil a oscuridad
+    _execute_turn(player, angel, defeated_enemies=[])
+
+    out = _strip_ansi(capsys.readouterr().out)
+    assert "La oscuridad causa estragos" in out
+    assert "El oscuridad" not in out
+
+
 def test_non_arcanista_wielding_a_magical_element_weapon_deals_magical_damage(player, monkeypatch):
     # v0.11.0-b: lo mágico/físico es propiedad del elemento, no de la clase —
     # cualquiera con un arma sagrado/oscuridad/arcano golpea mágico.

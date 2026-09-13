@@ -6,7 +6,7 @@ from valeterna import i18n
 from valeterna.audio.resource_manager import ResourceManager
 from valeterna.characters.enemies.enemy_base import status_label
 from valeterna.characters.stats import resolve_hit
-from valeterna.combat.elements import is_magical_element
+from valeterna.combat.elements import element_al, element_phrase, is_magical_element
 from valeterna.ui import console
 from valeterna.ui.formatting import print_combatant_bar, print_player_enemy_info, print_status
 from valeterna.ui.keyboard import key_pressed
@@ -767,18 +767,28 @@ def _execute_turn(
     if is_super_effective:
         print(
             console.colorize(
-                i18n.t("combat.super_effective", element=element_name, name=defender.name),
+                i18n.t(
+                    "combat.super_effective",
+                    element_phrase=element_phrase(element_name, capitalize=True),
+                    name=defender.name,
+                ),
                 console.Fore.RED,
                 bright=True,
             )
         )
     elif is_immune_hit:
         print(
-            console.colorize(i18n.t("combat.immune_hit", element=element_name, name=defender.name), console.Fore.BLUE)
+            console.colorize(
+                i18n.t("combat.immune_hit", element_al=element_al(element_name), name=defender.name),
+                console.Fore.BLUE,
+            )
         )
     elif is_resisted_hit:
         print(
-            console.colorize(i18n.t("combat.resisted_hit", element=element_name, name=defender.name), console.Fore.BLUE)
+            console.colorize(
+                i18n.t("combat.resisted_hit", element_al=element_al(element_name), name=defender.name),
+                console.Fore.BLUE,
+            )
         )
 
     if final_dmg > 0:

@@ -301,6 +301,15 @@ el cambio a mitigación multiplicativa.
     de que lo elemental cambia daño por utilidad. Números provisionales.
   - Reacciones elementales (rayo+congelado, fuego+veneno) quedan para
     v0.11.0-c.
+  - **Arreglada la concordancia de género al nombrar el elemento** en los
+    mensajes de afinidad (a petición del usuario, tras ver "El oscuridad
+    causa estragos..." al atacar con un arma de oscuridad — debía ser "La
+    oscuridad"). Los 7 elementos son masculinos salvo "oscuridad"; nuevo
+    `combat/elements.py::element_phrase()`/`element_al()` construyen la frase
+    con el artículo correcto ("el fuego"/"la oscuridad", "al veneno"/"a la
+    oscuridad"), usados en `combat.super_effective`/`immune_hit`/
+    `resisted_hit`. Si se añaden elementos nuevos que sean femeninos, hay que
+    sumarlos a `_FEMININE_ELEMENTS`.
 
 ## Pulido final (casi lo último antes de 1.0)
 
