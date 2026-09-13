@@ -1,3 +1,5 @@
+import pytest
+
 from valeterna.characters.player import Player
 from valeterna.characters.stats import Stats
 from valeterna.items.equipment import Armor, Weapon
@@ -85,6 +87,41 @@ def test_get_total_magic_resist_sums_equipped_slots(player):
     player.stats.magic_resist = 1
     player.equipped_armor["brazales"] = Armor("Brazales", "desc", 1, slot="brazales", magic_resist=3)
     assert player.get_total_magic_resist() == 4
+
+
+def test_get_total_resist_is_zero_without_matching_armor(player):
+    assert player.get_total_resist("sagrado") == 0.0
+
+
+def test_get_total_resist_sums_matching_equipped_slots(player):
+    player.equipped_armor["anillo1"] = Armor("Anillo", "desc", 1, slot="anillo", resist={"sagrado": 0.10})
+    player.equipped_armor["amuleto"] = Armor("Amuleto", "desc", 1, slot="amuleto", resist={"sagrado": 0.10})
+    assert player.get_total_resist("sagrado") == pytest.approx(0.20)
+
+
+def test_get_total_resist_ignores_other_elements(player):
+    player.equipped_armor["anillo1"] = Armor("Anillo", "desc", 1, slot="anillo", resist={"sagrado": 0.10})
+    assert player.get_total_resist("oscuridad") == 0.0
+
+
+def test_get_total_resist_is_capped_at_75_percent(player):
+    player.equipped_armor["anillo1"] = Armor("Anillo", "desc", 1, slot="anillo", resist={"arcano": 0.50})
+    player.equipped_armor["amuleto"] = Armor("Amuleto", "desc", 1, slot="amuleto", resist={"arcano": 0.50})
+    assert player.get_total_resist("arcano") == 0.75
+
+
+def test_take_damage_applies_elemental_resist_before_mitigation(player):
+    player.stats.armor = 0
+    player.equipped_armor["amuleto"] = Armor("Amuleto", "desc", 1, slot="amuleto", resist={"oscuridad": 0.5})
+    dealt = player.take_damage(20, element="oscuridad")
+    assert dealt == 10  # 20 * (1 - 0.5), sin más mitigación (armadura 0)
+
+
+def test_take_damage_ignores_resist_for_a_different_element(player):
+    player.stats.armor = 0
+    player.equipped_armor["amuleto"] = Armor("Amuleto", "desc", 1, slot="amuleto", resist={"oscuridad": 0.5})
+    dealt = player.take_damage(20, element="sagrado")
+    assert dealt == 20
 
 
 def test_get_total_crit_chance_and_damage_sum_equipped_slots(player):

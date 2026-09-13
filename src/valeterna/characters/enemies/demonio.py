@@ -58,7 +58,7 @@ class Demonio(Enemy):
         if is_crit:
             damage = int(damage * self.stats.crit_damage)
 
-        final_damage = player.take_damage(damage, armor_penetration=self.stats.armor_penetration)
+        final_damage = player.take_damage(damage, armor_penetration=self.stats.armor_penetration, element="fuego")
 
         if is_crit:
             print(console.colorize("¡Golpe crítico!", console.Fore.YELLOW, bright=True))
@@ -79,7 +79,9 @@ class Demonio(Enemy):
             return
 
         damage = self.get_attack_damage()
-        final_damage = player.take_damage(damage, is_magical=True, magic_penetration=self.stats.magic_penetration)
+        final_damage = player.take_damage(
+            damage, is_magical=True, magic_penetration=self.stats.magic_penetration, element="fuego"
+        )
         print(f"El demonio menor hace {console.colorize(str(final_damage), console.Fore.MAGENTA)} de daño ígneo.")
 
     def _cast_confusion(self, player) -> None:

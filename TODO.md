@@ -259,6 +259,48 @@ el cambio a mitigación multiplicativa.
     vez (p. ej. débil a rayo, resiste veneno e inmune a oscuridad) — los tres
     conjuntos son independientes; simplemente ningún enemigo actual usa esa
     combinación todavía. Posible ajuste para la pasada de 70 enemigos.
+- [x] **v0.11.0-b: resistencia elemental en armadura + armas elementales
+  nuevas** (GDD §5 y §6.4).
+  - **Arreglado un hueco de raíz antes de poder añadir armas mágicas nuevas**:
+    `combat/battle.py::_execute_turn` decidía si un golpe era mágico o físico
+    mirando solo la clase del atacante (Arcanista) o si una habilidad lo
+    marcaba (`magical`), nunca el elemento del arma en sí — así que alguien
+    sin ser Arcanista con un arma sagrado/oscuridad/arcano seguía mitigándose
+    con armadura, no con resistencia mágica, aunque el GDD dice que lo
+    físico/mágico es propiedad del elemento. Usado `is_magical_element()`
+    (ya existía en `combat/elements.py` pero no se llamaba desde ningún
+    sitio) para que cualquier clase con un arma de esos 3 elementos golpee
+    mágico, la lleve quien la lleve.
+  - **Resistencia elemental en armadura, sistema nuevo, no un hueco a
+    rellenar**: antes `Player.take_damage()` solo distinguía `is_fire`/
+    `is_magical` (booleanos), sin ningún `element` genérico — el jugador no
+    tenía ningún modelo de afinidad propio. Añadido `element` a
+    `take_damage()`, `Armor.resist` (dict elemento→%, tope 75% sumado en
+    `Player.get_total_resist()`), y etiquetado con su elemento cada ataque de
+    enemigo que ya era claramente elemental: los 4 hechizos del Mago (bola de
+    fuego, rayo, veneno, ventisca → fuego/rayo/veneno/hielo), el dardo oscuro
+    del Nigromante (oscuridad), el golpe sagrado y el Juicio Divino del Ángel
+    Caído (sagrado), el zarpazo y el demonio menor del Demonio (fuego, según
+    su propio texto de sabor "daño ígneo"), y el aliento de fuego del Dragón
+    (fuego). El resto de enemigos no tiene ataques elementales propios, así
+    que no hacía falta tocarlos.
+  - Repartida la resistencia nueva en 3 recetas de herrería ya existentes,
+    eligiendo el hueco más afín temáticamente en vez de inventar objetos
+    nuevos: Cinturón de Resistencia → arcano (su descripción ya decía "tanto
+    físico como arcano"), Amuleto de Resistencia → oscuridad (lleva Pluma
+    Corrupta), Anillo de Vitalidad → sagrado (un anillo de sanación defiende
+    bien contra el elemento cuyo estado bloquea la autocuración). 10% cada
+    una, provisional.
+  - **3 armas elementales nuevas**, como recetas craftables en vez de drops
+    nuevos (para no tocar el balance de botín ya calibrado): Espada Consagrada
+    (sagrado, Fragmento de Hueso + Esencia Espectral — materiales de dos
+    enemigos ahora débiles a sagrado), Daga Umbría (oscuridad, Capa de
+    Sombras + Pluma Corrupta), Vara Arcana (arcano, Esencia Arcana + Núcleo de
+    Gólem — el Gólem ahora también débil a arcano). Daño 14-18, por debajo de
+    las armas "normales" de tramo similar, siguiendo el patrón ya establecido
+    de que lo elemental cambia daño por utilidad. Números provisionales.
+  - Reacciones elementales (rayo+congelado, fuego+veneno) quedan para
+    v0.11.0-c.
 
 ## Pulido final (casi lo último antes de 1.0)
 

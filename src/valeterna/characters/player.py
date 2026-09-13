@@ -55,8 +55,13 @@ class Player(Character):
         is_magical: bool = False,
         armor_penetration: int = 0,
         magic_penetration: int = 0,
+        element: str | None = None,
     ) -> int:
         """Calcula el daño final tras aplicar armadura o resistencia mágica y lo resta de la vida."""
+        if element:
+            resist_pct = self.get_total_resist(element)
+            if resist_pct:
+                amount = round(amount * (1 - resist_pct))
         if is_magical:
             mitigation = self.get_total_magic_resist() - magic_penetration
         else:
@@ -227,6 +232,15 @@ class Player(Character):
         bonus = sum(item.magic_resist for item in self.equipped_armor.values() if item)
         total = self.stats.magic_resist + bonus
         return round(total * self._low_hp_defense_mult())  # "Aguante" con poca vida
+
+    def get_total_resist(self, element: str) -> float:
+        """% de reducción de daño de `element` (0.0-1.0) sumada de toda la
+        armadura equipada, aplicada en take_damage() antes de la mitigación
+        por armadura/resistencia mágica. Tope 75%: ninguna combinación de
+        equipo debería anular un elemento por completo, solo la inmunidad de
+        un enemigo hace eso en el otro sentido."""
+        total = sum(item.resist.get(element, 0.0) for item in self.equipped_armor.values() if item)
+        return min(total, 0.75)
 
     def get_total_crit_chance(self) -> float:
         """Devuelve la probabilidad de golpe crítico total sumando todas las piezas equipadas."""

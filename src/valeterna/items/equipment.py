@@ -123,6 +123,7 @@ class Armor(Item):
         speed: int = 0,
         precision: int = 0,
         evasion: int = 0,
+        resist: dict | None = None,
     ):
         super().__init__(name, description, value)
         self.slot = slot
@@ -146,6 +147,12 @@ class Armor(Item):
         # hombreras es precisión y para perneras es evasión.
         self.precision = precision
         self.evasion = evasion
+        # Resistencia elemental (GDD §5): % de reducción de daño por elemento
+        # ({"sagrado": 0.1, ...}), sumada en Player.get_total_resist(element) y
+        # aplicada en Player.take_damage() antes de la mitigación por
+        # armadura/resistencia mágica. Independiente de la afinidad de los
+        # enemigos (débil/resiste/inmune): esto es la defensa del jugador.
+        self.resist = resist or {}
 
     def use(self, player, target_slot: str | None = None) -> bool:
         # target_slot lo indica quien equipa (necesario para los anillos: self.slot
@@ -188,6 +195,9 @@ class Armor(Item):
             parts.append(f"Precisión: +{self.precision}")
         if self.evasion:
             parts.append(f"Evasión: +{self.evasion}")
+        if self.resist:
+            resist_str = ", ".join(f"{elem.capitalize()} +{pct * 100:.0f}%" for elem, pct in self.resist.items())
+            parts.append(f"Resistencia: {resist_str}")
         info = " | ".join(parts) if parts else "Sin bonus"
         return console.colorize(info, console.Fore.BLUE)
 
@@ -207,6 +217,7 @@ class Armor(Item):
                 "speed": self.speed,
                 "precision": self.precision,
                 "evasion": self.evasion,
+                "resist": self.resist,
                 "type": "Armor",
             }
         )
@@ -231,4 +242,5 @@ class Armor(Item):
             speed=data.get("speed", 0),
             precision=data.get("precision", 0),
             evasion=data.get("evasion", 0),
+            resist=data.get("resist"),
         )

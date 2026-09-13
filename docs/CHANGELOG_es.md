@@ -19,6 +19,16 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
   redundante de "bloqueó el ataque" cuando el golpe ya era inmune, Veneno de
   Contacto ahora avisa de la inmunidad en vez de quedarse en silencio, y el
   Espíritu Vengativo ya no puede sangrar (es incorpóreo).
+- **Resistencia elemental en armadura + 3 armas elementales nuevas** (GDD
+  §5/§6.4, v0.11.0-b): `Armor` puede llevar ya `resist` (% de reducción de
+  daño por elemento, sumado con `Player.get_total_resist()`, tope 75%) — por
+  ahora lo dan el Cinturón de Resistencia (arcano), el Amuleto de Resistencia
+  (oscuridad) y el Anillo de Vitalidad (sagrado). Armas craftables nuevas
+  Espada Consagrada (sagrado), Daga Umbría (oscuridad) y Vara Arcana (arcano)
+  — las primeras armas de esos 3 elementos que el jugador puede conseguir.
+  De paso se arregló un hueco relacionado: si un golpe es físico o mágico lo
+  decide ahora el elemento del arma (cualquier clase con un arma sagrado/
+  oscuridad/arcano mitiga con resistencia mágica), no solo ser Arcanista.
 
 ### Cambiado
 

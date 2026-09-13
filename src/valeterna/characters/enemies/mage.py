@@ -95,7 +95,9 @@ class Mago(Enemy):
         if is_crit:
             dmg = int(dmg * self.stats.crit_damage)
 
-        final = player.take_damage(dmg, is_fire=True, is_magical=True, magic_penetration=self.stats.magic_penetration)
+        final = player.take_damage(
+            dmg, is_fire=True, is_magical=True, magic_penetration=self.stats.magic_penetration, element="fuego"
+        )
         print(
             f"{console.colorize(i18n.t('combat.spell_damage', amount=final), console.Fore.MAGENTA)}"
             f"{console.crit_suffix(is_crit)}"
@@ -125,7 +127,7 @@ class Mago(Enemy):
         if is_crit:
             dmg = int(dmg * self.stats.crit_damage)
 
-        final = player.take_damage(dmg, is_magical=True, magic_penetration=self.stats.magic_penetration)
+        final = player.take_damage(dmg, is_magical=True, magic_penetration=self.stats.magic_penetration, element="rayo")
         print(
             f"{console.colorize(i18n.t('combat.spell_damage', amount=final), console.Fore.MAGENTA)}"
             f"{console.crit_suffix(is_crit)}"
@@ -151,7 +153,9 @@ class Mago(Enemy):
         if is_crit:
             dmg = int(dmg * self.stats.crit_damage)
 
-        final = player.take_damage(dmg, is_magical=True, magic_penetration=self.stats.magic_penetration)
+        final = player.take_damage(
+            dmg, is_magical=True, magic_penetration=self.stats.magic_penetration, element="veneno"
+        )
         print(
             f"{console.colorize(i18n.t('combat.spell_damage', amount=final), console.Fore.MAGENTA)}"
             f"{console.crit_suffix(is_crit)}"
@@ -179,7 +183,9 @@ class Mago(Enemy):
         if is_crit:
             dmg = int(dmg * self.stats.crit_damage)
 
-        final = player.take_damage(dmg, is_magical=True, magic_penetration=self.stats.magic_penetration)
+        final = player.take_damage(
+            dmg, is_magical=True, magic_penetration=self.stats.magic_penetration, element="hielo"
+        )
         print(
             f"{console.colorize(i18n.t('combat.spell_damage', amount=final), console.Fore.MAGENTA)}"
             f"{console.crit_suffix(is_crit)}"

@@ -19,6 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   redundant "blocked the attack" line when a hit is already elemental-immune,
   Veneno de Contacto now announces immunity instead of staying silent, and
   Espíritu Vengativo can no longer bleed (incorporeal).
+- **Elemental resistance on armour + 3 new elemental weapons** (GDD §5/§6.4,
+  v0.11.0-b): `Armor` can now carry `resist` (% damage reduction per element,
+  summed via `Player.get_total_resist()`, capped at 75%) — granted so far by
+  Cinturón de Resistencia (arcano), Amuleto de Resistencia (oscuridad) and
+  Anillo de Vitalidad (sagrado). New craftable weapons Espada Consagrada
+  (sagrado), Daga Umbría (oscuridad) and Vara Arcana (arcano) — the first
+  player-obtainable weapons for those 3 elements. Also fixed a related gap:
+  whether a hit is physical or magical is now decided by the weapon's element
+  (any class wielding a sagrado/oscuridad/arcano weapon deals magic-resist-
+  mitigated damage), not just by being an Arcanista.
 
 ### Changed
 

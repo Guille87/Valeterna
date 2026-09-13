@@ -271,9 +271,20 @@ escuda".
   mayoría de enemigos usa una o dos.
 - Daño: `final = base × afinidad`, y luego la mitigación por armadura /
   res. mágica (los elementos mágicos se mitigan con `magic_resist`).
-- Defensa elemental del jugador: `Armor` puede llevar `resist` (un dict pequeño,
-  un % de reducción por elemento), sumado como `Player.get_total_resist(elem)` —
-  unas pocas piezas y un conjunto lo dan.
+- **Implementado en v0.11.0-b.** Defensa elemental del jugador: `Armor` puede
+  llevar `resist` (un dict pequeño, un % de reducción por elemento), sumado
+  como `Player.get_total_resist(elem)`, con un tope del 75% total, y aplicado
+  en `Player.take_damage()` antes de la mitigación por armadura/res. mágica.
+  Por ahora lo dan tres piezas craftables (Cinturón de Resistencia → arcano,
+  Amuleto de Resistencia → oscuridad, Anillo de Vitalidad → sagrado); repartirlo
+  más (más objetos, un conjunto temático) queda para una pasada de balance
+  posterior. De paso se arregló un hueco relacionado: si un ataque es físico o
+  mágico depende del *elemento* (según esta sección), no de la clase de quien
+  ataca — `combat/battle.py::_execute_turn` solo miraba si el Arcanista era
+  mágico por naturaleza o si una habilidad lo marcaba como `magical`, así que
+  alguien sin ser Arcanista empuñando un arma sagrado/oscuridad/arcano seguía
+  mitigándose con armadura en vez de resistencia mágica. Ahora
+  `is_magical_element(elemento)` también lo activa.
 
 ### Reacciones elementales *(planeado — balancear con cuidado)*
 
