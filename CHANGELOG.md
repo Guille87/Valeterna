@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Admin login no longer hangs on non-terminal consoles** (e.g. PyCharm's
+  "Run" panel, as opposed to its "Terminal" tab): `getpass.getpass()` needs a
+  real terminal to hide input, and on some IDE consoles it doesn't raise an
+  exception when it can't get one — it just hangs, accepting Enter as if it
+  were part of the password, never returning. `_check_admin_password()` now
+  checks `sys.stdin.isatty()` first and goes straight to the visible fallback
+  when there's no real terminal, instead of relying on an exception that might
+  never come.
+
 ### Changed
 
 - **Project renamed from "JuegoRolTexto" to Valeterna** (the kingdom name from
