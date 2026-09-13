@@ -2,8 +2,8 @@ import sys
 
 import pytest
 
-from juego_rol_texto.combat import battle
-from juego_rol_texto.ui import keyboard
+from valeterna.combat import battle
+from valeterna.ui import keyboard
 
 
 def test_key_pressed_returns_none_without_a_waiting_key():

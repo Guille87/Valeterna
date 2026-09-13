@@ -3,7 +3,7 @@
 import pytest
 from colorama import Fore
 
-from juego_rol_texto.ui import console
+from valeterna.ui import console
 
 
 def test_tint_status_colors_each_state_keyword():

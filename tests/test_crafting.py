@@ -1,5 +1,5 @@
-from juego_rol_texto.crafting.forge import Forge
-from juego_rol_texto.items.materials import Material
+from valeterna.crafting.forge import Forge
+from valeterna.items.materials import Material
 
 
 def _give(player, name: str, quantity: int = 1, rarity: str = "Común"):
@@ -135,7 +135,7 @@ def test_open_only_lists_discovered_recipes(player, monkeypatch, capsys):
     _give(player, "Piel de Troll", 2, rarity="Legendario")  # solo descubre Armadura Regenerativa
     player.inventory.gold = 1000
 
-    monkeypatch.setattr("juego_rol_texto.crafting.forge.console.ask", lambda prompt: "2")  # "Volver"
+    monkeypatch.setattr("valeterna.crafting.forge.console.ask", lambda prompt: "2")  # "Volver"
 
     forge.open(player)
 

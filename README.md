@@ -1,18 +1,19 @@
-# Juego de Rol por Turnos
+# Valeterna
 
 <p align="center"><a href="README.md">English</a> · <a href="docs/README_es.md">Español</a></p>
 
-[![CI](https://github.com/Guille87/JuegoRolTexto/actions/workflows/ci.yml/badge.svg)](https://github.com/Guille87/JuegoRolTexto/actions/workflows/ci.yml)
-[![Coverage](https://raw.githubusercontent.com/Guille87/JuegoRolTexto/badges/coverage.svg)](https://github.com/Guille87/JuegoRolTexto/actions/workflows/ci.yml)
+[![CI](https://github.com/Guille87/Valeterna/actions/workflows/ci.yml/badge.svg)](https://github.com/Guille87/Valeterna/actions/workflows/ci.yml)
+[![Coverage](https://raw.githubusercontent.com/Guille87/Valeterna/badges/coverage.svg)](https://github.com/Guille87/Valeterna/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Contributors](https://img.shields.io/github/contributors/Guille87/JuegoRolTexto)](https://github.com/Guille87/JuegoRolTexto/graphs/contributors)
-[![Issues](https://img.shields.io/github/issues/Guille87/JuegoRolTexto)](https://github.com/Guille87/JuegoRolTexto/issues)
-[![Pull requests](https://img.shields.io/github/issues-pr/Guille87/JuegoRolTexto)](https://github.com/Guille87/JuegoRolTexto/pulls)
+[![Contributors](https://img.shields.io/github/contributors/Guille87/Valeterna)](https://github.com/Guille87/Valeterna/graphs/contributors)
+[![Issues](https://img.shields.io/github/issues/Guille87/Valeterna)](https://github.com/Guille87/Valeterna/issues)
+[![Pull requests](https://img.shields.io/github/issues-pr/Guille87/Valeterna)](https://github.com/Guille87/Valeterna/pulls)
 
-A Spanish-language, terminal-based turn-based RPG written in Python. Fight your way
-through a chain of 14 enemies, manage gear and potions, craft equipment and grow
-your character. It is played entirely in the console — there is no graphical
-window; `colorama` adds colour and `pygame` (mixer only) plays background music.
+**Valeterna** is a Spanish-language, terminal-based turn-based RPG written in Python.
+Fight your way through a chain of 14 enemies, manage gear and potions, craft
+equipment and grow your character. It is played entirely in the console — there
+is no graphical window; `colorama` adds colour and `pygame` (mixer only) plays
+background music.
 
 <p align="center"><img src="docs/screenshot.svg" alt="A Goblin battle: attack, ATB turns, victory and level-up" width="640"></p>
 
@@ -34,8 +35,8 @@ window; `colorama` adds colour and `pygame` (mixer only) plays background music.
 ## Install
 
 ```powershell
-git clone https://github.com/Guille87/JuegoRolTexto.git
-cd JuegoRolTexto
+git clone https://github.com/Guille87/Valeterna.git
+cd Valeterna
 python -m venv env
 .\env\Scripts\activate
 pip install -e ".[dev]"
@@ -47,15 +48,15 @@ The `[dev]` extra adds `pytest`, `pytest-cov` and `ruff`. For playing only, `pip
 
 ```bash
 python main.py
-# or: python -m juego_rol_texto
-# or, after install: juego-rol-texto
+# or: python -m valeterna
+# or, after install: valeterna
 ```
 
 ## Tests
 
 ```bash
 pytest                              # run the suite
-pytest --cov=juego_rol_texto        # with coverage
+pytest --cov=valeterna        # with coverage
 ruff check . && ruff format --check .
 ```
 
@@ -63,10 +64,10 @@ ruff check . && ruff format --check .
 
 ```powershell
 pip install pyinstaller
-pyinstaller JuegoRolTexto.spec
+pyinstaller Valeterna.spec
 ```
 
-The result is in `dist\JuegoRolTexto\` — copy the **whole folder** (it needs the
+The result is in `dist\Valeterna\` — copy the **whole folder** (it needs the
 bundled assets and DLLs). `config.ini`, `saved_games\` and `logs\` are created
 next to the `.exe`. Use `--onedir` (the spec already does), never `--onefile`.
 
@@ -75,7 +76,7 @@ for a newer version and, if you accept, downloads it, verifies its SHA-256 and
 restarts — `saved_games\` and `config.ini` are kept. Turn the check off under
 *Opciones*.
 
-Optional error reporting to Discord lives in `src/juego_rol_texto/config/secrets.py`
+Optional error reporting to Discord lives in `src/valeterna/config/secrets.py`
 (git-ignored). Copy `config/secrets.example.py` to `config/secrets.py` and fill it
 in before building; without it the game runs fine, just without crash reports.
 

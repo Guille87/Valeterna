@@ -1,5 +1,5 @@
-from juego_rol_texto import updater
-from juego_rol_texto.ui import menus
+from valeterna import updater
+from valeterna.ui import menus
 
 
 def _info(tag="v0.4.0"):

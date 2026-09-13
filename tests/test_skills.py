@@ -1,8 +1,8 @@
-from juego_rol_texto.characters.classes import CharClass, starting_stats
-from juego_rol_texto.characters.enemies.goblin import Goblin
-from juego_rol_texto.characters.player import Player
-from juego_rol_texto.characters.skills import CATALOG, MAX_EQUIPPED_ACTIVES, SkillKind, known_skills, pool_for
-from juego_rol_texto.combat import battle
+from valeterna.characters.classes import CharClass, starting_stats
+from valeterna.characters.enemies.goblin import Goblin
+from valeterna.characters.player import Player
+from valeterna.characters.skills import CATALOG, MAX_EQUIPPED_ACTIVES, SkillKind, known_skills, pool_for
+from valeterna.combat import battle
 
 
 def _player(char_class=CharClass.VAGABUNDO, level=1):
@@ -59,7 +59,7 @@ def test_piel_de_piedra_reduces_physical_damage_only():
 
 
 def test_segundo_aliento_heals_on_kill(monkeypatch, weak_enemy):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
     vaga = _player(CharClass.VAGABUNDO)
     vaga.stats.health = 10
     battle._handle_victory(vaga, weak_enemy, [], ["Goblin"])
@@ -80,10 +80,10 @@ def test_sanitize_respects_max_equipped():
 
 
 def test_execute_skill_golpe_firme_never_misses_and_hits_harder(monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.99)  # fallaría un ataque normal
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.99)  # sin crítico
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.99)  # fallaría un ataque normal
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.99)  # sin crítico
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
 
     p = _player(CharClass.VAGABUNDO)
     enemy = Goblin()
@@ -98,10 +98,10 @@ def test_execute_skill_golpe_firme_never_misses_and_hits_harder(monkeypatch):
 
 
 def test_execute_skill_golpe_bajo_crits_and_bleeds(monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.99)  # no forzamos crítico por azar
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.99)  # no forzamos crítico por azar
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
 
     p = _player(CharClass.PICARO)
     enemy = Goblin()
@@ -112,9 +112,9 @@ def test_execute_skill_golpe_bajo_crits_and_bleeds(monkeypatch):
 
 
 def test_execute_skill_proyectil_arcano_ignores_magic_resist(monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.99)
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 40)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.99)
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 40)
 
     arc = _player(CharClass.ARCANISTA)
     arc.stats.magic_power = 40
@@ -128,8 +128,8 @@ def test_execute_skill_proyectil_arcano_ignores_magic_resist(monkeypatch):
 
 
 def test_cooldown_decrements_each_player_turn(monkeypatch, weak_enemy):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a, **k: None)
-    monkeypatch.setattr("juego_rol_texto.combat.battle._player_menu", lambda *a, **k: "atacar")
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle._player_menu", lambda *a, **k: "atacar")
     p = _player(CharClass.VAGABUNDO)
     cooldowns = {"golpe_firme": 3}
 
@@ -139,10 +139,10 @@ def test_cooldown_decrements_each_player_turn(monkeypatch, weak_enemy):
 
 
 def test_sintonia_lets_the_arcanist_pick_the_element(monkeypatch):
-    from juego_rol_texto.combat.elements import ELEMENTS
+    from valeterna.combat.elements import ELEMENTS
 
     arc = _player(CharClass.ARCANISTA)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda *a, **k: "1")
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: "1")
     battle._prompt_battle_element(arc)
     assert arc.battle_element == sorted(ELEMENTS)[0]
 
@@ -150,7 +150,7 @@ def test_sintonia_lets_the_arcanist_pick_the_element(monkeypatch):
 def test_sintonia_only_prompts_for_the_arcanist(monkeypatch):
     vaga = _player(CharClass.VAGABUNDO)
     monkeypatch.setattr(
-        "juego_rol_texto.combat.battle.console.ask",
+        "valeterna.combat.battle.console.ask",
         lambda *a, **k: (_ for _ in ()).throw(AssertionError("no debería preguntar")),
     )
     battle._prompt_battle_element(vaga)
@@ -176,10 +176,10 @@ def test_aguante_boosts_defense_below_30_percent(monkeypatch):
 
 
 def test_veneno_de_contacto_can_poison_on_hit(monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)  # acierta
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.0)  # el veneno prende
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # acierta
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)  # el veneno prende
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
 
     p = _player(CharClass.PICARO, level=4)
     enemy = Goblin()
@@ -201,10 +201,10 @@ def test_escudo_de_mana_absorbs_the_next_hit():
 
 
 def test_represalia_counterattacks_after_a_physical_hit(monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.0)  # contraataca
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)  # contraataca
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
 
     p = _player(CharClass.GUERRERO, level=4)
     p.took_physical_hit = True
@@ -233,10 +233,10 @@ def test_enemy_bleed_damages_over_time():
 
 
 def test_embate_stuns_with_the_aturdido_status_not_paralizado(monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.0)  # el aturdir prende
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)  # el aturdir prende
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
 
     p = _player(CharClass.GUERRERO)
     enemy = Goblin()

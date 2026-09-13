@@ -19,12 +19,12 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 import colorama
 from ansitoimg import ansiToSVG
 
-from juego_rol_texto.audio.resource_manager import ResourceManager
-from juego_rol_texto.characters.enemies.goblin import Goblin
-from juego_rol_texto.characters.player import Player
-from juego_rol_texto.characters.stats import Stats
-from juego_rol_texto.combat import battle
-from juego_rol_texto.ui import console
+from valeterna.audio.resource_manager import ResourceManager
+from valeterna.characters.enemies.goblin import Goblin
+from valeterna.characters.player import Player
+from valeterna.characters.stats import Stats
+from valeterna.combat import battle
+from valeterna.ui import console
 
 REPO = Path(__file__).resolve().parents[1]
 

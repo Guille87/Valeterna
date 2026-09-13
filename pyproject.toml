@@ -1,7 +1,7 @@
 [project]
-name = "juego-rol-texto"
+name = "valeterna"
 version = "0.10.0"
-description = "Juego de rol por turnos en consola, escrito en Python."
+description = "Valeterna: juego de rol por turnos en consola, escrito en Python."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -21,7 +21,7 @@ dev = [
 ]
 
 [project.scripts]
-juego-rol-texto = "juego_rol_texto.app:main"
+valeterna = "valeterna.app:main"
 
 [build-system]
 requires = ["setuptools>=77", "wheel"]
@@ -44,9 +44,9 @@ select = ["E4", "E7", "E9", "F", "W", "I", "UP", "B", "SIM"]
 "__init__.py" = ["F401"]
 # app.py reconfigura sys.stdout y conftest fija SDL_AUDIODRIVER *antes* de los
 # imports a propósito (E402), y secrets.example.py es una plantilla, no un módulo.
-"src/juego_rol_texto/app.py" = ["E402"]
+"src/valeterna/app.py" = ["E402"]
 "tests/conftest.py" = ["E402"]
-"src/juego_rol_texto/config/secrets.example.py" = ["E402"]
+"src/valeterna/config/secrets.example.py" = ["E402"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -66,7 +66,7 @@ reportMissingModuleSource = false
 reportIncompatibleMethodOverride = false
 
 [tool.coverage.run]
-source = ["juego_rol_texto"]
+source = ["valeterna"]
 # Se excluye la capa de "pegamento": bucles de menú interactivos (ui/menus.py) y
 # la orquestación de arranque (app.py). Son casi todo llamadas a input()/print()
 # encadenadas; testearlas a fondo aporta poco frente a testear la lógica de

@@ -1,6 +1,6 @@
 """Capa de textos traducibles (GDD §9.1)."""
 
-from juego_rol_texto import i18n
+from valeterna import i18n
 
 
 def test_t_resolves_a_key_from_the_catalog():
@@ -33,7 +33,7 @@ def test_es_is_always_available():
 
 
 def test_every_element_and_status_name_has_a_catalog_entry():
-    from juego_rol_texto.combat.elements import ELEMENT_STATUS, ELEMENTS
+    from valeterna.combat.elements import ELEMENT_STATUS, ELEMENTS
 
     for element in ELEMENTS:
         assert i18n.t(f"element.{element}") != f"element.{element}"

@@ -12,8 +12,8 @@ import threading
 import pygame
 import pytest
 
-from juego_rol_texto import app
-from juego_rol_texto.config import logging_setup
+from valeterna import app
+from valeterna.config import logging_setup
 
 
 @pytest.fixture(autouse=True)
@@ -34,7 +34,7 @@ def test_app_main_boots_and_exits_cleanly(monkeypatch, tmp_path, capsys):
     # No preguntar por el opt-in de informes de error (tocaría el config.ini real).
     monkeypatch.setattr(app, "ask_crash_reporting_opt_in", lambda: None)
     # En el menú principal elegimos "4" = Salir en la primera vuelta.
-    monkeypatch.setattr("juego_rol_texto.ui.menus.console.ask", lambda prompt: "4")
+    monkeypatch.setattr("valeterna.ui.menus.console.ask", lambda prompt: "4")
 
     app.main()  # no debe lanzar
 

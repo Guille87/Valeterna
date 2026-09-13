@@ -1,6 +1,6 @@
-from juego_rol_texto.characters.enemies.goblin import Goblin
-from juego_rol_texto.characters.enemies.troll import Troll
-from juego_rol_texto.ui.formatting import (
+from valeterna.characters.enemies.goblin import Goblin
+from valeterna.characters.enemies.troll import Troll
+from valeterna.ui.formatting import (
     print_bestiary_entry,
     print_player_enemy_info,
     print_status,
@@ -49,8 +49,8 @@ def test_print_player_enemy_info_pairs_related_stats_on_one_line(player, capsys)
 
 
 def test_print_player_enemy_info_shows_magic_attack_for_arcanist(capsys):
-    from juego_rol_texto.characters.classes import CharClass, starting_stats
-    from juego_rol_texto.characters.player import Player
+    from valeterna.characters.classes import CharClass, starting_stats
+    from valeterna.characters.player import Player
 
     arc = Player("A", starting_stats(CharClass.ARCANISTA), char_class=CharClass.ARCANISTA)
     print_player_enemy_info(arc, Goblin(), defeated_enemies=[])

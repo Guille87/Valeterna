@@ -2,9 +2,9 @@
 
 import pytest
 
-from juego_rol_texto.characters.enemies.goblin import Goblin
-from juego_rol_texto.characters.enemies.troll import Troll
-from juego_rol_texto.combat.elements import (
+from valeterna.characters.enemies.goblin import Goblin
+from valeterna.characters.enemies.troll import Troll
+from valeterna.combat.elements import (
     ELEMENT_STATUS,
     MAGICAL_ELEMENTS,
     affinity_multiplier,

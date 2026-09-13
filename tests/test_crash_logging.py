@@ -1,7 +1,7 @@
 import sys
 import threading
 
-from juego_rol_texto.config import logging_setup
+from valeterna.config import logging_setup
 
 
 def test_report_crash_writes_a_crash_file_with_traceback(tmp_path, monkeypatch):
@@ -95,7 +95,7 @@ def test_handle_thread_exception_logs_and_ignores_system_exit(monkeypatch, caplo
         exc_traceback = None
         thread = None
 
-    with caplog.at_level(_logging.ERROR, logger="juego_rol_texto"):
+    with caplog.at_level(_logging.ERROR, logger="valeterna"):
         logging_setup._handle_thread_exception(Args())
     assert "Excepción en hilo" in caplog.text
 

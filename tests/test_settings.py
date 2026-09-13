@@ -1,6 +1,6 @@
 import pytest
 
-from juego_rol_texto.config import settings
+from valeterna.config import settings
 
 
 @pytest.fixture

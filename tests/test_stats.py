@@ -1,6 +1,6 @@
 import pytest
 
-from juego_rol_texto.characters.stats import (
+from valeterna.characters.stats import (
     BASE_HIT_CHANCE,
     MAX_HIT_CHANCE,
     MIN_HIT_CHANCE,
@@ -68,20 +68,20 @@ def test_speed_precision_evasion_default(player):
 
 def test_resolve_hit_uses_base_chance_when_precision_and_evasion_are_equal(monkeypatch):
     # BASE_HIT_CHANCE% de acierto: justo por debajo del umbral acierta, justo por encima falla.
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: (BASE_HIT_CHANCE - 1) / 100)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: (BASE_HIT_CHANCE - 1) / 100)
     assert resolve_hit(0, 0) is True
 
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: (BASE_HIT_CHANCE + 1) / 100)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: (BASE_HIT_CHANCE + 1) / 100)
     assert resolve_hit(0, 0) is False
 
 
 def test_resolve_hit_chance_is_clamped_between_min_and_max(monkeypatch):
     # Precisión muy superior a la evasión -> se limita a MAX_HIT_CHANCE, nunca "acierto absoluto" sin tirada
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: (MAX_HIT_CHANCE - 1) / 100)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: (MAX_HIT_CHANCE - 1) / 100)
     assert resolve_hit(1000, 0) is True
 
     # Evasión muy superior a la precisión -> se limita a MIN_HIT_CHANCE, nunca 0% de posibilidad
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: (MIN_HIT_CHANCE - 1) / 100)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: (MIN_HIT_CHANCE - 1) / 100)
     assert resolve_hit(0, 1000) is True
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: (MIN_HIT_CHANCE + 1) / 100)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: (MIN_HIT_CHANCE + 1) / 100)
     assert resolve_hit(0, 1000) is False

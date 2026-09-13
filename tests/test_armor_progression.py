@@ -1,21 +1,21 @@
 import random
 
-from juego_rol_texto.characters.enemies.angel_caido import AngelCaido
-from juego_rol_texto.characters.enemies.bandido import Bandido
-from juego_rol_texto.characters.enemies.demonio import Demonio
-from juego_rol_texto.characters.enemies.dragon import Dragon
-from juego_rol_texto.characters.enemies.espiritu_vengativo import EspirituVengativo
-from juego_rol_texto.characters.enemies.gargola import Gargola
-from juego_rol_texto.characters.enemies.goblin import Goblin
-from juego_rol_texto.characters.enemies.golem import GolemDePiedra
-from juego_rol_texto.characters.enemies.huargo import Huargo
-from juego_rol_texto.characters.enemies.mage import Mago
-from juego_rol_texto.characters.enemies.nigromante import Nigromante
-from juego_rol_texto.characters.enemies.orc import Orc
-from juego_rol_texto.characters.enemies.skeleton import Skeleton
-from juego_rol_texto.characters.enemies.troll import Troll
-from juego_rol_texto.crafting.forge import Forge
-from juego_rol_texto.items.equipment import Armor
+from valeterna.characters.enemies.angel_caido import AngelCaido
+from valeterna.characters.enemies.bandido import Bandido
+from valeterna.characters.enemies.demonio import Demonio
+from valeterna.characters.enemies.dragon import Dragon
+from valeterna.characters.enemies.espiritu_vengativo import EspirituVengativo
+from valeterna.characters.enemies.gargola import Gargola
+from valeterna.characters.enemies.goblin import Goblin
+from valeterna.characters.enemies.golem import GolemDePiedra
+from valeterna.characters.enemies.huargo import Huargo
+from valeterna.characters.enemies.mage import Mago
+from valeterna.characters.enemies.nigromante import Nigromante
+from valeterna.characters.enemies.orc import Orc
+from valeterna.characters.enemies.skeleton import Skeleton
+from valeterna.characters.enemies.troll import Troll
+from valeterna.crafting.forge import Forge
+from valeterna.items.equipment import Armor
 
 # Orden real de la cadena (combat/battle.py::ENEMY_PROGRESSION), con la posición
 # de cada uno (1-indexado) para poder comprobar la progresión por hueco.

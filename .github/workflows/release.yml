@@ -31,14 +31,14 @@ jobs:
           pip install -e . pyinstaller
 
       - name: Construir el ejecutable
-        run: pyinstaller JuegoRolTexto.spec
+        run: pyinstaller Valeterna.spec
 
       - name: Empaquetar
         shell: pwsh
         run: |
           $tag = "${{ github.ref_name }}"
-          $zip = "JuegoRolTexto-$tag-windows.zip"
-          Compress-Archive -Path dist/JuegoRolTexto -DestinationPath $zip
+          $zip = "Valeterna-$tag-windows.zip"
+          Compress-Archive -Path dist/Valeterna -DestinationPath $zip
           # SHA256SUMS: lo verifica el auto-updater antes de aplicar una actualización.
           "$((Get-FileHash $zip -Algorithm SHA256).Hash.ToLower())  $zip" | Set-Content -Encoding ascii SHA256SUMS
 
@@ -46,6 +46,6 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: |
-            JuegoRolTexto-*-windows.zip
+            Valeterna-*-windows.zip
             SHA256SUMS
           generate_release_notes: true

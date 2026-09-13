@@ -1,9 +1,9 @@
 """Tests de `use()` de las pociones (las de combate dependen de `player.in_combat`)."""
 
-from juego_rol_texto.items.potions.antidote_potion import AntidotePotion
-from juego_rol_texto.items.potions.buff_potion import StatBuffPotion
-from juego_rol_texto.items.potions.healing_potion import HealingPotion
-from juego_rol_texto.items.potions.regen_potion import RegenPotion
+from valeterna.items.potions.antidote_potion import AntidotePotion
+from valeterna.items.potions.buff_potion import StatBuffPotion
+from valeterna.items.potions.healing_potion import HealingPotion
+from valeterna.items.potions.regen_potion import RegenPotion
 
 
 def test_healing_potion_restores_health(player):

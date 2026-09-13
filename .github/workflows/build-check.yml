@@ -5,7 +5,7 @@ name: Build check
 on:
   pull_request:
     paths:
-      - JuegoRolTexto.spec
+      - Valeterna.spec
       - main.py
       - pyproject.toml
       - .github/scripts/write_secrets.py
@@ -13,7 +13,7 @@ on:
   push:
     branches: [main]
     paths:
-      - JuegoRolTexto.spec
+      - Valeterna.spec
       - main.py
       - pyproject.toml
       - .github/scripts/write_secrets.py
@@ -42,22 +42,22 @@ jobs:
           pip install -e . pyinstaller
 
       - name: Construir el ejecutable
-        run: pyinstaller JuegoRolTexto.spec
+        run: pyinstaller Valeterna.spec
 
       - name: El ejecutable existe y arranca
         shell: pwsh
         run: |
-          $exe = "dist/JuegoRolTexto/JuegoRolTexto.exe"
+          $exe = "dist/Valeterna/Valeterna.exe"
           if (-not (Test-Path $exe)) { throw "No se generó $exe" }
           # Sin webhook configurado no hay aviso opt-in, así que "4" (Salir en el
           # menú principal) es lo único que se lee. Debe terminar con código 0.
-          "[REPORTS]`nsend_crash_reports = false" | Set-Content dist/JuegoRolTexto/config.ini
+          "[REPORTS]`nsend_crash_reports = false" | Set-Content dist/Valeterna/config.ini
           "4" | & $exe
           if ($LASTEXITCODE -ne 0) { throw "El .exe terminó con código $LASTEXITCODE" }
 
       - name: Subir el paquete como artefacto
         uses: actions/upload-artifact@v4
         with:
-          name: JuegoRolTexto-build-check
-          path: dist/JuegoRolTexto
+          name: Valeterna-build-check
+          path: dist/Valeterna
           retention-days: 7

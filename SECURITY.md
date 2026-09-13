@@ -28,7 +28,7 @@ be released and the report credited, unless you prefer to stay anonymous.
 
 ## Auto-update threat model
 
-The Windows build can update itself (`src/juego_rol_texto/updater.py`). Applying
+The Windows build can update itself (`src/valeterna/updater.py`). Applying
 an update is always an explicit player action; the startup check is a plain HTTPS
 GET to the GitHub API and sends nothing.
 

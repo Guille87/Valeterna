@@ -1,15 +1,15 @@
-from juego_rol_texto.characters.enemies.angel_caido import AngelCaido
-from juego_rol_texto.characters.enemies.bandido import Bandido
-from juego_rol_texto.characters.enemies.demonio import Demonio
-from juego_rol_texto.characters.enemies.dragon import Dragon
-from juego_rol_texto.characters.enemies.espiritu_vengativo import EspirituVengativo
-from juego_rol_texto.characters.enemies.gargola import Gargola
-from juego_rol_texto.characters.enemies.golem import GolemDePiedra
-from juego_rol_texto.characters.enemies.huargo import Huargo
-from juego_rol_texto.characters.enemies.nigromante import Nigromante
-from juego_rol_texto.characters.stats import apply_mitigation
-from juego_rol_texto.combat.battle import ENEMY_PROGRESSION
-from juego_rol_texto.items.equipment import Weapon
+from valeterna.characters.enemies.angel_caido import AngelCaido
+from valeterna.characters.enemies.bandido import Bandido
+from valeterna.characters.enemies.demonio import Demonio
+from valeterna.characters.enemies.dragon import Dragon
+from valeterna.characters.enemies.espiritu_vengativo import EspirituVengativo
+from valeterna.characters.enemies.gargola import Gargola
+from valeterna.characters.enemies.golem import GolemDePiedra
+from valeterna.characters.enemies.huargo import Huargo
+from valeterna.characters.enemies.nigromante import Nigromante
+from valeterna.characters.stats import apply_mitigation
+from valeterna.combat.battle import ENEMY_PROGRESSION
+from valeterna.items.equipment import Weapon
 
 
 def test_huargo_pack_bite_adds_bonus_damage_when_triggered(player, monkeypatch):
@@ -19,8 +19,8 @@ def test_huargo_pack_bite_adds_bonus_damage_when_triggered(player, monkeypatch):
     # el orden real de las tiradas dentro de Huargo.perform_turn() ->
     # [acierto del golpe principal, crítico del golpe principal, ¿hay mordisco de manada?, acierto del mordisco].
     rolls = iter([0.0, 0.99, 0.0, 0.0])
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: next(rolls))
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: next(rolls))
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
     player.stats.armor = 0
 
     huargo = Huargo()
@@ -35,8 +35,8 @@ def test_huargo_pack_bite_adds_bonus_damage_when_triggered(player, monkeypatch):
 def test_huargo_pack_bite_never_triggers_when_roll_is_high(player, monkeypatch):
     # Secuencia: [acierto del golpe principal, crítico del golpe principal, ¿mordisco de manada?]
     rolls = iter([0.0, 0.99, 0.99])
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: next(rolls))
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: next(rolls))
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
     player.stats.armor = 0
 
     huargo = Huargo()
@@ -48,9 +48,7 @@ def test_huargo_pack_bite_never_triggers_when_roll_is_high(player, monkeypatch):
 
 
 def test_bandido_disarm_zeroes_weapon_bonus_until_it_expires(player, monkeypatch):
-    monkeypatch.setattr(
-        "juego_rol_texto.characters.enemies.bandido.random.random", lambda: 0.0
-    )  # siempre desarma y acierta
+    monkeypatch.setattr("valeterna.characters.enemies.bandido.random.random", lambda: 0.0)  # siempre desarma y acierta
     player.equipped_weapon = Weapon("Espada", "desc", 1, damage=5)
 
     assert player.get_attack_range() == (10, 15)  # base(5-10) + arma(+5)
@@ -71,7 +69,7 @@ def test_bandido_disarm_zeroes_weapon_bonus_until_it_expires(player, monkeypatch
 
 def test_espiritu_vengativo_curse_reduces_armor_until_it_expires(player, monkeypatch):
     monkeypatch.setattr(
-        "juego_rol_texto.characters.enemies.espiritu_vengativo.random.random", lambda: 0.0
+        "valeterna.characters.enemies.espiritu_vengativo.random.random", lambda: 0.0
     )  # siempre maldice y acierta
     player.stats.armor = 6
 
@@ -98,8 +96,8 @@ def test_espiritu_vengativo_curse_never_reduces_armor_below_zero(player):
 
 
 def test_gargola_charges_every_third_turn(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)  # siempre acierta y critea
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta y critea
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
     player.stats.armor = 0
 
     gargola = Gargola()
@@ -118,8 +116,8 @@ def test_gargola_charges_every_third_turn(player, monkeypatch):
 
 
 def test_golem_earthquake_ignores_evasion(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.golem.random.random", lambda: 0.0)  # siempre terremoto
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.enemies.golem.random.random", lambda: 0.0)  # siempre terremoto
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
     player.stats.evasion = 1000  # no debería importar: el terremoto no se puede esquivar
     player.stats.armor = 0
 
@@ -134,8 +132,8 @@ def test_golem_earthquake_ignores_evasion(player, monkeypatch):
 def test_nigromante_dark_bolt_uses_magic_resist_not_armor(player, monkeypatch):
     # Secuencia: [¿invoca esqueleto?, acierto del dardo, crítico del dardo]
     rolls = iter([0.99, 0.0, 0.99])
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: next(rolls))
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: next(rolls))
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
     player.stats.armor = 100  # no debería influir en absoluto en el dardo (es daño mágico)
     player.stats.magic_resist = 10
 
@@ -150,8 +148,8 @@ def test_nigromante_dark_bolt_uses_magic_resist_not_armor(player, monkeypatch):
 def test_nigromante_summon_deals_physical_damage_using_armor(player, monkeypatch):
     # Secuencia: [¿invoca esqueleto?, acierto del esqueleto invocado]
     rolls = iter([0.0, 0.0])
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: next(rolls))
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: next(rolls))
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
     player.stats.armor = 4
     player.stats.magic_resist = 100  # no debería influir: el esqueleto invocado pega físico
 
@@ -164,8 +162,8 @@ def test_nigromante_summon_deals_physical_damage_using_armor(player, monkeypatch
 
 
 def test_angel_caido_self_heals_when_health_is_low(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.angel_caido.random.random", lambda: 0.0)
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.angel_caido.random.randint", lambda a, b: 40)
+    monkeypatch.setattr("valeterna.characters.enemies.angel_caido.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.characters.enemies.angel_caido.random.randint", lambda a, b: 40)
 
     angel = AngelCaido()
     angel.stats.health = int(angel.stats.max_health * 0.4)
@@ -178,8 +176,8 @@ def test_angel_caido_self_heals_when_health_is_low(player, monkeypatch):
 def test_angel_caido_does_not_self_heal_above_threshold(player, monkeypatch):
     # random.random()=0.0 provocaría curación si estuviera por debajo del umbral;
     # como está a vida llena, ese chequeo ni se evalúa (cortocircuito del `and`).
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
 
     angel = AngelCaido()
     angel.stats.health = angel.stats.max_health
@@ -190,7 +188,7 @@ def test_angel_caido_does_not_self_heal_above_threshold(player, monkeypatch):
 
 
 def test_angel_caido_divine_judgment_deals_more_damage_than_normal_strike(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
     player.stats.magic_resist = 0
 
     angel = AngelCaido()
@@ -198,7 +196,7 @@ def test_angel_caido_divine_judgment_deals_more_damage_than_normal_strike(player
 
     # Secuencia: [¿juicio divino? sí, acierto del juicio]
     rolls = iter([0.0, 0.0])
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: next(rolls))
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: next(rolls))
 
     before = player.stats.health
     angel.perform_turn(player)
@@ -209,7 +207,7 @@ def test_angel_caido_divine_judgment_deals_more_damage_than_normal_strike(player
 
 def test_demonio_confusion_reduces_evasion_until_it_expires(player, monkeypatch):
     # 0.25 cae en el tramo de "confusión" (0.2 <= x < 0.4) y también sirve como acierto.
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.demonio.random.random", lambda: 0.25)
+    monkeypatch.setattr("valeterna.characters.enemies.demonio.random.random", lambda: 0.25)
     player.stats.evasion = 8
 
     assert player.get_total_evasion() == 8
@@ -230,8 +228,8 @@ def test_demonio_confusion_reduces_evasion_until_it_expires(player, monkeypatch)
 def test_demonio_summon_deals_magical_damage_using_magic_resist(player, monkeypatch):
     # Secuencia: [¿invoca demonio menor? sí, acierto del demonio menor]
     rolls = iter([0.0, 0.0])
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: next(rolls))
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: next(rolls))
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
     player.stats.armor = 100  # no debería influir: el demonio menor pega mágico
     player.stats.magic_resist = 4
 
@@ -246,8 +244,8 @@ def test_demonio_summon_deals_magical_damage_using_magic_resist(player, monkeypa
 def test_dragon_fire_breath_applies_burn_status(player, monkeypatch):
     # Secuencia: [¿aliento de fuego? sí, acierto, ¿quema? sí]
     rolls = iter([0.0, 0.0, 0.0])
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: next(rolls))
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: next(rolls))
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
 
     dragon = Dragon()
     dragon.perform_turn(player)
@@ -258,8 +256,8 @@ def test_dragon_fire_breath_applies_burn_status(player, monkeypatch):
 def test_dragon_fire_breath_does_not_always_apply_burn(player, monkeypatch):
     # Secuencia: [¿aliento de fuego? sí, acierto, ¿quema? no]
     rolls = iter([0.0, 0.0, 0.99])
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: next(rolls))
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: next(rolls))
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
 
     dragon = Dragon()
     dragon.perform_turn(player)

@@ -1,12 +1,12 @@
 import pytest
 
-from juego_rol_texto.items.equipment import Armor, Weapon
-from juego_rol_texto.items.factory import item_factory
-from juego_rol_texto.items.materials import Material
-from juego_rol_texto.items.potions.antidote_potion import AntidotePotion
-from juego_rol_texto.items.potions.buff_potion import StatBuffPotion
-from juego_rol_texto.items.potions.healing_potion import HealingPotion
-from juego_rol_texto.items.potions.regen_potion import RegenPotion
+from valeterna.items.equipment import Armor, Weapon
+from valeterna.items.factory import item_factory
+from valeterna.items.materials import Material
+from valeterna.items.potions.antidote_potion import AntidotePotion
+from valeterna.items.potions.buff_potion import StatBuffPotion
+from valeterna.items.potions.healing_potion import HealingPotion
+from valeterna.items.potions.regen_potion import RegenPotion
 
 ITEM_SAMPLES = [
     Weapon("Espada", "desc", 5, damage=4),
