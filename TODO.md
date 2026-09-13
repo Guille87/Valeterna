@@ -310,6 +310,47 @@ el cambio a mitigación multiplicativa.
     oscuridad"), usados en `combat.super_effective`/`immune_hit`/
     `resisted_hit`. Si se añaden elementos nuevos que sean femeninos, hay que
     sumarlos a `_FEMININE_ELEMENTS`.
+- [x] **v0.11.0-c: reacciones elementales** (GDD §5, la pareja que quedó
+  pendiente de v0.11.0-b).
+  - **Fusión (rayo + congelado)**: un golpe de rayo contra un objetivo ya
+    congelado le rompe el hielo al instante y hace ×1.5 de daño extra, en vez
+    del intento normal de paralizar. Nueva `is_shatter_hit()` en
+    `combat/elements.py`, comprobada dentro de `Player.take_damage()` y
+    `Enemy.take_damage()` (simétrico en los dos lados). El problema fue que
+    "no paralizar esta vez" no lo decide `take_damage()`, sino una llamada
+    *aparte* justo después (`_try_inflict_weapon_status()` para un arma de
+    rayo del jugador, `Mago._cast_thunder()` para el rayo del enemigo) — así
+    que hizo falta un flag de instancia (`just_shattered`, se resetea en cada
+    `take_damage()`) que esa llamada aparte consulta antes de tirar el
+    paralizado, el mismo patrón que ya usaba `took_physical_hit` para la
+    Represalia del Guerrero. Los 4 elementos físicos ya tenían arma jugable
+    (Garra de Tormenta = rayo de la Gárgola, Cetro de Escarcha = hielo del
+    Nigromante, más las de fuego/veneno), así que la reacción es alcanzable
+    en ambas direcciones jugando normal, no solo desde los hechizos del Mago.
+  - **Combustión (fuego + veneno)**: aplicar quemado mientras ya hay veneno
+    activo (o al revés, o cualquiera de los dos si ya hay combustión) los
+    funde en un único estado `combustion` en vez de dejarlos coexistir, con
+    más daño por turno que cualquiera de los dos por separado (`max_health //
+    6`, frente a `// 16` de quemado y `// 8` de veneno) y duración = el
+    máximo de los dos fusionados. Nueva `resolve_status_reaction()` en
+    `combat/elements.py`, metida dentro de `apply_status()` en `Player` y
+    `Enemy` — al estar centralizada ahí, cada sitio que ya aplicaba quemado o
+    veneno (armas con elemento, los hechizos de fuego/veneno del Mago,
+    Veneno de Contacto del Pícaro, los ataques de fuego de Dragón/Orco/
+    Demonio) se beneficia de la fusión sin tocar ni una línea de esos sitios.
+    `combustion` también reduce el ataque físico a la mitad igual que
+    quemado (`get_attack_damage()`/`get_attack_range()` ahora comprueban los
+    dos nombres) y sigue en `AntidotePotion.CURABLE` — se detectó con un test
+    que fallaba (`test_antidote_removes_debuffs_and_leaves_the_rest`) al
+    fusionar quemado+veneno en un nombre que el antídoto no reconocía. Un
+    enemigo inmune al *estado* veneno (Esqueleto, Gárgola, Espíritu
+    Vengativo) nunca llega a tener las dos mitades a la vez, así que la
+    fusión queda bloqueada de forma natural sin necesitar una inmunidad a
+    `combustion` aparte en ningún enemigo de los 14 actuales.
+  - Mensajes nuevos en `i18n/catalog_es.py` (`combat.enemy_combustion`,
+    `status.combustion`) y color propio (`Fore.LIGHTGREEN_EX`) en
+    `ui/console.py::_STATUS_PATTERNS` para que "combustión" se resalte igual
+    que el resto de estados en cualquier línea que la mencione.
 
 ## Pulido final (casi lo último antes de 1.0)
 

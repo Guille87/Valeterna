@@ -7,7 +7,9 @@ class AntidotePotion(Potion):
     (veneno, quemadura, parálisis, congelación). No toca buffs ni maldiciones
     de stats (desarmado/maldicion/confusion), que tienen su propia lógica."""
 
-    CURABLE = ("veneno", "quemado", "paralizado", "congelado")
+    # "combustion" (v0.11.0-c) es la fusión de quemado+veneno: sigue siendo
+    # curable, ya que ambos ingredientes por separado ya lo eran.
+    CURABLE = ("veneno", "quemado", "paralizado", "congelado", "combustion")
 
     def __init__(self, name: str, description: str, value: int):
         super().__init__(name, description, value, duration=0)

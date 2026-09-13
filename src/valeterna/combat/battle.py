@@ -848,6 +848,10 @@ def _try_inflict_weapon_status(player: "Player", enemy, element: str | None) -> 
     # (igual que no cuenta su bonus de daño ni su elemento).
     if any(e["name"] == "desarmado" for e in player.status_effects):
         return
+    # Reacción "fusión" ya consumida: el rayo acaba de romper el hielo en vez
+    # de intentar paralizar, no lo intentemos también aquí.
+    if getattr(enemy, "just_shattered", False):
+        return
     weapon = player.equipped_weapon
     inflicts = weapon.get_inflicts() if weapon and hasattr(weapon, "get_inflicts") else None
     if not inflicts:

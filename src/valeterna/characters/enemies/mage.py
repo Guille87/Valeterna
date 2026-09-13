@@ -133,7 +133,9 @@ class Mago(Enemy):
             f"{console.crit_suffix(is_crit)}"
         )
 
-        if random.random() < 0.3:
+        # Si el rayo acaba de romper el hielo (reacción "fusión"), ya ha hecho
+        # su trabajo esta vez: no intentamos paralizar encima.
+        if not player.just_shattered and random.random() < 0.3:
             player.apply_status("paralizado", 3)
             console.warning("¡El impacto te deja paralizado!")
 

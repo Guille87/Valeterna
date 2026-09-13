@@ -286,15 +286,28 @@ escuda".
   mitigándose con armadura en vez de resistencia mágica. Ahora
   `is_magical_element(elemento)` también lo activa.
 
-### Reacciones elementales *(planeado — balancear con cuidado)*
+### Reacciones elementales *(implementado en v0.11.0-c)*
 
-- El `fuego` ya derrite `congelado` (se mantiene).
-- `rayo` sobre un objetivo `congelado`: **romper** — quita la congelación, hace
-  daño extra.
-- `fuego` + `veneno` sobre el mismo objetivo: los dos daños/turno se combinan en
-  uno más fuerte durante la duración restante compartida.
+- El `fuego` ya derrite `congelado` (se mantiene, sin daño extra — una
+  interacción aparte, más pequeña que la fusión de abajo).
+- `rayo` sobre un objetivo `congelado`: **fusión** — quita la congelación al
+  instante y hace ×1.5 de daño extra en vez de intentar la parálisis habitual.
+  Simétrico en `Player` y `Enemy`; hoy los 4 elementos físicos tienen arma
+  craftable/soltada (Garra de Tormenta = rayo, Cetro de Escarcha = hielo, más
+  fuego/veneno), así que ambos lados de la reacción son alcanzables jugando
+  normal, no solo desde hechizos enemigos.
+- `quemado` + `veneno` sobre el mismo objetivo (en cualquier orden):
+  **combustión** — se funden en un único estado `combustion` en vez de
+  coexistir, con más daño por turno que cualquiera de los dos por separado
+  (sigue reduciendo el ataque físico a la mitad como la quemadura, sigue
+  siendo curable con el Antídoto), con duración = el máximo de los dos
+  efectos fusionados.
 
-Vigilar que las reacciones no sean la única estrategia viable ni trivialicen las
+Nota de balance: como la fusión consume la propia tirada de parálisis del
+golpe de rayo y la combustión sustituye dos DoT separados por uno solo (no
+suma sus daños sin más), las reacciones cambian el apilamiento bruto por un
+único efecto más fuerte en vez de acumular — deliberadamente moderado para que
+se lean como un buen extra, no la única estrategia viable en las futuras
 peleas de élite/guardián.
 
 ---
@@ -647,8 +660,6 @@ cambiar; el GDD es un documento vivo y cualquier cosa de aquí puede cambiar.
   piezas 1–4 de los élites + guardián, 5–6 de la Arena: la dirección está
   fijada, los nombres / qué 6 huecos / los números no. Minar el catálogo de
   conjuntos de Diablo 3 en busca de ideas.
-- **Reacciones elementales** (§5) — las reglas finales y, sobre todo, que no
-  rompan las peleas de élite/guardián.
 - **Desbloqueo de habilidades** — repartido entre "por nivel" (tempranas) y "al
   derrotar al guardián" (tardías); el reparto exacto sale de la fase de
   presupuesto de poder.

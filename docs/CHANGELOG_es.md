@@ -29,6 +29,13 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
   De paso se arregló un hueco relacionado: si un golpe es físico o mágico lo
   decide ahora el elemento del arma (cualquier clase con un arma sagrado/
   oscuridad/arcano mitiga con resistencia mágica), no solo ser Arcanista.
+- **Reacciones elementales** (GDD §5, v0.11.0-c): "Fusión" — un golpe de rayo
+  contra un objetivo congelado rompe el hielo al instante y hace ×1.5 de daño
+  extra en vez de intentar el paralizado normal, tanto en `Player` como en
+  `Enemy`. "Combustión" — aplicar quemado mientras ya hay veneno activo (o al
+  revés) funde ambos en un único estado `combustion` que hace más daño por
+  turno que cualquiera de los dos por separado, reduce el ataque físico a la
+  mitad igual que la quemadura, y sigue siendo curable con el Antídoto.
 
 ### Cambiado
 

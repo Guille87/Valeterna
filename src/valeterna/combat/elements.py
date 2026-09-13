@@ -36,6 +36,39 @@ _WEAK_DOUBLE = 2.0
 _RESIST_SINGLE = 0.5
 _RESIST_DOUBLE = 0.25
 
+# --- Reacciones elementales (v0.11.0-c) ---------------------------------------
+# "Fusión": un golpe de rayo contra un objetivo congelado rompe el hielo al
+# instante y hace daño extra, en vez del intento normal de paralizar.
+SHATTER_ELEMENT = "rayo"
+SHATTER_FROZEN_STATUS = "congelado"
+SHATTER_DAMAGE_MULT = 1.5
+
+# "Combustión": quemado + veneno (en cualquier orden) se funden en un único
+# estado más dañino que cualquiera de los dos por separado, en vez de coexistir.
+COMBUSTION_STATUS = "combustion"
+_COMBUSTION_PAIR = frozenset({"quemado", "veneno"})
+COMBUSTION_MERGE_NAMES = _COMBUSTION_PAIR | {COMBUSTION_STATUS}
+
+
+def is_shatter_hit(element: str | None, status_names) -> bool:
+    """`True` si un golpe de `element` provoca la reacción "fusión" (rayo
+    contra un objetivo ya congelado)."""
+    return element == SHATTER_ELEMENT and SHATTER_FROZEN_STATUS in status_names
+
+
+def resolve_status_reaction(current_statuses, incoming: str) -> str | None:
+    """Si aplicar el estado `incoming` reacciona con uno ya presente en
+    `current_statuses` (quemado + veneno -> combustión), devuelve el nombre del
+    estado fusionado resultante. `None` si no hay reacción."""
+    if incoming not in _COMBUSTION_PAIR:
+        return None
+    if COMBUSTION_STATUS in current_statuses:
+        return COMBUSTION_STATUS
+    other = next(iter(_COMBUSTION_PAIR - {incoming}))
+    if other in current_statuses:
+        return COMBUSTION_STATUS
+    return None
+
 
 def is_magical_element(element: str | None) -> bool:
     """`True` si el elemento se mitiga con resistencia mágica (sagrado/oscuridad/arcano)."""
