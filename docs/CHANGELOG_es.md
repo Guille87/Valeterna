@@ -9,6 +9,18 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Arreglado
+
+- **El login de admin ya no se queda colgado en consolas sin terminal real**
+  (p. ej. el panel "Run" de PyCharm, a diferencia de su pestaña "Terminal"):
+  `getpass.getpass()` necesita un terminal real para ocultar la entrada, y en
+  algunas consolas de IDE no lanza una excepción cuando no lo tiene — se
+  queda colgado sin más, aceptando Intro como si fuera parte de la
+  contraseña, sin terminar nunca. `_check_admin_password()` ahora comprueba
+  `sys.stdin.isatty()` primero y va directa a la entrada visible cuando no
+  hay terminal real, en vez de depender de una excepción que puede no llegar
+  nunca.
+
 ### Cambiado
 
 - **El proyecto pasa de llamarse "JuegoRolTexto" a Valeterna** (el nombre del
