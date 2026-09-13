@@ -1,8 +1,8 @@
 import pygame
 import pytest
 
-from juego_rol_texto.audio import resource_manager as rm_mod
-from juego_rol_texto.audio.resource_manager import ResourceManager
+from valeterna.audio import resource_manager as rm_mod
+from valeterna.audio.resource_manager import ResourceManager
 
 
 @pytest.fixture
@@ -48,7 +48,7 @@ def test_update_is_silent_when_mixer_is_closed(restore_mixer, capsys):
 def test_music_watchdog_stops_before_join():
     """El hilo de música debe salir de su bucle en cuanto se activa el evento
     de parada, para poder cerrar el mezclador sin carreras al salir del juego."""
-    from juego_rol_texto import app
+    from valeterna import app
 
     app._music_watchdog_stop.clear()
     import threading

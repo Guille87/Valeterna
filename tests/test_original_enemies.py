@@ -9,10 +9,10 @@ números exactos de daño.
 
 import pytest
 
-from juego_rol_texto.characters.enemies.goblin import Goblin
-from juego_rol_texto.characters.enemies.mage import Mago
-from juego_rol_texto.characters.enemies.orc import Orc
-from juego_rol_texto.characters.enemies.skeleton import Skeleton
+from valeterna.characters.enemies.goblin import Goblin
+from valeterna.characters.enemies.mage import Mago
+from valeterna.characters.enemies.orc import Orc
+from valeterna.characters.enemies.skeleton import Skeleton
 
 
 @pytest.fixture

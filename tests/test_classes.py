@@ -1,10 +1,10 @@
 import pytest
 
-from juego_rol_texto.characters.classes import CharClass, get_profile, starting_stats
-from juego_rol_texto.characters.enemies.golem import GolemDePiedra
-from juego_rol_texto.characters.player import Player
-from juego_rol_texto.characters.stats import Stats
-from juego_rol_texto.persistence.save_load import load_game, save_game
+from valeterna.characters.classes import CharClass, get_profile, starting_stats
+from valeterna.characters.enemies.golem import GolemDePiedra
+from valeterna.characters.player import Player
+from valeterna.characters.stats import Stats
+from valeterna.persistence.save_load import load_game, save_game
 
 
 def test_get_profile_falls_back_to_vagabundo_on_unknown():
@@ -85,7 +85,7 @@ def test_arcanista_attack_is_mitigated_by_magic_resist_not_armor(monkeypatch):
     """Un Gólem con 20 de armadura pero 0 de res. mágica encaja casi todo el
     golpe mágico del Arcanista (la armadura no lo frena)."""
     monkeypatch.setattr("random.random", lambda: 0.99)  # sin crítico
-    from juego_rol_texto.combat import battle
+    from valeterna.combat import battle
 
     p = Player("A", starting_stats(CharClass.ARCANISTA), char_class=CharClass.ARCANISTA)
     p.stats.magic_power = 40
@@ -93,7 +93,7 @@ def test_arcanista_attack_is_mitigated_by_magic_resist_not_armor(monkeypatch):
     golem.stats.magic_resist = 0
     hp_before = golem.stats.health
     monkeypatch.setattr(p, "get_attack_damage", lambda: 40)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.resolve_hit", lambda *a, **k: True)
+    monkeypatch.setattr("valeterna.combat.battle.resolve_hit", lambda *a, **k: True)
     battle._execute_turn(p, golem, [])
     # armadura 20 ignorada -> el golpe entra casi entero (>30 de 40)
     assert hp_before - golem.stats.health >= 30

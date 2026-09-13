@@ -2,7 +2,7 @@
 
 import pytest
 
-from juego_rol_texto.characters.enemies.goblin import Goblin
+from valeterna.characters.enemies.goblin import Goblin
 
 
 @pytest.fixture

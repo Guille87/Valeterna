@@ -3,7 +3,7 @@ import io
 
 import pytest
 
-from juego_rol_texto.config import crash_reporting
+from valeterna.config import crash_reporting
 
 
 @pytest.fixture(autouse=True)

@@ -31,7 +31,7 @@ publicará y se dará crédito a quien lo reportó, salvo que prefieras el anoni
 
 ## Modelo de amenazas del auto-update
 
-La build de Windows puede actualizarse sola (`src/juego_rol_texto/updater.py`).
+La build de Windows puede actualizarse sola (`src/valeterna/updater.py`).
 Aplicar una actualización es siempre una acción explícita del jugador; la
 comprobación al arrancar es un GET HTTPS a la API de GitHub y no envía nada.
 

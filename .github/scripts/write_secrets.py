@@ -1,4 +1,4 @@
-"""Genera src/juego_rol_texto/config/secrets.py a partir de los secrets del
+"""Genera src/valeterna/config/secrets.py a partir de los secrets del
 repositorio, para que el .exe del Release lleve el informe de errores a Discord.
 
 Si no hay ningún secreto configurado, no escribe nada y el juego funciona igual
@@ -17,7 +17,7 @@ if not any(values.values()):
     print("Sin secretos configurados; el .exe saldrá sin informe de errores a Discord.")
     raise SystemExit(0)
 
-target = Path("src/juego_rol_texto/config/secrets.py")
+target = Path("src/valeterna/config/secrets.py")
 lines = ['"""Generado por el workflow de release desde los secrets del repositorio."""', ""]
 lines += [f"{key} = {value!r}" for key, value in values.items()]
 target.write_text("\n".join(lines) + "\n", encoding="utf-8")

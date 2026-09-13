@@ -4,10 +4,10 @@ test_new_enemies.py; aquí se cubren los zarpazos y las ramas de fallo)."""
 
 import pytest
 
-from juego_rol_texto.characters.enemies.angel_caido import AngelCaido
-from juego_rol_texto.characters.enemies.bandido import Bandido
-from juego_rol_texto.characters.enemies.demonio import Demonio
-from juego_rol_texto.characters.enemies.dragon import Dragon
+from valeterna.characters.enemies.angel_caido import AngelCaido
+from valeterna.characters.enemies.bandido import Bandido
+from valeterna.characters.enemies.demonio import Demonio
+from valeterna.characters.enemies.dragon import Dragon
 
 
 @pytest.fixture

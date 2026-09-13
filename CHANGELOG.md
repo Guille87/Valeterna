@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Project renamed from "JuegoRolTexto" to Valeterna** (the kingdom name from
+  the GDD) — nobody had downloaded a build yet, so this was a clean cut with no
+  compatibility shim: the Python package (`src/valeterna/`, all imports),
+  distribution/script name (`valeterna`), the PyInstaller spec/executable
+  (`Valeterna.spec` → `Valeterna.exe`), the GitHub repository, and every doc/CI
+  reference now use the new name.
+
 ## [0.10.0] - 2026-09-09
 
 ### Added
@@ -275,12 +284,12 @@ were not formally tracked.
 
 - Initial version: basic console turn-based combat.
 
-[Unreleased]: https://github.com/Guille87/JuegoRolTexto/compare/v0.10.0...HEAD
-[0.10.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.9.0...v0.10.0
-[0.9.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.8.0...v0.9.0
-[0.8.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.7.0...v0.8.0
-[0.7.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.6.0...v0.7.0
-[0.6.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.5.0...v0.6.0
-[0.5.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/Guille87/JuegoRolTexto/releases/tag/v0.3.0
+[Unreleased]: https://github.com/Guille87/Valeterna/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/Guille87/Valeterna/compare/v0.9.0...v0.10.0
+[0.9.0]: https://github.com/Guille87/Valeterna/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/Guille87/Valeterna/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/Guille87/Valeterna/compare/v0.6.0...v0.7.0
+[0.6.0]: https://github.com/Guille87/Valeterna/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/Guille87/Valeterna/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/Guille87/Valeterna/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/Guille87/Valeterna/releases/tag/v0.3.0

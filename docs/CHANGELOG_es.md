@@ -9,6 +9,16 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Cambiado
+
+- **El proyecto pasa de llamarse "JuegoRolTexto" a Valeterna** (el nombre del
+  reino en el GDD) — nadie se había descargado todavía ninguna build, así que ha
+  sido un corte limpio sin capa de compatibilidad: el paquete de Python
+  (`src/valeterna/`, todos los imports), el nombre de distribución/script
+  (`valeterna`), el spec/ejecutable de PyInstaller (`Valeterna.spec` →
+  `Valeterna.exe`), el repositorio de GitHub y toda la documentación/CI usan ya
+  el nombre nuevo.
+
 ## [0.10.0] - 2026-09-09
 
 ### Añadido
@@ -292,12 +302,12 @@ cambios anteriores no se registraron formalmente.
 
 - Versión inicial: combate por turnos básico en consola.
 
-[Unreleased]: https://github.com/Guille87/JuegoRolTexto/compare/v0.10.0...HEAD
-[0.10.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.9.0...v0.10.0
-[0.9.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.8.0...v0.9.0
-[0.8.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.7.0...v0.8.0
-[0.7.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.6.0...v0.7.0
-[0.6.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.5.0...v0.6.0
-[0.5.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/Guille87/JuegoRolTexto/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/Guille87/JuegoRolTexto/releases/tag/v0.3.0
+[Unreleased]: https://github.com/Guille87/Valeterna/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/Guille87/Valeterna/compare/v0.9.0...v0.10.0
+[0.9.0]: https://github.com/Guille87/Valeterna/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/Guille87/Valeterna/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/Guille87/Valeterna/compare/v0.6.0...v0.7.0
+[0.6.0]: https://github.com/Guille87/Valeterna/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/Guille87/Valeterna/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/Guille87/Valeterna/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/Guille87/Valeterna/releases/tag/v0.3.0

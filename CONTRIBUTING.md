@@ -60,7 +60,7 @@ python tools/capture_screenshot.py
 ## Releasing a version
 
 - Bump `version` in `pyproject.toml`, then re-run `pip install -e .` so
-  `juego_rol_texto.__version__` picks up the new value locally (CI and the
+  `valeterna.__version__` picks up the new value locally (CI and the
   release build always install fresh, so they are always correct).
 - Move the relevant entries from *Unreleased* to the new version in
   [`CHANGELOG.md`](CHANGELOG.md) and [`docs/CHANGELOG_es.md`](docs/CHANGELOG_es.md).

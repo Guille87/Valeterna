@@ -27,14 +27,14 @@ saved_games/
 # Distribución / Empaquetado
 dist/
 build/
-# JuegoRolTexto.spec SÍ se versiona (build reproducible en CI).
+# Valeterna.spec SÍ se versiona (build reproducible en CI).
 
 # Variables de entorno
 .env
 
 # Secretos locales (webhook de Discord, hash de admin...). La plantilla
 # config/secrets.example.py SÍ se versiona.
-src/juego_rol_texto/config/secrets.py
+src/valeterna/config/secrets.py
 
 # Archivos específicos de SO
 Thumbs.db

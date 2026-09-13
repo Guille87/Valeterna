@@ -1,11 +1,11 @@
 import contextlib
 import io
 
-from juego_rol_texto.characters.enemies.bandido import Bandido
-from juego_rol_texto.characters.enemies.goblin import Goblin
-from juego_rol_texto.characters.enemies.mage import Mago
-from juego_rol_texto.characters.enemies.troll import Troll
-from juego_rol_texto.combat.battle import (
+from valeterna.characters.enemies.bandido import Bandido
+from valeterna.characters.enemies.goblin import Goblin
+from valeterna.characters.enemies.mage import Mago
+from valeterna.characters.enemies.troll import Troll
+from valeterna.combat.battle import (
     ENEMY_PROGRESSION,
     _attempt_flee,
     _execute_turn,
@@ -13,12 +13,12 @@ from juego_rol_texto.combat.battle import (
     _run_player_turn,
     initiate_battle,
 )
-from juego_rol_texto.items.equipment import Armor, Weapon
+from valeterna.items.equipment import Armor, Weapon
 
 
 def test_victory_unlocks_next_enemy_and_grants_rewards(player, weak_enemy, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *_args, **_kwargs: None)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "1")
 
     unlocked = ["Goblin"]
     defeated = []
@@ -33,12 +33,12 @@ def test_victory_unlocks_next_enemy_and_grants_rewards(player, weak_enemy, monke
 
 
 def test_victory_drop_line_shows_type_and_equipment_stats(player, monkeypatch, capsys):
-    from juego_rol_texto.characters.enemies.goblin import Goblin
-    from juego_rol_texto.combat.battle import _handle_victory
-    from juego_rol_texto.items.equipment import Armor
-    from juego_rol_texto.items.potions.healing_potion import HealingPotion
+    from valeterna.characters.enemies.goblin import Goblin
+    from valeterna.combat.battle import _handle_victory
+    from valeterna.items.equipment import Armor
+    from valeterna.items.potions.healing_potion import HealingPotion
 
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
     g = Goblin()
     monkeypatch.setattr(
         g,
@@ -60,10 +60,10 @@ def test_victory_drop_line_shows_type_and_equipment_stats(player, monkeypatch, c
 
 
 def test_battle_announces_who_has_the_initiative(player, weak_enemy, monkeypatch, capsys):
-    from juego_rol_texto.combat.battle import initiate_battle
+    from valeterna.combat.battle import initiate_battle
 
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a, **k: None)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda *a, **k: "1")
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: "1")
     weak_enemy.stats.speed = 999  # el enemigo es claramente más rápido
 
     initiate_battle(player, weak_enemy, ["Goblin"], ["Goblin"])
@@ -72,20 +72,20 @@ def test_battle_announces_who_has_the_initiative(player, weak_enemy, monkeypatch
 
 
 def test_enemy_turn_pauses_at_the_end_to_read_the_result(player, monkeypatch):
-    from juego_rol_texto.characters.enemies.goblin import Goblin
+    from valeterna.characters.enemies.goblin import Goblin
 
     sleeps = []
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda s: sleeps.append(s))
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda s: sleeps.append(s))
     _run_enemy_turn(player, Goblin(), ["Goblin"], turbo=False, turn_no=2)
     assert len(sleeps) >= 2  # una antes de actuar y otra después de las barras
 
 
 def test_player_turn_header_includes_the_class(player, weak_enemy, monkeypatch):
-    from juego_rol_texto.characters.classes import CharClass, starting_stats
-    from juego_rol_texto.characters.player import Player
+    from valeterna.characters.classes import CharClass, starting_stats
+    from valeterna.characters.player import Player
 
     arc = Player("Mag", starting_stats(CharClass.ARCANISTA), char_class=CharClass.ARCANISTA)
-    monkeypatch.setattr("juego_rol_texto.combat.battle._player_menu", lambda *a, **k: "atacar")
+    monkeypatch.setattr("valeterna.combat.battle._player_menu", lambda *a, **k: "atacar")
     import contextlib
     import io
 
@@ -99,9 +99,9 @@ def test_turbo_enemy_turn_still_shows_the_status_bars():
     import contextlib
     import io
 
-    from juego_rol_texto.characters.enemies.goblin import Goblin
-    from juego_rol_texto.characters.player import Player
-    from juego_rol_texto.characters.stats import Stats
+    from valeterna.characters.enemies.goblin import Goblin
+    from valeterna.characters.player import Player
+    from valeterna.characters.stats import Stats
 
     p = Player("P", Stats(100, 100, 5, 10, 2))
     buf = io.StringIO()
@@ -113,10 +113,10 @@ def test_turbo_enemy_turn_still_shows_the_status_bars():
 
 
 def test_victory_increments_kill_count_on_repeat_wins(player, monkeypatch):
-    from juego_rol_texto.characters.enemies.goblin import Goblin
+    from valeterna.characters.enemies.goblin import Goblin
 
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *_args, **_kwargs: None)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "1")
 
     unlocked = ["Goblin"]
     defeated = ["Goblin"]  # ya derrotado antes: la próxima victoria debe sumar, no reiniciar
@@ -135,7 +135,7 @@ def test_victory_increments_kill_count_on_repeat_wins(player, monkeypatch):
 
 
 def test_defeat_penalizes_gold_and_fully_heals_player(player, monkeypatch):
-    from juego_rol_texto.characters.enemies.orc import Orc
+    from valeterna.characters.enemies.orc import Orc
 
     strong_enemy = Orc()
     strong_enemy.stats.min_atk = strong_enemy.stats.max_atk = 500  # garantiza que mate al jugador en 1 golpe
@@ -143,8 +143,8 @@ def test_defeat_penalizes_gold_and_fully_heals_player(player, monkeypatch):
     player.stats.health = player.stats.max_health
     player.inventory.gold = 90
 
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *_args, **_kwargs: None)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "1")
 
     unlocked = ["Goblin", "Orco"]
     defeated = ["Goblin"]
@@ -156,7 +156,7 @@ def test_defeat_penalizes_gold_and_fully_heals_player(player, monkeypatch):
 
 
 def _weak_goblin():
-    from juego_rol_texto.characters.enemies.goblin import Goblin
+    from valeterna.characters.enemies.goblin import Goblin
 
     g = Goblin()
     g.stats.health = g.stats.max_health = 1
@@ -165,8 +165,8 @@ def _weak_goblin():
 
 
 def test_initiate_battle_returns_victory(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a, **k: None)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda *a, **k: "1")
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: "1")
 
     outcome = initiate_battle(player, _weak_goblin(), ["Goblin"], ["Goblin"])
 
@@ -174,7 +174,7 @@ def test_initiate_battle_returns_victory(player, monkeypatch):
 
 
 def test_ask_chain_count_parsing(monkeypatch):
-    from juego_rol_texto.combat import battle
+    from valeterna.combat import battle
 
     def answer(value):
         monkeypatch.setattr(battle.console, "ask", lambda *a, **k: value)
@@ -189,12 +189,12 @@ def test_ask_chain_count_parsing(monkeypatch):
 def test_chain_runs_several_fights_when_player_picks_auto(player, monkeypatch):
     """El jugador activa la auto-batalla y pide 3 peleas: la pelea en curso
     cuenta como la 1, y se encadenan 2 más contra enemigos nuevos."""
-    from juego_rol_texto.characters.enemies.goblin import Goblin
+    from valeterna.characters.enemies.goblin import Goblin
 
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
     # Turno 1: "6" (auto) -> "3" peleas. A partir de ahí auto y "" para las pausas.
     answers = iter(["6", "3"])
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda *a, **k: next(answers, ""))
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: next(answers, ""))
 
     first = Goblin()
     first.stats.health = first.stats.max_health = 40  # aguanta a que el jugador elija auto
@@ -207,11 +207,11 @@ def test_chain_runs_several_fights_when_player_picks_auto(player, monkeypatch):
 
 
 def test_chain_prints_a_loot_summary_at_the_end(player, monkeypatch, capsys):
-    from juego_rol_texto.characters.enemies.goblin import Goblin
+    from valeterna.characters.enemies.goblin import Goblin
 
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
     answers = iter(["6", "2"])
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda *a, **k: next(answers, ""))
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: next(answers, ""))
 
     first = Goblin()
     first.stats.health = first.stats.max_health = 30
@@ -228,10 +228,10 @@ def test_chain_prints_a_loot_summary_at_the_end(player, monkeypatch, capsys):
 
 
 def test_chain_loot_summary_labels_each_item_by_type(player, capsys):
-    from juego_rol_texto.combat.battle import _print_chain_loot
-    from juego_rol_texto.items.equipment import Armor, Weapon
-    from juego_rol_texto.items.materials import Material
-    from juego_rol_texto.items.potions.healing_potion import HealingPotion
+    from valeterna.combat.battle import _print_chain_loot
+    from valeterna.items.equipment import Armor, Weapon
+    from valeterna.items.materials import Material
+    from valeterna.items.potions.healing_potion import HealingPotion
 
     start = {"gold": 0, "xp": 0, "level": 1, "items": {}}
     player.inventory.gold = 94
@@ -253,8 +253,8 @@ def test_chain_loot_summary_labels_each_item_by_type(player, capsys):
 
 
 def test_single_fight_has_no_chain_loot_summary(player, weak_enemy, monkeypatch, capsys):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a, **k: None)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda *a, **k: "1")
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: "1")
 
     initiate_battle(player, weak_enemy, ["Goblin"], ["Goblin"], enemy_factory=lambda: weak_enemy)
 
@@ -264,11 +264,11 @@ def test_single_fight_has_no_chain_loot_summary(player, weak_enemy, monkeypatch,
 def test_chain_mode_can_switch_from_auto_to_turbo_mid_chain(player, weak_enemy, monkeypatch):
     """Tras pulsar 'Q' y volver a elegir en el menú, el modo de la cadena se
     actualiza (auto -> turbo) para las peleas que quedan."""
-    from juego_rol_texto.combat import battle
+    from valeterna.combat import battle
 
     chain = {"factory": lambda: weak_enemy, "chosen": True, "count": 3, "mode": "auto"}
-    monkeypatch.setattr("juego_rol_texto.combat.battle._player_menu", lambda *a, **k: "turbo")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.combat.battle._player_menu", lambda *a, **k: "turbo")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)
 
     battle._run_player_turn(player, weak_enemy, ["Goblin"], is_auto=False, chain=chain)
 
@@ -278,12 +278,12 @@ def test_chain_mode_can_switch_from_auto_to_turbo_mid_chain(player, weak_enemy, 
 def test_chain_stops_on_defeat(player, monkeypatch):
     """Auto-batalla de 5 peleas: gana la 1ª (goblin flojo) y cae en la 2ª contra
     un enemigo que pega letal. La cadena se detiene con desenlace 'defeat'."""
-    from juego_rol_texto.characters.enemies.goblin import Goblin
-    from juego_rol_texto.characters.enemies.orc import Orc
+    from valeterna.characters.enemies.goblin import Goblin
+    from valeterna.characters.enemies.orc import Orc
 
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
     answers = iter(["6", "5"])
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda *a, **k: next(answers, ""))
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: next(answers, ""))
 
     first = Goblin()
     first.stats.health = first.stats.max_health = 1
@@ -346,7 +346,7 @@ def test_enemy_default_on_turn_end_applies_regen_when_stat_is_set():
 def test_troll_regen_is_anchored_to_its_regen_stat(monkeypatch):
     # random.randint(a, b) real (sin mockear) para comprobar el rango exacto usado
     seen_ranges = []
-    import juego_rol_texto.characters.enemies.troll as troll_module
+    import valeterna.characters.enemies.troll as troll_module
 
     original_randint = troll_module.random.randint
     monkeypatch.setattr(
@@ -399,9 +399,9 @@ def test_enemy_take_damage_magic_penetration_reduces_magic_resist_mitigation():
 
 
 def test_execute_turn_applies_elemental_bonus_against_weak_enemy(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
 
     player.equipped_weapon = Weapon("Espada Flamígera", "desc", 15, damage=0, element="fuego")
 
@@ -417,10 +417,10 @@ def test_execute_turn_applies_elemental_bonus_against_weak_enemy(player, monkeyp
 
 
 def test_elemental_weapon_can_inflict_its_status_on_the_enemy(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)  # acierta
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.0)  # el estado prende
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # acierta
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)  # el estado prende
 
     player.equipped_weapon = Weapon("Colmillo Venenoso", "desc", 14, damage=0, element="veneno")
     goblin = Goblin()
@@ -431,10 +431,10 @@ def test_elemental_weapon_can_inflict_its_status_on_the_enemy(player, monkeypatc
 
 
 def test_disarmed_player_weapon_applies_no_element_or_status(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)
 
     player.equipped_weapon = Weapon("Colmillo Venenoso", "desc", 14, damage=0, element="veneno")
     player.apply_status("desarmado", 2)
@@ -450,11 +450,11 @@ def test_disarmed_player_weapon_applies_no_element_or_status(player, monkeypatch
 
 
 def test_bandit_does_not_disarm_an_already_disarmed_player(player, monkeypatch):
-    from juego_rol_texto.characters.enemies.bandido import Bandido
+    from valeterna.characters.enemies.bandido import Bandido
 
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.bandido.random.random", lambda: 0.0)  # querría desarmar
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)  # acierta
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.bandido.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.enemies.bandido.random.random", lambda: 0.0)  # querría desarmar
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # acierta
+    monkeypatch.setattr("valeterna.characters.enemies.bandido.random.randint", lambda a, b: 10)
 
     bandido = Bandido()
     player.apply_status("desarmado", 2)
@@ -466,7 +466,7 @@ def test_bandit_does_not_disarm_an_already_disarmed_player(player, monkeypatch):
 
 
 def test_immobilized_player_still_gets_the_menu_and_can_use_an_item(player, weak_enemy, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "2")  # Objetos
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "2")  # Objetos
     monkeypatch.setattr(player.inventory, "equip_menu", lambda *a, **k: True)  # "usó un objeto"
     monkeypatch.setattr("random.random", lambda: 0.0)  # parálisis segura
 
@@ -478,7 +478,7 @@ def test_immobilized_player_still_gets_the_menu_and_can_use_an_item(player, weak
 
 
 def test_golem_is_immune_to_lightning_and_weak_to_ice():
-    from juego_rol_texto.characters.enemies.golem import GolemDePiedra
+    from valeterna.characters.enemies.golem import GolemDePiedra
 
     golem = GolemDePiedra()
     golem.stats.armor = 0
@@ -488,7 +488,7 @@ def test_golem_is_immune_to_lightning_and_weak_to_ice():
 
 
 def test_frozen_enemy_loses_the_turn_without_the_turn_header(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a: None)
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a: None)
     monkeypatch.setattr("random.random", lambda: 0.9)  # no se descongela
 
     goblin = Goblin()
@@ -504,9 +504,9 @@ def test_frozen_enemy_loses_the_turn_without_the_turn_header(player, monkeypatch
 
 
 def test_mage_spells_print_the_damage_dealt(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)  # acierta
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.mage.random.random", lambda: 0.99)  # sin crit/estado
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.mage.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # acierta
+    monkeypatch.setattr("valeterna.characters.enemies.mage.random.random", lambda: 0.99)  # sin crit/estado
+    monkeypatch.setattr("valeterna.characters.enemies.mage.random.randint", lambda a, b: 10)
 
     mago = Mago()
     for spell in (mago._cast_fireball, mago._cast_thunder, mago._cast_poison, mago._cast_blizzard):
@@ -517,10 +517,10 @@ def test_mage_spells_print_the_damage_dealt(player, monkeypatch):
 
 
 def test_status_weapon_does_nothing_to_an_element_immune_enemy(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)
 
     player.equipped_weapon = Weapon("Colmillo Venenoso", "desc", 14, damage=0, element="veneno")
     goblin = Goblin()
@@ -535,9 +535,9 @@ def test_status_weapon_does_nothing_to_an_element_immune_enemy(player, monkeypat
 
 
 def test_execute_turn_applies_elemental_bonus_for_newer_elements(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
 
     player.equipped_weapon = Weapon("Colmillo Venenoso", "desc", 14, damage=0, element="veneno")
 
@@ -553,10 +553,10 @@ def test_execute_turn_applies_elemental_bonus_for_newer_elements(player, monkeyp
 
 
 def test_execute_turn_applies_crit_multiplier(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.0)  # siempre crítico
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)  # siempre crítico
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
 
     player.equipped_armor["guantes"] = Armor("Guantes", "desc", 1, slot="guantes", crit_chance=1.0)
     player.stats.armor = 0
@@ -573,12 +573,12 @@ def test_execute_turn_applies_crit_multiplier(player, monkeypatch):
 
 
 def test_execute_turn_uses_attacker_armor_penetration(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
     # random.random() a 0.0 garantiza acierto (resolve_hit); como el jugador
     # tiene crit_chance=0.0 por defecto, is_crit sigue siendo False (0.0 < 0.0 es falso).
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)
 
     player.stats.armor_penetration = 20
 
@@ -596,9 +596,9 @@ def test_execute_turn_uses_attacker_armor_penetration(player, monkeypatch):
 
 
 def test_execute_turn_uses_element_from_bracers_when_no_elemental_weapon(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
 
     player.equipped_weapon = Weapon("Espada de Hierro", "desc", 10, damage=0)  # sin elemento
     player.equipped_armor["brazales"] = Armor("Brazales Arcanos", "desc", 1, slot="brazales", element="fuego")
@@ -616,9 +616,9 @@ def test_execute_turn_uses_element_from_bracers_when_no_elemental_weapon(player,
 
 
 def test_execute_turn_deals_no_damage_on_a_miss(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.randint", lambda a, b: 10)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.choice", lambda seq: "hit")
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.99)  # siempre falla
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.99)  # siempre falla
 
     goblin = Goblin()
     before = goblin.stats.health
@@ -628,7 +628,7 @@ def test_execute_turn_deals_no_damage_on_a_miss(player, monkeypatch):
 
 
 def test_enemy_default_perform_turn_deals_no_damage_on_a_miss(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.99)  # siempre falla
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.99)  # siempre falla
     # Con acierto base 100%, solo la evasión hace que un ataque pueda fallar.
     player.stats.evasion = 50
 
@@ -640,8 +640,8 @@ def test_enemy_default_perform_turn_deals_no_damage_on_a_miss(player, monkeypatc
 
 
 def test_enemy_default_perform_turn_applies_crit_multiplier(player, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.characters.stats.random.random", lambda: 0.0)  # siempre acierta y critea
-    monkeypatch.setattr("juego_rol_texto.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta y critea
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
     player.stats.armor = 0
 
     goblin = Goblin()
@@ -662,22 +662,22 @@ def test_attempt_flee_is_always_successful_when_player_is_at_least_as_fast(playe
 def test_attempt_flee_chance_drops_but_never_reaches_zero_when_enemy_is_faster(player, monkeypatch):
     mago = Mago()  # speed 15, jugador speed 10 -> jugador es más lento -> 10/15 = 0.6667
 
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.66)
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.66)
     assert _attempt_flee(player, mago) is True
 
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.67)
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.67)
     assert _attempt_flee(player, mago) is False
 
     # Nunca debería ser exactamente 0: random.random() siempre está en [0, 1),
     # así que con un flee_chance positivo (aunque pequeño) sigue siendo posible.
-    monkeypatch.setattr("juego_rol_texto.combat.battle.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)
     assert _attempt_flee(player, mago) is True
 
 
 def test_fleeing_does_not_heal_damage_carried_over_from_before_the_battle(player, weak_enemy, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *_args, **_kwargs: None)
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "4")  # huir
-    monkeypatch.setattr("juego_rol_texto.combat.battle._attempt_flee", lambda *a, **k: True)
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "4")  # huir
+    monkeypatch.setattr("valeterna.combat.battle._attempt_flee", lambda *a, **k: True)
 
     player.stats.max_health = 100
     player.stats.health = 40  # ya venía dañado de una pelea anterior (missing=60)
@@ -692,8 +692,8 @@ def test_fleeing_does_not_heal_damage_carried_over_from_before_the_battle(player
 def test_run_player_turn_failed_flee_consumes_turn_without_attacking(player, weak_enemy, monkeypatch):
     weak_enemy.stats.max_health = 50
     weak_enemy.stats.health = 50
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "4")
-    monkeypatch.setattr("juego_rol_texto.combat.battle._attempt_flee", lambda *a, **k: False)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "4")
+    monkeypatch.setattr("valeterna.combat.battle._attempt_flee", lambda *a, **k: False)
 
     signal, is_auto = _run_player_turn(player, weak_enemy, defeated_enemies=[], is_auto=False)
 
@@ -703,8 +703,8 @@ def test_run_player_turn_failed_flee_consumes_turn_without_attacking(player, wea
 
 
 def test_run_player_turn_successful_flee_returns_huir_signal(player, weak_enemy, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "4")
-    monkeypatch.setattr("juego_rol_texto.combat.battle._attempt_flee", lambda *a, **k: True)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "4")
+    monkeypatch.setattr("valeterna.combat.battle._attempt_flee", lambda *a, **k: True)
 
     signal, is_auto = _run_player_turn(player, weak_enemy, defeated_enemies=[], is_auto=False)
 
@@ -726,7 +726,7 @@ def test_defending_halves_incoming_damage(player):
 def test_run_player_turn_defender_sets_the_stance_and_consumes_the_turn(player, weak_enemy, monkeypatch):
     weak_enemy.stats.max_health = 50
     weak_enemy.stats.health = 50
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "5")  # Defender
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "5")  # Defender
 
     signal, _ = _run_player_turn(player, weak_enemy, defeated_enemies=[], is_auto=False)
 
@@ -736,7 +736,7 @@ def test_run_player_turn_defender_sets_the_stance_and_consumes_the_turn(player, 
 
 
 def test_defending_is_cleared_when_the_players_next_turn_begins(player, weak_enemy, monkeypatch):
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "1")  # atacar
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "1")  # atacar
     player.defending = True
 
     _run_player_turn(player, weak_enemy, defeated_enemies=[], is_auto=False)
@@ -745,19 +745,19 @@ def test_defending_is_cleared_when_the_players_next_turn_begins(player, weak_ene
 
 
 def test_turbo_option_is_offered_only_for_defeated_enemies(player, weak_enemy, monkeypatch):
-    from juego_rol_texto.combat.battle import _player_menu
+    from valeterna.combat.battle import _player_menu
 
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "7")
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "7")
     assert _player_menu(player, weak_enemy, defeated_enemies=[weak_enemy.name]) == "turbo"
 
 
 def test_turbo_auto_battle_runs_without_any_sleep(player, monkeypatch):
-    from juego_rol_texto.characters.enemies.goblin import Goblin
+    from valeterna.characters.enemies.goblin import Goblin
 
     slept = []
-    monkeypatch.setattr("juego_rol_texto.combat.battle.time.sleep", lambda *a, **k: slept.append(a))
-    monkeypatch.setattr("juego_rol_texto.combat.battle.console.ask", lambda prompt: "7")  # Auto turbo
-    monkeypatch.setattr("juego_rol_texto.combat.battle.check_for_interrupt", lambda: False)
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: slept.append(a))
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "7")  # Auto turbo
+    monkeypatch.setattr("valeterna.combat.battle.check_for_interrupt", lambda: False)
 
     enemy = Goblin()
     enemy.stats.min_atk = enemy.stats.max_atk = 1

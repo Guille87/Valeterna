@@ -1,8 +1,8 @@
-from juego_rol_texto.items.equipment import Armor, Weapon
-from juego_rol_texto.items.materials import Material
-from juego_rol_texto.items.potions.buff_potion import StatBuffPotion
-from juego_rol_texto.items.potions.healing_potion import HealingPotion
-from juego_rol_texto.items.potions.regen_potion import RegenPotion
+from valeterna.items.equipment import Armor, Weapon
+from valeterna.items.materials import Material
+from valeterna.items.potions.buff_potion import StatBuffPotion
+from valeterna.items.potions.healing_potion import HealingPotion
+from valeterna.items.potions.regen_potion import RegenPotion
 
 
 def test_add_item_stacks_consumables(player):
@@ -27,7 +27,7 @@ def test_equip_menu_equips_selected_weapon(player, monkeypatch):
     weapon = Weapon("Espada Goblin", "desc", value=5, damage=4)
     player.inventory.add_item(weapon)
 
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "1")
     used = player.inventory.equip_menu(Weapon)
 
     assert used is True
@@ -37,7 +37,7 @@ def test_equip_menu_equips_selected_weapon(player, monkeypatch):
 def test_equip_menu_rejects_wrong_category(player, monkeypatch):
     player.inventory.add_item(Armor("Casco", "desc", value=8, slot="casco", defense=5))
 
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "1")
     used = player.inventory.equip_menu(Weapon)
 
     assert used is False
@@ -48,7 +48,7 @@ def test_equip_menu_with_filter_slot_equips_into_correct_slot(player, monkeypatc
     casco = Armor("Casco de Hueso", "desc", value=8, slot="casco", max_health=15)
     player.inventory.add_item(casco)
 
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "1")
     used = player.inventory.equip_menu(Armor, filter_slot="casco")
 
     assert used is True
@@ -59,7 +59,7 @@ def test_equip_menu_with_filter_slot_rejects_item_from_other_slot(player, monkey
     guantes = Armor("Guantes", "desc", value=8, slot="guantes")
     player.inventory.add_item(guantes)
 
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "1")
     used = player.inventory.equip_menu(Armor, filter_slot="casco")  # el jugador solo tiene guantes
 
     assert used is False
@@ -70,7 +70,7 @@ def test_sell_item_blocks_any_equipped_armor_slot(player, monkeypatch):
     peto = Armor("Peto", "desc", value=8, slot="peto")
     player.inventory.add_item(peto)
 
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "1")
     player.inventory.equip_menu(Armor, filter_slot="peto")
 
     assert player.inventory.sell_item(peto) is None
@@ -85,10 +85,10 @@ def test_can_equip_two_different_rings_at_once(player, monkeypatch):
 
     # Ambos anillos siguen apareciendo en el listado tras el primer equipar (no se consumen),
     # así que elegimos por posición: "1" -> Anillo de Fuerza, "2" -> Anillo de Precisión.
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "1")
     used1 = player.inventory.equip_menu(Armor, filter_slot="anillo1")
 
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "2")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "2")
     used2 = player.inventory.equip_menu(Armor, filter_slot="anillo2")
 
     assert used1 is True
@@ -101,7 +101,7 @@ def test_ring_rejected_in_non_ring_slot(player, monkeypatch):
     anillo = Armor("Anillo de Fuerza", "desc", value=16, slot="anillo", damage=3)
     player.inventory.add_item(anillo)
 
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "1")
     used = player.inventory.equip_menu(Armor, filter_slot="casco")
 
     assert used is False
@@ -112,7 +112,7 @@ def test_non_ring_item_rejected_in_ring_slot(player, monkeypatch):
     casco = Armor("Casco", "desc", value=8, slot="casco")
     player.inventory.add_item(casco)
 
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "1")
     used = player.inventory.equip_menu(Armor, filter_slot="anillo1")
 
     assert used is False
@@ -160,7 +160,7 @@ def test_using_healing_potion_heals_and_consumes_one(player, monkeypatch):
     player.inventory.add_item(HealingPotion("Poción de Salud", "desc", 2, 20))
     player.stats.health = 50
 
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "1")
     used = player.inventory.equip_menu()  # filter_class=None -> inventario general
 
     assert used is True
@@ -173,7 +173,7 @@ def test_using_stat_buff_potion_in_combat_consumes_one_from_stack(player, monkey
     player.in_combat = True
     player.inventory.add_item(StatBuffPotion("Poción de Fuerza", "desc", 5, "max_atk", 5, 3))
 
-    monkeypatch.setattr("juego_rol_texto.inventory.inventory.console.ask", lambda prompt: "1")
+    monkeypatch.setattr("valeterna.inventory.inventory.console.ask", lambda prompt: "1")
     used = player.inventory.equip_menu()
 
     assert used is True

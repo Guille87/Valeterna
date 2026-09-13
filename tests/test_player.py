@@ -1,6 +1,6 @@
-from juego_rol_texto.characters.player import Player
-from juego_rol_texto.characters.stats import Stats
-from juego_rol_texto.items.equipment import Armor, Weapon
+from valeterna.characters.player import Player
+from valeterna.characters.stats import Stats
+from valeterna.items.equipment import Armor, Weapon
 
 
 # Curva de reducción de daño: dealt = round(amount * 20 / (mitigación + 20)).
@@ -264,18 +264,18 @@ def test_on_turn_start_applies_poison_damage(player):
 
 def test_on_turn_start_paralysis_can_block_action(player, monkeypatch):
     player.apply_status("paralizado", duration=2)
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.random", lambda: 0.1)
+    monkeypatch.setattr("valeterna.characters.player.random.random", lambda: 0.1)
     can_act = player.on_turn_start()
     assert can_act is False
 
 
 def test_on_turn_start_frozen_blocks_action_and_can_thaw(player, monkeypatch):
     player.apply_status("congelado", duration=2)
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.random", lambda: 0.9)
+    monkeypatch.setattr("valeterna.characters.player.random.random", lambda: 0.9)
     assert player.on_turn_start() is False
 
     player.apply_status("congelado", duration=2)
-    monkeypatch.setattr("juego_rol_texto.characters.player.random.random", lambda: 0.01)
+    monkeypatch.setattr("valeterna.characters.player.random.random", lambda: 0.01)
     assert player.on_turn_start() is True
     assert not any(e["name"] == "congelado" for e in player.status_effects)
 

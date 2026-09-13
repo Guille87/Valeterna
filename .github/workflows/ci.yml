@@ -50,7 +50,7 @@ jobs:
         run: ruff format --check .
 
       - name: Tests + cobertura
-        run: pytest --cov=juego_rol_texto --cov-report=xml --cov-report=term-missing
+        run: pytest --cov=valeterna --cov-report=xml --cov-report=term-missing
 
   types:
     runs-on: ubuntu-latest
@@ -108,7 +108,7 @@ jobs:
           pip install -e ".[dev]"
 
       - name: Medir cobertura
-        run: pytest --cov=juego_rol_texto --cov-report=xml -q
+        run: pytest --cov=valeterna --cov-report=xml -q
 
       - name: Publicar el badge en la rama 'badges'
         shell: bash

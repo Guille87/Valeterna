@@ -1,4 +1,4 @@
-from juego_rol_texto.config import secret_store
+from valeterna.config import secret_store
 
 
 class _FakeSecrets:

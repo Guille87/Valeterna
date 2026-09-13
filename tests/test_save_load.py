@@ -1,12 +1,12 @@
 import base64
 import json
 
-from juego_rol_texto.characters.player import Player
-from juego_rol_texto.characters.stats import Stats
-from juego_rol_texto.items.equipment import Armor, Weapon
-from juego_rol_texto.items.potions.healing_potion import HealingPotion
-from juego_rol_texto.persistence import save_load
-from juego_rol_texto.persistence.save_load import load_game, save_exists, save_game
+from valeterna.characters.player import Player
+from valeterna.characters.stats import Stats
+from valeterna.items.equipment import Armor, Weapon
+from valeterna.items.potions.healing_potion import HealingPotion
+from valeterna.persistence import save_load
+from valeterna.persistence.save_load import load_game, save_exists, save_game
 
 
 def _build_player(name="Guille"):

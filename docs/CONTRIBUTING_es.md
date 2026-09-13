@@ -61,7 +61,7 @@ python tools/capture_screenshot.py
 ## Publicar una versión
 
 - Sube `version` en `pyproject.toml` y vuelve a ejecutar `pip install -e .` para
-  que `juego_rol_texto.__version__` coja el valor nuevo en local (la CI y la
+  que `valeterna.__version__` coja el valor nuevo en local (la CI y la
   build de release siempre instalan desde cero, así que ahí siempre es correcto).
 - Mueve lo que corresponda de *Unreleased* a la nueva versión en
   [`CHANGELOG.md`](../CHANGELOG.md) y [`docs/CHANGELOG_es.md`](CHANGELOG_es.md).

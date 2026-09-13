@@ -6,9 +6,9 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")  # pygame.init() sin pantalla 
 import pygame
 import pytest
 
-from juego_rol_texto.characters.enemies.goblin import Goblin
-from juego_rol_texto.characters.player import Player
-from juego_rol_texto.characters.stats import Stats
+from valeterna.characters.enemies.goblin import Goblin
+from valeterna.characters.player import Player
+from valeterna.characters.stats import Stats
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -22,7 +22,7 @@ def _headless_audio():
 @pytest.fixture
 def tmp_save_dir(tmp_path, monkeypatch):
     """Redirige el guardado de partidas a un directorio temporal."""
-    from juego_rol_texto.persistence import save_load
+    from valeterna.persistence import save_load
 
     monkeypatch.setattr(save_load, "SAVE_DIR", tmp_path)
     return tmp_path
