@@ -50,6 +50,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   automatically for saves from before this change (the current zone is
   inferred from combat progress). Purely groundwork — nothing in `game_loop`
   uses zones yet; that's the next sub-phase.
+- **Zone exploration loop** (GDD §8.1, v0.12.0-b): the old flat `game_loop`
+  menu is gone, replaced by a new per-zone menu (`ui/exploration.py`) —
+  **Explorar** (a weighted roll: combat against a random unlocked enemy from
+  the current zone, a small gold discovery, or nothing), **Ir a...** (lists
+  the zone's sub-locations; a stub for now, no NPCs until v0.13.0), **Viajar**
+  (fast-travel to any visited zone, plus "frontera" to the next zone once
+  reachable), and **Personaje** (everything else that used to be the whole
+  menu: inventory, shop, forge, stats, skills, bestiary, equip, options,
+  save). Picking a specific enemy to fight by name is gone — combat now only
+  happens through Explorar's roll.
 
 ### Changed
 

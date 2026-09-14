@@ -111,12 +111,20 @@ Los Yermos ── Bosque de los Susurros ── Ciénaga de los Ahogados ── 
    Torre de los Arcanos / Necrópolis ── Ciudadela en Ruinas ── El Corazón de la Brecha
 ```
 
-**Viajar** vs **viaje rápido**: llegas a una zona *nueva* andando desde su
-vecina (`Viajar`), solo cuando la puerta está abierta — esto es la "frontera".
-Una vez visitada, la zona entra en la lista de **viaje rápido** (desde el hub o
-un cartel): instantáneo, gratis, para retroceder a comprar / craftear / entregar
-misiones / farmear. Los dos son gratis de momento; se podría añadir un encuentro
-de camino o un coste si el backtracking se siente sin fricción.
+**Viajar** vs **viaje rápido** *(implementado en v0.12.0-b)*: llegas a una zona
+*nueva* andando desde su vecina (`Viajar`), solo cuando la puerta está abierta
+— esto es la "frontera" (`world.map.is_zone_reachable()`: el primer enemigo
+backbone de la zona ya tiene que estar desbloqueado, o la zona no tiene roster
+todavía y por tanto está siempre abierta). Una vez visitada, la zona entra en
+la lista de **viaje rápido** (desde cualquier sitio, no solo el hub o un
+cartel todavía — esa restricción es pulido futuro): instantáneo, gratis, para
+retroceder a comprar / craftear / entregar misiones / farmear. Los dos son
+gratis de momento; se podría añadir un encuentro de camino o un coste si el
+backtracking se siente sin fricción. Todavía no hay "puertas" de verdad
+(guardianes) — la alcanzabilidad se infiere de la misma cadena de
+desbloqueo de enemigos que ya usa el combate, según
+`world.map.default_zone_for_progress()` (migración de guardado) e
+`is_zone_reachable()` (comprobación en vivo).
 
 | Zona | Tema | Enemigos esqueleto (existentes) | Sub-lugares | NPCs clave |
 |------|------|--------------------------------|-------------|------------|
@@ -536,14 +544,22 @@ Con 0 kills: no aparece (como hoy). La implementación llega en v0.14.0.
 
 ## 8. Sistemas de mundo
 
-### 8.1 Bucle de exploración
+### 8.1 Bucle de exploración *(implementado en v0.12.0-b)*
 
-Sustituye al menú plano de `game_loop`. Dentro de una zona: **Explorar** (tirada
-ponderada: encuentro / hallazgo / mini-evento raro), **Ir a `<sub-lugar>`** (NPC
-/ servicio / entrega de misión), **Viajar** (frontera o viaje rápido),
-**Personaje** (el menú de personaje siempre disponible: inventario,
-estadísticas, equipar, habilidades, bestiario, diario, misiones, guardar —
-extraído del `game_loop` actual).
+Sustituye al antiguo menú plano de `game_loop` por
+`ui/exploration.py::zone_loop()`. Dentro de una zona: **Explorar** (tirada
+ponderada — implementada como combate / un pequeño hallazgo de oro / nada; el
+"mini-evento raro" sigue siendo solo texto de ambiente vía **Ir a
+`<sub-lugar>`**, no una tirada aparte todavía), **Ir a `<sub-lugar>`** (lista
+los sub-lugares de la zona; NPC/servicio/entrega de misión por sub-lugar sigue
+siendo un stub — no hay NPCs hasta v0.13.0), **Viajar** (frontera a la
+siguiente zona inmediata en cuanto es alcanzable, o viaje rápido a cualquier
+zona ya visitada), **Personaje** (el menú de personaje siempre disponible:
+inventario, estadísticas, equipar, habilidades, bestiario, tienda, herrería,
+guardar — extraído del antiguo `game_loop`; diario/misiones se sumarán cuando
+existan esos sistemas). Tienda/Herrería se quedaron dentro de Personaje en vez
+de mudarse a los sub-lugares de Piedrablanca — esa reubicación, junto con
+posada/descanso, se aplaza a v0.12.0-c.
 
 ### 8.2 Diálogo — ramificado, con respuestas del jugador
 
@@ -597,11 +613,11 @@ combate y menús.
 Guiado por datos como `characters/enemies/` (un archivo por zona):
 `world/zone.py` (`Zone`), `world/npc.py` (`NPC`, `Conversation`, `DialogueNode`,
 `Choice`), `world/quest.py` (`Quest`), `world/map.py` (grafo, viaje, puertas),
-`world/data/*.py` (un módulo por zona). **`Zone`, `world/data/*.py` y el
-registro `ZONE_ORDER`/`ZONES` de `world/map.py` ya están implementados
-(v0.12.0-a)** — `world/npc.py`/`world/quest.py` y la lógica real de
-viaje/puertas todavía no existen (solo hay una ayuda para inferir progreso,
-`default_zone_for_progress()`, usada por la migración de guardado).
+`world/data/*.py` (un módulo por zona). **`Zone`, `world/data/*.py`, el
+registro `ZONE_ORDER`/`ZONES`, y el viaje/puertas (`next_zone()`,
+`is_zone_reachable()`) de `world/map.py` ya están implementados
+(v0.12.0-a/b)** — `world/npc.py`/`world/quest.py` todavía no existen (no hay
+NPCs/servicios/misiones hasta v0.13.0).
 
 ### 9.3 Otros módulos nuevos
 

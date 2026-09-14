@@ -57,6 +57,26 @@ def zone_for_enemy(enemy_name: str) -> str | None:
     return None
 
 
+def next_zone(zone_id: str) -> str | None:
+    """La zona siguiente en `ZONE_ORDER` tras `zone_id` (la "frontera" a pie
+    desde ahí), o `None` si `zone_id` es la última de la cadena."""
+    idx = ZONE_ORDER.index(zone_id)
+    if idx + 1 >= len(ZONE_ORDER):
+        return None
+    return ZONE_ORDER[idx + 1]
+
+
+def is_zone_reachable(zone_id: str, unlocked_enemies: list) -> bool:
+    """¿Se puede viajar ya a pie hasta `zone_id` (GDD §3, "frontera")? Una
+    zona sin roster propio todavía (GDD §4, p. ej. Ciénaga de los Ahogados) no
+    tiene nada que la bloquee: se considera siempre abierta. El resto, en
+    cuanto su primer enemigo backbone está desbloqueado."""
+    enemies = ZONES[zone_id].enemies
+    if not enemies:
+        return True
+    return enemies[0] in unlocked_enemies
+
+
 def default_zone_for_progress(defeated_enemies: list) -> str:
     """Zona por defecto para partidas guardadas antes del bloque `mundo`
     (migración v1 -> v2, GDD §9.4): la más avanzada de la cadena en la que ya

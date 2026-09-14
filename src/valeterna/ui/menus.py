@@ -28,10 +28,9 @@ from valeterna.characters.skills import MAX_EQUIPPED_ACTIVES, SkillKind
 from valeterna.characters.stats import Stats
 from valeterna.combat.battle import initiate_battle
 from valeterna.config import crash_reporting, secret_store, settings
-from valeterna.crafting.forge import Forge
 from valeterna.items.equipment import ARMOR_SLOTS, Armor, Weapon, slot_label
 from valeterna.items.materials import Material
-from valeterna.persistence.save_load import load_game, save_exists, save_game
+from valeterna.persistence.save_load import load_game, save_exists
 from valeterna.shop.shop import Shop
 from valeterna.ui import console
 from valeterna.ui.formatting import print_bestiary_entry
@@ -243,8 +242,9 @@ def start_new_game() -> None:
 
     player.autoequip_skills()  # equipa las activas que ya conoce (1 al empezar)
 
-    # Datos iniciales del mundo
-    game_loop(player, unlocked, defeated, is_admin=is_admin)
+    from valeterna.ui.exploration import zone_loop
+
+    zone_loop(player, unlocked, defeated, is_admin=is_admin)
 
 
 def load_saved_game() -> None:
@@ -274,7 +274,10 @@ def load_saved_game() -> None:
 
     if data:
         player_name, unlocked, defeated = data
-        game_loop(temp_player, unlocked, defeated, is_admin=is_admin)
+
+        from valeterna.ui.exploration import zone_loop
+
+        zone_loop(temp_player, unlocked, defeated, is_admin=is_admin)
 
 
 def ask_crash_reporting_opt_in() -> None:
@@ -379,101 +382,6 @@ def open_options() -> None:
             )
         elif key == "upd_check":
             _check_updates_now()
-
-
-def game_loop(player, unlocked_enemies: list, defeated_enemies: list, is_admin: bool = False) -> None:
-    """Bucle principal de la estancia en el mundo"""
-
-    def start_battle_flow():
-        print(console.colorize("\n--- SELECCIONAR ENEMIGO ---", console.Fore.YELLOW))
-
-        # Mostramos la lista de enemigos desbloqueados con números
-        for enemy_idx, name in enumerate(unlocked_enemies, 1):
-            # Opcional: poner un check si ya fue derrotado antes
-            status = "✅" if name in defeated_enemies else "❌"
-            print(f"{enemy_idx}. {name} {status}")
-
-        print(f"{len(unlocked_enemies) + 1}. Volver")
-
-        battle_choice = console.ask(f"\nElige a tu oponente (1-{len(unlocked_enemies) + 1}): ")
-
-        if not battle_choice.isdigit():
-            console.error("Entrada no válida.")
-            return
-
-        target_idx = int(battle_choice) - 1
-        if target_idx == len(unlocked_enemies):
-            return
-        if not (0 <= target_idx < len(unlocked_enemies)):
-            console.error("Opción fuera de rango.")
-            return
-
-        enemy_name = unlocked_enemies[target_idx]
-        # enemy_factory permite encadenar peleas si el jugador activa la
-        # auto-batalla contra un enemigo ya derrotado (ver initiate_battle).
-        initiate_battle(
-            player,
-            _get_enemy_instance(enemy_name),
-            defeated_enemies,
-            unlocked_enemies,
-            enemy_factory=lambda: _get_enemy_instance(enemy_name),
-        )
-
-    # Dentro de la partida el aviso se muestra una sola vez (al entrar), no en
-    # cada redibujado del menú: aquí la llamada a la acción es "guarda y vuelve
-    # al Menú Principal", no algo que puedas hacer sin salir.
-    _maybe_show_update_notice(in_game=True)
-
-    while True:
-        resource_manager.update()  # Por si la pista de aventura ya ha terminado
-
-        print("\n" + "=" * 40)
-        print(console.colorize(f"ESTADO: {player.name} | Nivel: {player.level}", console.Fore.CYAN))
-        print(console.colorize(f"v{__version__}", console.Fore.BLACK, bright=True))
-        print("=" * 40)
-
-        # Usamos una lista de tuplas para mantener el orden de las opciones
-        options = [
-            ("Luchar", start_battle_flow),
-            ("Inventario", lambda: player.inventory.show_inventory(mode="use")),
-            ("Tienda", lambda: Shop().open(player)),
-            ("Herrería", lambda: Forge().open(player)),
-            ("Estadísticas", player.show_stats),
-            ("Habilidades", lambda: _skills_flow(player)),
-            ("Bestiario", lambda: _bestiary_flow(player, defeated_enemies)),
-            # Pasamos la clase Weapon a la opción de equipar arma
-            ("Equipar Arma", lambda: player.inventory.equip_menu(Weapon)),
-            ("Equipar Armadura", lambda: _equip_armor_flow(player)),
-            ("Opciones", open_options),
-            ("Guardar Partida", lambda: save_game(player, unlocked_enemies, defeated_enemies)),
-            ("Volver al Menú Principal", "break"),
-            ("Salir del Juego", sys.exit),
-        ]
-
-        # Panel de control total: requiere el nombre "admin" Y haber acertado
-        # la contraseña al entrar (comprobado una sola vez, en start_new_game()
-        # o load_saved_game(), no en cada vuelta de este bucle).
-        if is_admin:
-            options.insert(
-                -2, ("Panel de Admin", lambda: _admin_panel_flow(player, unlocked_enemies, defeated_enemies))
-            )
-
-        for i, (text, _) in enumerate(options, 1):
-            print(f"{i}. {text}")
-
-        choice = console.ask(f"\nElige (1-{len(options)}): ")
-
-        if choice.isdigit():
-            idx = int(choice) - 1
-            if 0 <= idx < len(options):
-                action = options[idx][1]
-                if action == "break":
-                    break
-                action()
-                if idx in [1, 4]:
-                    console.ask("\nPresiona Enter para continuar...")
-            else:
-                console.error("Opción fuera de rango.")
 
 
 def _skills_flow(player) -> None:
@@ -801,7 +709,6 @@ def _admin_give_all_equipment(player) -> None:
 def _admin_give_all_potions(player) -> None:
     """Da 20 unidades de cada poción de la tienda (salud, regeneración, fuerza, antídoto)."""
     from valeterna.items.factory import item_factory
-    from valeterna.shop.shop import Shop
 
     potions = [entry.template for entry in Shop().catalog if entry.stackable]
     for template in potions:
