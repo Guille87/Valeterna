@@ -1,4 +1,4 @@
-"""Bucle de exploración por zona (GDD §8.1, v0.12.0-b): sustituye al antiguo
+"""Bucle de exploración por zona (GDD §8.1, v0.12.0-b/c): sustituye al antiguo
 menú plano de `game_loop`. Igual que `ui/menus.py`, esto es casi todo
 `input()`/`print()` encadenados (`omit`ido de la cobertura, ver
 pyproject.toml) — la lógica no interactiva de verdad (tiradas de Explorar,
@@ -25,6 +25,14 @@ resource_manager = ResourceManager()
 # encuentras nada".
 _EXPLORE_ENCOUNTER_CHANCE = 0.65
 _EXPLORE_DISCOVERY_CHANCE = 0.15
+
+# Dentro de la rama de hallazgo: probabilidad de que sea una poción en vez de
+# oro (v0.12.0-c, GDD §8.1 "descubrimientos").
+_DISCOVERY_POTION_CHANCE = 0.4
+
+# Coste de descansar en la posada (GDD §7.4): provisional, sin ajustar contra
+# los ingresos reales de oro todavía (era una "Open question" del GDD).
+_REST_COST_PER_LEVEL = 10
 
 
 def zone_loop(player, unlocked_enemies: list, defeated_enemies: list, is_admin: bool = False) -> None:
@@ -57,7 +65,7 @@ def zone_loop(player, unlocked_enemies: list, defeated_enemies: list, is_admin: 
         if idx == 1:
             _explore(player, unlocked_enemies, defeated_enemies)
         elif idx == 2:
-            _sublocation_flow(zone)
+            _sublocation_flow(player, zone)
         elif idx == 3:
             _travel_flow(player, unlocked_enemies)
         elif idx == 4 and _character_menu(player, unlocked_enemies, defeated_enemies, is_admin) == "volver_menu":
@@ -91,16 +99,74 @@ def _explore(player, unlocked_enemies: list, defeated_enemies: list) -> None:
             enemy_factory=lambda: _get_enemy_instance(enemy_name),
         )
     elif roll < _EXPLORE_ENCOUNTER_CHANCE + _EXPLORE_DISCOVERY_CHANCE:
-        gold = random.randint(3, 10)
-        player.inventory.gold += gold
-        console.success(f"💰 Encuentras {gold} de oro en el camino.")
+        _discovery(player)
     else:
         console.say("Exploras la zona, pero no encuentras nada de interés.")
 
 
-def _sublocation_flow(zone) -> None:
-    """Lista los sub-lugares de la zona. Todavía sin NPCs/servicios propios
-    (GDD §8.2/§8.3 llegan en v0.13.0): por ahora es solo ambientación."""
+def _discovery(player) -> None:
+    """Hallazgo de "Explorar" (GDD §8.1): normalmente oro, a veces una poción
+    de salud gratis — un poco de variedad en vez de ser siempre lo mismo."""
+    from valeterna.items.potions.healing_potion import HealingPotion
+
+    if random.random() < _DISCOVERY_POTION_CHANCE:
+        console.success("🧪 Encuentras un pequeño alijo escondido en el camino.")
+        player.inventory.add_item(HealingPotion("Poción de Salud", "Restaura 20 HP", 2, 20))
+    else:
+        gold = random.randint(3, 10)
+        player.inventory.gold += gold
+        console.success(f"💰 Encuentras {gold} de oro en el camino.")
+
+
+def _open_shop(player) -> None:
+    from valeterna.shop.shop import Shop
+
+    Shop().open(player)
+
+
+def _open_forge(player) -> None:
+    from valeterna.crafting.forge import Forge
+
+    Forge().open(player)
+
+
+def _rest_flow(player) -> None:
+    """Posada (GDD §7.4): cura del todo y limpia los estados alterados a
+    cambio de oro. Coste provisional, ver `_REST_COST_PER_LEVEL`."""
+    print(console.colorize("\n--- POSADA ---", console.Fore.CYAN))
+    if player.stats.health >= player.stats.max_health and not player.status_effects:
+        console.info("Ya estás a plena forma; no necesitas descansar.")
+        return
+
+    cost = _REST_COST_PER_LEVEL * player.level
+    print(f"Descansar cuesta {cost} de oro (tienes {player.inventory.gold}) y cura toda tu vida y estados.")
+    if console.ask("¿Descansar? (s/n): ").strip().lower() != "s":
+        return
+    if player.inventory.gold < cost:
+        console.error("No tienes oro suficiente para descansar.")
+        return
+
+    player.inventory.gold -= cost
+    player.stats.health = player.stats.max_health
+    player.status_effects.clear()
+    console.success("Descansas en la posada. Recuperas toda tu vida y tus estados desaparecen.")
+
+
+# Sub-lugares con un servicio de verdad detrás (v0.12.0-c) en vez de solo
+# ambientación — de momento solo en Piedrablanca (GDD §3: "Shop / forge / rest
+# live in Piedrablanca's sub-locations"). El resto de sub-lugares de
+# Piedrablanca (p. ej. Refugio) y todos los de las demás zonas siguen siendo
+# stubs hasta que existan NPCs/servicios propios (GDD §8.2/§8.3, v0.13.0).
+_ZONE_SERVICES = {
+    ("piedrablanca", "Mercado"): _open_shop,
+    ("piedrablanca", "Herrería"): _open_forge,
+    ("piedrablanca", "Taberna"): _rest_flow,
+}
+
+
+def _sublocation_flow(player, zone) -> None:
+    """Lista los sub-lugares de la zona. Los que tienen un servicio de verdad
+    (`_ZONE_SERVICES`) lo abren; el resto sigue siendo solo ambientación."""
     if not zone.sub_locations:
         console.info("No hay ningún sub-lugar que visitar aquí todavía.")
         return
@@ -121,7 +187,12 @@ def _sublocation_flow(zone) -> None:
         console.error("Opción fuera de rango.")
         return
 
-    console.say(f"Recorres {zone.sub_locations[idx]}, pero todavía no hay nada que hacer aquí.")
+    place = zone.sub_locations[idx]
+    service = _ZONE_SERVICES.get((zone.id, place))
+    if service:
+        service(player)
+        return
+    console.say(f"Recorres {place}, pero todavía no hay nada que hacer aquí.")
 
 
 def _travel_flow(player, unlocked_enemies: list) -> None:
@@ -166,12 +237,11 @@ def _travel_flow(player, unlocked_enemies: list) -> None:
 
 def _character_menu(player, unlocked_enemies: list, defeated_enemies: list, is_admin: bool) -> str | None:
     """Menú "Personaje" (GDD §8.1): todo lo que antes colgaba de `game_loop`
-    salvo "Luchar" (ahora "Explorar"). Devuelve `"volver_menu"` si el jugador
-    elige volver al Menú Principal, o `None` si vuelve a la zona."""
-    from valeterna.crafting.forge import Forge
+    salvo "Luchar" (ahora "Explorar") y Tienda/Herrería (ahora en "Ir a..." de
+    Piedrablanca, v0.12.0-c). Devuelve `"volver_menu"` si el jugador elige
+    volver al Menú Principal, o `None` si vuelve a la zona."""
     from valeterna.items.equipment import Weapon
     from valeterna.persistence.save_load import save_game
-    from valeterna.shop.shop import Shop
     from valeterna.ui.menus import _admin_panel_flow, _bestiary_flow, _equip_armor_flow, _skills_flow, open_options
 
     while True:
@@ -179,8 +249,6 @@ def _character_menu(player, unlocked_enemies: list, defeated_enemies: list, is_a
 
         options = [
             ("Inventario", lambda: player.inventory.show_inventory(mode="use")),
-            ("Tienda", lambda: Shop().open(player)),
-            ("Herrería", lambda: Forge().open(player)),
             ("Estadísticas", player.show_stats),
             ("Habilidades", lambda: _skills_flow(player)),
             ("Bestiario", lambda: _bestiary_flow(player, defeated_enemies)),
@@ -217,8 +285,8 @@ def _character_menu(player, unlocked_enemies: list, defeated_enemies: list, is_a
 
         action()
         # Inventario/Estadísticas no tienen su propio "Presiona Enter..." (a
-        # diferencia de Tienda/Herrería/Habilidades/Bestiario/Equipar, que ya
-        # paran solas en su propio submenú), así que hace falta uno aquí para
-        # poder leerlas antes de que el menú se vuelva a dibujar encima.
+        # diferencia de Habilidades/Bestiario/Equipar, que ya paran solas en
+        # su propio submenú), así que hace falta uno aquí para poder leerlas
+        # antes de que el menú se vuelva a dibujar encima.
         if label in ("Inventario", "Estadísticas"):
             console.ask("\nPresiona Enter para continuar...")

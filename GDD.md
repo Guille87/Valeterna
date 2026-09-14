@@ -129,8 +129,11 @@ migration and `is_zone_reachable()`'s live check.
 | **Ciudadela en Ruinas** | The razed capital, infernal ground | Ángel Caído, Demonio | Catedral rota, Plaza | Aldric |
 | **El Corazón de la Brecha** | The origin — designed last | *(§4)* | — | — |
 
-Shop / forge / rest / save live in Piedrablanca's sub-locations; a "Mercado
-errante" and a "Fuego de campamento" (paid rest) appear in later zones.
+Shop / forge / rest *(implemented in v0.12.0-c)* / save live in Piedrablanca's
+sub-locations (save stayed in the Personaje menu rather than moving to
+Refugio — no reason yet to gate it by location); a "Mercado errante" and a
+"Fuego de campamento" (paid rest) appear in later zones *(not yet
+implemented)*.
 
 ---
 
@@ -500,32 +503,46 @@ Below 1 kill: not listed (as today). Implementation lands in v0.14.0.
 
 ### 7.4 Rest & death
 
-- **Rest** — only in a town, at an inn, paying gold: full HP + all status
-  effects cleared. **Cost scales with level**: higher-level enemies pay out more
-  gold, so the inn costs more to keep it a real sink — a rough equilibrium. A
-  broke player can always farm a few easy fights for gold.
-- **Death** — you lose a fraction of your gold (currently 1/3) and it is **gone
-  for good** (no recoverable "saco"). You respawn at the last visited town at
-  full HP with statuses cleared, losing your position in the current zone.
+- **Rest** *(implemented in v0.12.0-c)* — only in a town, at an inn, paying
+  gold: full HP + all status effects cleared (`ui/exploration.py::_rest_flow`,
+  reached via Piedrablanca's Taberna). **Cost scales with level**:
+  `_REST_COST_PER_LEVEL × player.level`, with `_REST_COST_PER_LEVEL = 10` —
+  explicitly a provisional number, not yet tuned against real gold income (see
+  the "Rest cost curve" open item, now closed as "provisional, revisit during
+  balance passes" rather than fully resolved). A broke player can always farm
+  a few easy fights for gold; resting is a no-op (with a message, not a
+  prompt) when already at full HP with no status effects.
+- **Death** *(not yet implemented — still a plain full-heal, no
+  respawn-at-town)* — you lose a fraction of your gold (currently 1/3) and it
+  is **gone for good** (no recoverable "saco"). You respawn at the last
+  visited town at full HP with statuses cleared, losing your position in the
+  current zone. Today's `_handle_defeat()` in `combat/battle.py` already does
+  the gold penalty + full heal; moving `zona_actual` back to the last visited
+  town on defeat is deliberately out of scope for v0.12.0-c (it changes
+  combat's own defeat handling, not just world/exploration code) and is left
+  for a later pass.
 
 ---
 
 ## 8. World systems
 
-### 8.1 Exploration loop *(implemented in v0.12.0-b)*
+### 8.1 Exploration loop *(implemented in v0.12.0-b/c)*
 
 Replaces the old flat `game_loop` menu with `ui/exploration.py::zone_loop()`.
-Inside a zone: **Explorar** (weighted roll — implemented as combat / a small
-gold discovery / nothing; the "rare mini-event" tier is still just flavour
-text via **Ir a `<sub-lugar>`**, not a distinct roll outcome yet), **Ir a
-`<sub-lugar>`** (lists the zone's sub-locations; NPC/service/quest turn-in per
-location is still a stub — no NPCs exist until v0.13.0), **Viajar** (frontier
-to the immediate next zone once reachable, or fast-travel to anywhere already
+Inside a zone: **Explorar** (weighted roll — combat / a discovery / nothing;
+the discovery itself is now a mini-roll, gold or a free healing potion, GDD's
+"rare mini-event" tier is still just flavour text via **Ir a `<sub-lugar>`**,
+not a distinct roll outcome yet), **Ir a `<sub-lugar>`** (lists the zone's
+sub-locations; three of Piedrablanca's are wired to real services — Mercado →
+Tienda, Herrería → Forge, Taberna → rest — everything else, including
+Piedrablanca's Refugio, is still a flavour-text stub; NPC/quest turn-in per
+location beyond these three waits on v0.13.0), **Viajar** (frontier to the
+immediate next zone once reachable, or fast-travel to anywhere already
 visited), **Personaje** (the always-available character menu: inventory,
-stats, equip, skills, bestiary, shop, forge, save — extracted from the old
-`game_loop`; diary/quests join once those systems exist). Tienda/Herrería
-stayed inside Personaje rather than moving into Piedrablanca's sub-locations —
-that relocation, along with rest/inn, is deferred to v0.12.0-c.
+stats, equip, skills, bestiary, save — extracted from the old `game_loop`;
+diary/quests join once those systems exist). Tienda/Herrería moved out of
+Personaje and into Piedrablanca's sub-locations in v0.12.0-c, per this
+section's plan below.
 
 ### 8.2 Dialogue — branching, with player choices
 
@@ -650,4 +667,5 @@ is a living document and any of this can change.
 - **Arena** — the wave-to-reward table, and exactly which unique(s) it grants.
 - **Drop-scaling curve** — "slightly higher chance, slightly higher quantity",
   numbers from playtesting.
-- **Rest cost curve** — the gold-per-level formula, tuned against gold income.
+- **Rest cost curve** — `_REST_COST_PER_LEVEL × level` (v0.12.0-c) is a
+  placeholder; the actual formula still needs tuning against gold income.

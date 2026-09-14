@@ -137,9 +137,11 @@ desbloqueo de enemigos que ya usa el combate, según
 | **Ciudadela en Ruinas** | La capital arrasada, suelo infernal | Ángel Caído, Demonio | Catedral rota, Plaza | Aldric |
 | **El Corazón de la Brecha** | El origen — se diseña el último | *(§4)* | — | — |
 
-Tienda / herrería / descanso / guardado viven en sub-lugares de Piedrablanca; un
+Tienda / herrería / descanso *(implementado en v0.12.0-c)* / guardado viven en
+sub-lugares de Piedrablanca (guardado se quedó en el menú Personaje en vez de
+mudarse a Refugio — todavía no hay motivo para restringirlo por ubicación); un
 "Mercado errante" y un "Fuego de campamento" (descanso de pago) aparecen en
-zonas posteriores.
+zonas posteriores *(todavía no implementado)*.
 
 ---
 
@@ -530,36 +532,49 @@ Con 0 kills: no aparece (como hoy). La implementación llega en v0.14.0.
 
 ### 7.4 Descanso y muerte
 
-- **Descanso** — solo en un pueblo, en una posada, pagando oro: vida completa +
-  todos los estados alterados limpiados. **El coste escala con el nivel**: los
-  enemigos de más nivel dan más oro, así que la posada cuesta más para seguir
-  siendo un sink de verdad — un equilibrio aproximado. Un jugador sin oro
-  siempre puede farmear unos combates fáciles.
-- **Muerte** — pierdes una fracción de tu oro (hoy 1/3) y se va **para
-  siempre** (sin "saco" recuperable). Reapareces en la última ciudad visitada
-  con la vida al máximo y los estados limpiados, perdiendo tu posición en la
-  zona actual.
+- **Descanso** *(implementado en v0.12.0-c)* — solo en un pueblo, en una
+  posada, pagando oro: vida completa + todos los estados alterados limpiados
+  (`ui/exploration.py::_rest_flow`, se llega desde la Taberna de Piedrablanca).
+  **El coste escala con el nivel**: `_REST_COST_PER_LEVEL × player.level`, con
+  `_REST_COST_PER_LEVEL = 10` — explícitamente un número provisional, todavía
+  sin ajustar contra los ingresos reales de oro (la pregunta abierta "curva de
+  coste del descanso" pasa de abierta a "provisional, revisar en pasadas de
+  balance" en vez de quedar del todo resuelta). Un jugador sin oro siempre
+  puede farmear unos combates fáciles; descansar es un no-op (con mensaje, no
+  con confirmación) si ya está a vida completa y sin estados.
+- **Muerte** *(todavía no implementado — hoy solo cura del todo, sin
+  reaparecer en un pueblo)* — pierdes una fracción de tu oro (hoy 1/3) y se va
+  **para siempre** (sin "saco" recuperable). Reapareces en la última ciudad
+  visitada con la vida al máximo y los estados limpiados, perdiendo tu
+  posición en la zona actual. Hoy `_handle_defeat()` en `combat/battle.py` ya
+  hace la penalización de oro + curación completa; mover `zona_actual` de
+  vuelta al último pueblo visitado al morir se dejó fuera de v0.12.0-c a
+  propósito (cambia la gestión de la derrota del propio combate, no solo
+  código de mundo/exploración) para una pasada posterior.
 
 ---
 
 ## 8. Sistemas de mundo
 
-### 8.1 Bucle de exploración *(implementado en v0.12.0-b)*
+### 8.1 Bucle de exploración *(implementado en v0.12.0-b/c)*
 
 Sustituye al antiguo menú plano de `game_loop` por
 `ui/exploration.py::zone_loop()`. Dentro de una zona: **Explorar** (tirada
-ponderada — implementada como combate / un pequeño hallazgo de oro / nada; el
-"mini-evento raro" sigue siendo solo texto de ambiente vía **Ir a
-`<sub-lugar>`**, no una tirada aparte todavía), **Ir a `<sub-lugar>`** (lista
-los sub-lugares de la zona; NPC/servicio/entrega de misión por sub-lugar sigue
-siendo un stub — no hay NPCs hasta v0.13.0), **Viajar** (frontera a la
-siguiente zona inmediata en cuanto es alcanzable, o viaje rápido a cualquier
-zona ya visitada), **Personaje** (el menú de personaje siempre disponible:
-inventario, estadísticas, equipar, habilidades, bestiario, tienda, herrería,
-guardar — extraído del antiguo `game_loop`; diario/misiones se sumarán cuando
-existan esos sistemas). Tienda/Herrería se quedaron dentro de Personaje en vez
-de mudarse a los sub-lugares de Piedrablanca — esa reubicación, junto con
-posada/descanso, se aplaza a v0.12.0-c.
+ponderada — combate / un hallazgo / nada; el propio hallazgo es ahora otra
+mini-tirada, oro o una poción de salud gratis; el "mini-evento raro" del GDD
+sigue siendo solo texto de ambiente vía **Ir a `<sub-lugar>`**, no una tirada
+aparte todavía), **Ir a `<sub-lugar>`** (lista los sub-lugares de la zona;
+tres de los de Piedrablanca están conectados a servicios de verdad — Mercado
+→ Tienda, Herrería → Herrería, Taberna → descanso — el resto, incluido el
+Refugio de Piedrablanca, sigue siendo un stub de ambiente; NPC/entrega de
+misión por sub-lugar más allá de estos tres espera a v0.13.0), **Viajar**
+(frontera a la siguiente zona inmediata en cuanto es alcanzable, o viaje
+rápido a cualquier zona ya visitada), **Personaje** (el menú de personaje
+siempre disponible: inventario, estadísticas, equipar, habilidades,
+bestiario, guardar — extraído del antiguo `game_loop`; diario/misiones se
+sumarán cuando existan esos sistemas). Tienda/Herrería salieron de Personaje
+y se mudaron a los sub-lugares de Piedrablanca en v0.12.0-c, según el plan de
+esta sección.
 
 ### 8.2 Diálogo — ramificado, con respuestas del jugador
 
@@ -692,5 +707,6 @@ cambiar; el GDD es un documento vivo y cualquier cosa de aquí puede cambiar.
 - **Arena** — la tabla de oleada-a-recompensa, y qué único(s) exactamente da.
 - **Curva de drop-scaling** — "un poco más de probabilidad, un poco más de
   cantidad", números del testeo.
-- **Curva de coste del descanso** — la fórmula de oro-por-nivel, ajustada
-  contra el ingreso de oro.
+- **Curva de coste del descanso** — `_REST_COST_PER_LEVEL × nivel` (v0.12.0-c)
+  es un valor provisional; la fórmula real todavía necesita ajustarse contra
+  el ingreso de oro.
