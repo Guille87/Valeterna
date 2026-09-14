@@ -74,6 +74,7 @@ source = ["valeterna"]
 omit = [
     "*/__main__.py",
     "*/ui/menus.py",
+    "*/ui/exploration.py",
     "*/app.py",
 ]
 

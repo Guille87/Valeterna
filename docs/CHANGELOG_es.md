@@ -52,6 +52,17 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
   este cambio (la zona actual se infiere del progreso de combate). Es solo
   la base — `game_loop` todavía no usa zonas, eso llega en la siguiente
   sub-fase.
+- **Bucle de exploración por zona** (GDD §8.1, v0.12.0-b): desaparece el
+  antiguo menú plano de `game_loop`, sustituido por un menú por zona
+  (`ui/exploration.py`) — **Explorar** (tirada ponderada: combate contra un
+  enemigo desbloqueado al azar de la zona actual, un pequeño hallazgo de oro,
+  o nada), **Ir a...** (lista los sub-lugares de la zona; de momento un stub,
+  sin NPCs hasta v0.13.0), **Viajar** (viaje rápido a cualquier zona
+  visitada, más "frontera" a la siguiente zona en cuanto es alcanzable), y
+  **Personaje** (todo lo demás que antes era el menú entero: inventario,
+  tienda, herrería, estadísticas, habilidades, bestiario, equipar, opciones,
+  guardar). Elegir un enemigo concreto por nombre para pelear desaparece — el
+  combate ahora solo llega a través de la tirada de Explorar.
 
 ### Cambiado
 

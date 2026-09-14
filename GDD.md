@@ -105,12 +105,18 @@ Los Yermos ── Bosque de los Susurros ── Ciénaga de los Ahogados ── 
    Torre de los Arcanos / Necrópolis ── Ciudadela en Ruinas ── El Corazón de la Brecha
 ```
 
-**Travel** vs **fast-travel**: you reach a *new* zone by walking from its
-neighbour (`Viajar`), only once the gate is open — this is the "frontier".
-Once a zone is visited it joins the **fast-travel** list (from the hub or a
-signpost): instant, free, for backtracking to shop / craft / turn in quests /
-farm. Both are free for now; a road-encounter or a cost could be added later if
-backtracking feels frictionless.
+**Travel** vs **fast-travel** *(implemented in v0.12.0-b)*: you reach a *new*
+zone by walking from its neighbour (`Viajar`), only once the gate is open —
+this is the "frontier" (`world.map.is_zone_reachable()`: the zone's first
+backbone enemy must already be unlocked, or the zone has no roster yet and so
+is always open). Once a zone is visited it joins the **fast-travel** list
+(from anywhere, not just the hub or a signpost yet — that restriction is
+future polish): instant, free, for backtracking to shop / craft / turn in
+quests / farm. Both are free for now; a road-encounter or a cost could be
+added later if backtracking feels frictionless. There are no real "gates"
+(guardians) yet — reachability is inferred from the same enemy-unlock chain
+combat already uses, per `world.map.default_zone_for_progress()`'s save
+migration and `is_zone_reachable()`'s live check.
 
 | Zone | Theme | Backbone enemies (existing) | Sub-locations | Key NPCs |
 |------|-------|-----------------------------|---------------|----------|
@@ -506,13 +512,20 @@ Below 1 kill: not listed (as today). Implementation lands in v0.14.0.
 
 ## 8. World systems
 
-### 8.1 Exploration loop
+### 8.1 Exploration loop *(implemented in v0.12.0-b)*
 
-Replaces the flat `game_loop` menu. Inside a zone: **Explorar** (weighted roll:
-encounter / discovery / rare mini-event), **Ir a `<sub-lugar>`** (NPC / service
-/ quest turn-in), **Viajar** (frontier or fast-travel), **Personaje** (the
-always-available character menu: inventory, stats, equip, skills, bestiary,
-diary, quests, save — extracted from today's `game_loop`).
+Replaces the old flat `game_loop` menu with `ui/exploration.py::zone_loop()`.
+Inside a zone: **Explorar** (weighted roll — implemented as combat / a small
+gold discovery / nothing; the "rare mini-event" tier is still just flavour
+text via **Ir a `<sub-lugar>`**, not a distinct roll outcome yet), **Ir a
+`<sub-lugar>`** (lists the zone's sub-locations; NPC/service/quest turn-in per
+location is still a stub — no NPCs exist until v0.13.0), **Viajar** (frontier
+to the immediate next zone once reachable, or fast-travel to anywhere already
+visited), **Personaje** (the always-available character menu: inventory,
+stats, equip, skills, bestiary, shop, forge, save — extracted from the old
+`game_loop`; diary/quests join once those systems exist). Tienda/Herrería
+stayed inside Personaje rather than moving into Piedrablanca's sub-locations —
+that relocation, along with rest/inn, is deferred to v0.12.0-c.
 
 ### 8.2 Dialogue — branching, with player choices
 
@@ -563,11 +576,11 @@ migrates module by module, starting with combat and menus.
 Data-driven like `characters/enemies/` (one file per zone): `world/zone.py`
 (`Zone`), `world/npc.py` (`NPC`, `Conversation`, `DialogueNode`, `Choice`),
 `world/quest.py` (`Quest`), `world/map.py` (graph, travel, gating),
-`world/data/*.py` (one module per zone). **`Zone`, `world/data/*.py` and the
-`ZONE_ORDER`/`ZONES` registry in `world/map.py` are implemented (v0.12.0-a)**
-— `world/npc.py`/`world/quest.py` and the actual travel/gating logic (only a
-progress-inference helper, `default_zone_for_progress()`, exists so far, for
-save migration) are still to come.
+`world/data/*.py` (one module per zone). **`Zone`, `world/data/*.py`, the
+`ZONE_ORDER`/`ZONES` registry, and travel/gating (`next_zone()`,
+`is_zone_reachable()`) in `world/map.py` are implemented (v0.12.0-a/b)** —
+`world/npc.py`/`world/quest.py` don't exist yet (no NPCs/services/quests
+until v0.13.0).
 
 ### 9.3 Other new modules
 

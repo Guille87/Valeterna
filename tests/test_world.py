@@ -1,9 +1,17 @@
-"""Cimientos del paquete `world/` (GDD §3, §9.2, v0.12.0-a): datos de zona y
-el grafo del mapa. Todavía no hay bucle de exploración; esto solo cubre los
-datos y las ayudas de progreso usadas por la migración de guardado."""
+"""Paquete `world/` (GDD §3, §9.2): datos de zona y el grafo del mapa —
+registro de zonas, a qué zona pertenece cada enemigo, inferencia de progreso
+para la migración de guardado (v0.12.0-a) y alcanzabilidad de zonas para viajar
+(v0.12.0-b, usado por `ui/exploration.py::_travel_flow`)."""
 
 from valeterna.combat.battle import ENEMY_PROGRESSION
-from valeterna.world.map import ZONE_ORDER, ZONES, default_zone_for_progress, zone_for_enemy
+from valeterna.world.map import (
+    ZONE_ORDER,
+    ZONES,
+    default_zone_for_progress,
+    is_zone_reachable,
+    next_zone,
+    zone_for_enemy,
+)
 
 
 def test_zone_order_matches_the_zones_registry():
@@ -51,3 +59,21 @@ def test_default_zone_for_progress_stops_at_the_first_zone_with_no_defeats():
     más allá de Cañón del Trueno."""
     defeated = ["Goblin", "Orco", "Gárgola"]  # Los Yermos, Bosque, Cañón — pero no Ciénaga (vacía)
     assert default_zone_for_progress(defeated) == "canon_del_trueno"
+
+
+def test_next_zone_follows_the_chain():
+    assert next_zone("piedrablanca") == "los_yermos"
+    assert next_zone("los_yermos") == "bosque_de_los_susurros"
+
+
+def test_next_zone_is_none_after_the_last_zone():
+    assert next_zone("corazon_de_la_brecha") is None
+
+
+def test_zone_with_no_roster_is_always_reachable():
+    assert is_zone_reachable("cienaga_de_los_ahogados", []) is True
+
+
+def test_zone_reachable_once_its_first_enemy_is_unlocked():
+    assert is_zone_reachable("los_yermos", []) is False
+    assert is_zone_reachable("los_yermos", ["Goblin"]) is True

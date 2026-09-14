@@ -446,6 +446,63 @@ el cambio a mitigación multiplicativa.
     el salto de una zona vacía) y en `tests/test_save_load.py` (ida y vuelta
     de un `mundo` no vacío con sets, y migración de una partida vieja sin
     bloque `mundo`).
+- [x] **v0.12.0-b: bucle de exploración por zona** (GDD §8.1 — segunda
+  sub-fase de v0.12.0). Sustituye el antiguo `game_loop()` plano por
+  `ui/exploration.py::zone_loop()`, un menú por zona con 4 opciones.
+  - **Explorar** (`_explore`): tirada ponderada, `_EXPLORE_ENCOUNTER_CHANCE`
+    (0.65) combate / `_EXPLORE_DISCOVERY_CHANCE` (0.15) oro / el resto (0.20)
+    nada. El combate elige al azar entre los enemigos desbloqueados que
+    pertenecen a la zona actual (`Zone.enemies ∩ unlocked_enemies`); si
+    ninguno encaja (zona sin roster todavía, como Piedrablanca o la Ciénaga)
+    cae a cualquier enemigo desbloqueado, para que explorar nunca se quede
+    bloqueado. Reutiliza el mismo `initiate_battle(..., enemy_factory=...)`
+    de siempre, así que las cadenas de auto-batalla siguen funcionando
+    igual. Elegir un enemigo concreto por nombre desaparece — antes era
+    "Luchar" con una lista numerada, ahora es aleatorio de verdad, como pide
+    el GDD.
+  - **Ir a `<sub-lugar>`** (`_sublocation_flow`): lista `Zone.sub_locations`
+    y al elegir uno solo imprime una línea genérica de "todavía no hay nada
+    que hacer aquí" — stub a propósito, los NPCs/servicios llegan en
+    v0.13.0.
+  - **Viajar** (`_travel_flow`): viaje rápido a cualquier zona ya en
+    `player.mundo["zonas_visitadas"]`, más "`<zona>` (frontera)" para
+    `world.map.next_zone(zona_actual)` en cuanto `is_zone_reachable()` lo
+    permite y todavía no está visitada. Solo ofrece el salto inmediato
+    siguiente, nunca varias zonas de golpe. Actualiza `zona_actual` y añade a
+    `zonas_visitadas` (sin duplicar).
+  - **Personaje** (`_character_menu`): todo lo que antes colgaba directo de
+    `game_loop` salvo "Luchar" — Inventario, Tienda, Herrería, Estadísticas,
+    Habilidades, Bestiario, Equipar Arma/Armadura, Opciones, Guardar Partida,
+    Volver a la zona, Volver al Menú Principal, Salir del Juego, y Panel de
+    Admin si `is_admin`. Tienda/Herrería se quedan aquí por ahora a
+    propósito — reubicarlas a los sub-lugares de Piedrablanca es v0.12.0-c,
+    no esta sub-fase. Devuelve el string `"volver_menu"` (no `None`) cuando
+    el jugador elige volver al Menú Principal, para que `zone_loop()` sepa
+    cuándo romper su propio bucle — mismo patrón de "señal por valor de
+    retorno" que ya usaba `_run_player_turn` en combate (`"huir"` / `"ok"`).
+  - **Evitado un ciclo de imports**: `menus.py` llama a `zone_loop()` desde
+    `start_new_game()`/`load_saved_game()`, pero `zone_loop()` necesita
+    varios helpers que siguen viviendo en `menus.py`
+    (`_skills_flow`/`_equip_armor_flow`/`_bestiary_flow`/`_admin_panel_flow`/
+    `open_options`/`_get_enemy_instance`). Solución: `exploration.py` importa
+    de `menus` solo dentro de las funciones que los usan (nunca a nivel de
+    módulo), mismo patrón que ya usaban `combat/battle.py` y
+    `characters/player.py` para evitar ciclos parecidos.
+  - `game_loop()` se borró por completo (su lógica se repartió entre
+    `zone_loop()` y `_character_menu()`); no tenía tests directos porque
+    `ui/menus.py` ya estaba fuera de la métrica de cobertura —
+    `ui/exploration.py` se añadió al mismo `omit` en `pyproject.toml`, pero
+    aun así se testeó con el mismo criterio que `test_menus.py` (parchear
+    `console.ask`): `tests/test_exploration.py` cubre las 4 ramas de
+    Explorar, viaje rápido/frontera/cancelar, el stub de sub-lugares, y las
+    dos señales de salida de `_character_menu`. `world/map.py` ganó
+    `next_zone()`/`is_zone_reachable()`, estas sí dentro de la métrica de
+    cobertura (100%, `tests/test_world.py`).
+  - Probado a mano de extremo a extremo con `main.py` real (creación de
+    personaje, varias exploraciones incluyendo un combate completo contra un
+    Goblin con subida de nivel, viaje a la frontera de Los Yermos, entrar a
+    "Ir a..." y ver el stub, y recorrer el menú de Personaje incluyendo
+    guardar partida) — captura completa sin tracebacks.
 
 ## Pulido final (casi lo último antes de 1.0)
 
