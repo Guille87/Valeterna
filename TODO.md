@@ -351,6 +351,58 @@ el cambio a mitigación multiplicativa.
     `status.combustion`) y color propio (`Fore.LIGHTGREEN_EX`) en
     `ui/console.py::_STATUS_PATTERNS` para que "combustión" se resalte igual
     que el resto de estados en cualquier línea que la mencione.
+- [x] **Ronda de feedback jugando con v0.11.0-c** (probando la combustión
+  contra el Gólem de Piedra con daga de veneno + espada de fuego, y la
+  pasiva Veneno de Contacto encima).
+  - **Orden de mensajes al fusionar**: salía primero "🔥☣️ ¡El fuego y el
+    veneno se funden en combustión!" y DESPUÉS "¡Gólem de Piedra ha sido
+    quemado!" — al revés de lo esperado (primero se ve qué le pasó, luego la
+    reacción). Causa: `apply_status()` imprimía el aviso de fusión ella misma,
+    antes de devolver el control a quien llamó (que imprime su propio "ha
+    sido quemado/envenenado" DESPUÉS). Arreglado quitando el `print()` de
+    dentro de `apply_status()`: ahora solo deja `self.last_status_reaction`
+    listo, y el nuevo `pop_status_reaction_message()` (`Player`/`Enemy`) lo
+    devuelve y limpia — cada sitio que aplica quemado/veneno llama a este
+    método justo DESPUÉS de imprimir su propio mensaje, así que el orden en
+    pantalla queda garantizado.
+  - **Reaplicar quemado/veneno estando ya en combustión no debería hacer
+    nada**: en la misma prueba, tras sangrar con Golpe Bajo y envenenar de
+    nuevo con Veneno de Contacto (el Gólem YA tenía combustión, no quemado),
+    volvía a salir el aviso de fusión — y aunque no se vio en el log, la
+    duración también se estaba refrescando, lo cual tampoco tenía sentido
+    (ya es las dos cosas a la vez, un enemigo no puede "quemarse más" estando
+    ya en combustión). Nueva `is_status_blocked_by_combustion()` en
+    `combat/elements.py`, comprobada al principio de `apply_status()` en
+    ambas clases: si el objetivo ya tiene combustión, un intento de aplicar
+    quemado o veneno no hace absolutamente nada (`return False`/no-op), ni
+    siquiera refresca duración.
+  - **Antídoto**: su texto (`get_stats_info()`, la descripción del ítem en la
+    tienda, y el docstring de la clase) ahora menciona explícitamente que
+    también cura la combustión, aunque el `CURABLE` ya la incluía desde el
+    principio — el usuario avisó de que en algún momento futuro puede que
+    cada objeto cure un subconjunto distinto de estados en vez de que el
+    Antídoto lo cure todo, pero por ahora, al no estar planificado, se deja
+    así.
+  - Tests nuevos en `tests/test_elemental_reactions.py`:
+    `pop_status_reaction_message` (sin reacción / con reacción y se
+    consume), bloqueo de reaplicación en `Player`/`Enemy` (sin refrescar
+    duración), y un test de integración que verifica con `capsys`/parcheando
+    `print` que el mensaje "ha sido quemado" sale antes que el de fusión.
+- [x] **Reordenado el menú de combate** (a petición del usuario, sin relación
+  con las reacciones elementales): de "Atacar, Objetos, Info, Huir, Defender,
+  Habilidades, Auto-Batalla, Auto-Batalla Turbo" a "Atacar, Habilidades,
+  Defender, Objetos, Huir, Info, Auto-Batalla, Auto-Batalla Turbo" — las dos
+  opciones de acción (atacar/habilidades) y la defensiva (defender) van
+  primero, las utilitarias después. `_player_menu()` ya construía la lista de
+  opciones dinámicamente como `(etiqueta, token)` y las numeraba por
+  enumeración, así que reordenar fue solo reordenar esa construcción; no hay
+  ningún sitio que dependa de un índice fijo. Un test en `test_battle.py`
+  hardcodeaba la posición antigua de "Defender" ("5") y se quedó colgado en
+  bucle infinito al pasar a probar contra la nueva numeración (pedía "Info"
+  una y otra vez con la misma respuesta fija) — corregido a "2", y añadido un
+  test nuevo (`test_player_menu_options_are_in_the_requested_order`) que fija
+  el orden completo, con y sin habilidades equipadas, para que un futuro
+  reordenamiento accidental no pase desapercibido.
 
 ## Pulido final (casi lo último antes de 1.0)
 

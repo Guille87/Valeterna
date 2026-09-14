@@ -35,10 +35,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   `Enemy`. "Combustion" — applying quemado while veneno is already active (or
   vice versa) merges both into a single `combustion` status that deals more
   damage per turn than either alone, halves physical attack like burn does,
-  and stays curable by Antídoto.
+  and stays curable by Antídoto (its description now says so too). Follow-up
+  fixes from playtesting: the "X has been burned/poisoned" message now always
+  prints *before* the "fire and poison merge into combustion" one, not after;
+  and once combustion is active, a further attempt to burn or poison the same
+  target no longer does anything (no duration refresh, no repeated fusion
+  message) — it's already both at once.
 
 ### Changed
 
+- **Combat menu reordered**: Attack, Skills, Defend, Items, Flee, Info,
+  Auto-Battle, Auto-Battle Turbo (was Attack, Items, Info, Flee, Defend,
+  Skills, ...) — groups the two action choices (attack/skills) and the
+  defensive option (defend) up front, before the utility ones.
 - **Project renamed from "JuegoRolTexto" to Valeterna** (the kingdom name from
   the GDD) — nobody had downloaded a build yet, so this was a clean cut with no
   compatibility shim: the Python package (`src/valeterna/`, all imports),

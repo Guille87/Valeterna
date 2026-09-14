@@ -35,10 +35,21 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
   `Enemy`. "Combustión" — aplicar quemado mientras ya hay veneno activo (o al
   revés) funde ambos en un único estado `combustion` que hace más daño por
   turno que cualquiera de los dos por separado, reduce el ataque físico a la
-  mitad igual que la quemadura, y sigue siendo curable con el Antídoto.
+  mitad igual que la quemadura, y sigue siendo curable con el Antídoto (su
+  descripción ahora también lo dice). Arreglos tras las pruebas: el mensaje
+  "X ha sido quemado/envenenado" ahora sale siempre ANTES que el de "el fuego
+  y el veneno se funden en combustión", no al revés; y una vez la combustión
+  está activa, un nuevo intento de quemar o envenenar al mismo objetivo ya no
+  hace nada (ni refresca la duración, ni repite el mensaje de fusión) — ya es
+  las dos cosas a la vez.
 
 ### Cambiado
 
+- **Reordenado el menú de combate**: Atacar, Habilidades, Defender, Objetos,
+  Huir, Info, Auto-Batalla, Auto-Batalla Turbo (antes era Atacar, Objetos,
+  Info, Huir, Defender, Habilidades...) — agrupa las dos opciones de acción
+  (atacar/habilidades) y la defensiva (defender) al principio, antes que las
+  utilitarias.
 - **El proyecto pasa de llamarse "JuegoRolTexto" a Valeterna** (el nombre del
   reino en el GDD) — nadie se había descargado todavía ninguna build, así que ha
   sido un corte limpio sin capa de compatibilidad: el paquete de Python

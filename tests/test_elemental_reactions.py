@@ -6,6 +6,8 @@
   estado más dañino que cualquiera de los dos por separado.
 """
 
+import re
+
 from valeterna.characters.enemies.enemy_base import Enemy
 from valeterna.characters.enemies.mage import Mago
 from valeterna.characters.enemies.skeleton import Skeleton
@@ -176,3 +178,65 @@ def test_player_combustion_deals_more_damage_than_burn_or_poison_alone(player):
     poison_only = max(1, player.stats.max_health // 8)
     assert combustion_dmg > burn_only
     assert combustion_dmg > poison_only
+
+
+def test_pop_status_reaction_message_is_none_without_a_reaction():
+    enemy = _bare_enemy()
+    enemy.apply_status("quemado", 2)
+
+    assert enemy.pop_status_reaction_message() is None
+
+
+def test_pop_status_reaction_message_returns_once_and_clears():
+    enemy = _bare_enemy()
+    enemy.apply_status("quemado", 2)
+    enemy.apply_status("veneno", 2)
+
+    msg = enemy.pop_status_reaction_message()
+
+    assert msg is not None
+    assert "combusti" in msg.lower()
+    assert enemy.pop_status_reaction_message() is None  # ya se consumió
+
+
+def test_enemy_combustion_blocks_further_burn_or_poison_without_refreshing_duration():
+    enemy = _bare_enemy()
+    enemy.apply_status("quemado", 2)
+    enemy.apply_status("veneno", 2)  # -> combustion, duración 2
+
+    applied = enemy.apply_status("veneno", 10)
+
+    assert applied is False
+    assert enemy.status_effects == [{"name": "combustion", "duration": 2, "power": 0, "fresh": True}]
+    assert enemy.pop_status_reaction_message() is None  # no se repite el aviso
+
+
+def test_player_combustion_blocks_further_burn_or_poison_without_refreshing_duration(player):
+    player.apply_status("quemado", 2)
+    player.apply_status("veneno", 2)
+
+    player.apply_status("quemado", 10)
+
+    assert player.status_effects == [{"name": "combustion", "duration": 2, "power": 0, "fresh": True}]
+    assert player.pop_status_reaction_message() is None
+
+
+def test_weapon_inflicted_burn_message_prints_before_the_combustion_message(player, weak_enemy, monkeypatch):
+    """El usuario pidió que el mensaje "ha sido quemado" salga antes que el de
+    fusión en combustión, no al revés."""
+    weak_enemy.stats.health = 1000
+    weak_enemy.stats.max_health = 1000
+    weak_enemy.apply_status("veneno", 3)
+    player.equipped_weapon = Weapon("Espada Flamígera", "desc", 0, damage=15, element="fuego")
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)
+
+    printed: list[str] = []
+    monkeypatch.setattr("builtins.print", lambda *a, **k: printed.append(" ".join(str(x) for x in a)))
+
+    _execute_turn(player, weak_enemy, defeated_enemies=[])
+
+    stripped = [re.sub(r"\x1b\[[0-9;]*m", "", line) for line in printed]
+    burn_idx = next(i for i, line in enumerate(stripped) if "ha sido quemado" in line)
+    combustion_idx = next(i for i, line in enumerate(stripped) if "combusti" in line.lower())
+    assert burn_idx < combustion_idx

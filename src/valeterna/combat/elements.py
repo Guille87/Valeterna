@@ -56,14 +56,21 @@ def is_shatter_hit(element: str | None, status_names) -> bool:
     return element == SHATTER_ELEMENT and SHATTER_FROZEN_STATUS in status_names
 
 
+def is_status_blocked_by_combustion(current_statuses, incoming: str) -> bool:
+    """`True` si `incoming` (quemado/veneno) no debe aplicarse porque el
+    objetivo ya está en combustión, que ya representa a los dos: mientras
+    dure, un nuevo intento de quemarlo/envenenarlo no hace nada (ni refresca
+    la duración, ni vuelve a fundirlos)."""
+    return incoming in _COMBUSTION_PAIR and COMBUSTION_STATUS in current_statuses
+
+
 def resolve_status_reaction(current_statuses, incoming: str) -> str | None:
     """Si aplicar el estado `incoming` reacciona con uno ya presente en
     `current_statuses` (quemado + veneno -> combustión), devuelve el nombre del
-    estado fusionado resultante. `None` si no hay reacción."""
+    estado fusionado resultante. `None` si no hay reacción. No dispara si la
+    combustión ya está activa (usar `is_status_blocked_by_combustion` antes)."""
     if incoming not in _COMBUSTION_PAIR:
         return None
-    if COMBUSTION_STATUS in current_statuses:
-        return COMBUSTION_STATUS
     other = next(iter(_COMBUSTION_PAIR - {incoming}))
     if other in current_statuses:
         return COMBUSTION_STATUS

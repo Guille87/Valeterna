@@ -90,6 +90,9 @@ class Dragon(Enemy):
         if random.random() < 0.6:
             player.apply_status("quemado", 3)
             console.error("¡Las llamas prenden tu ropa!")
+            reaction_msg = player.pop_status_reaction_message()
+            if reaction_msg:
+                print(reaction_msg)
 
     def drop_item(self) -> list:
         items = []
