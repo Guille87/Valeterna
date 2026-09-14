@@ -71,7 +71,9 @@ class Shop:
                 StatBuffPotion("Poción de Fuerza", "Aumenta el ataque temporalmente", 5, "max_atk", 5, 3), buy_price=12
             ),
             ShopItem(
-                AntidotePotion("Antídoto", "Purga veneno, quemadura, parálisis y congelación al instante.", 6),
+                AntidotePotion(
+                    "Antídoto", "Purga veneno, quemadura, parálisis, congelación y combustión al instante.", 6
+                ),
                 buy_price=15,
             ),
             ShopItem(

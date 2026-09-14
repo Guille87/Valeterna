@@ -354,14 +354,14 @@ def _player_menu(player, enemy, defeated_enemies: list, immobilized: bool = Fals
         # Opciones numeradas dinámicamente: (etiqueta, token que devuelve).
         options: list[tuple[str, str]] = [
             ("Atacar (no puedes moverte)" if immobilized else "Atacar", "atacar"),
-            ("Objetos", "objetos"),
-            ("Info", "info"),
-            ("Huir", "huir"),
         ]
         if not immobilized:
-            options.append(("Defender", "defender"))
             if player.get_equipped_active_skills():
                 options.append(("Habilidades", "habilidades"))
+            options.append(("Defender", "defender"))
+        options.append(("Objetos", "objetos"))
+        options.append(("Huir", "huir"))
+        options.append(("Info", "info"))
         if enemy.name in defeated_enemies:
             options.append(("Auto-Batalla", "auto"))
             options.append(("Auto-Batalla Turbo", "turbo"))
@@ -827,6 +827,9 @@ def _execute_turn(
         if poison_chance and random.random() < poison_chance:
             if defender.apply_status("veneno", 3):
                 print(console.colorize(f"🧪 ¡Tu contacto envenena a {defender.name}!", console.Fore.GREEN))
+                reaction_msg = defender.pop_status_reaction_message()
+                if reaction_msg:
+                    print(reaction_msg)
             else:
                 # La probabilidad acertó, pero el objetivo es inmune: decirlo,
                 # si no parece que la pasiva nunca llegó siquiera a intentarlo.
@@ -848,6 +851,10 @@ def _try_inflict_weapon_status(player: "Player", enemy, element: str | None) -> 
     # (igual que no cuenta su bonus de daño ni su elemento).
     if any(e["name"] == "desarmado" for e in player.status_effects):
         return
+    # Reacción "fusión" ya consumida: el rayo acaba de romper el hielo en vez
+    # de intentar paralizar, no lo intentemos también aquí.
+    if getattr(enemy, "just_shattered", False):
+        return
     weapon = player.equipped_weapon
     inflicts = weapon.get_inflicts() if weapon and hasattr(weapon, "get_inflicts") else None
     if not inflicts:
@@ -863,6 +870,9 @@ def _try_inflict_weapon_status(player: "Player", enemy, element: str | None) -> 
 
     if random.random() < chance and enemy.apply_status(inflicts["status"], duration, inflicts.get("power", 0)):
         console.warning(_status_inflicted_message(enemy.name, inflicts["status"]))
+        reaction_msg = enemy.pop_status_reaction_message()
+        if reaction_msg:
+            print(reaction_msg)
 
 
 def _status_inflicted_message(name: str, status: str) -> str:

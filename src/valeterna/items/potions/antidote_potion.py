@@ -4,10 +4,13 @@ from valeterna.ui import console
 
 class AntidotePotion(Potion):
     """Elimina de golpe los estados negativos con daño/bloqueo por turno
-    (veneno, quemadura, parálisis, congelación). No toca buffs ni maldiciones
-    de stats (desarmado/maldicion/confusion), que tienen su propia lógica."""
+    (veneno, quemadura, parálisis, congelación, combustión). No toca buffs ni
+    maldiciones de stats (desarmado/maldicion/confusion), que tienen su propia
+    lógica."""
 
-    CURABLE = ("veneno", "quemado", "paralizado", "congelado")
+    # "combustion" (v0.11.0-c) es la fusión de quemado+veneno: sigue siendo
+    # curable, ya que ambos ingredientes por separado ya lo eran.
+    CURABLE = ("veneno", "quemado", "paralizado", "congelado", "combustion")
 
     def __init__(self, name: str, description: str, value: int):
         super().__init__(name, description, value, duration=0)
@@ -25,7 +28,7 @@ class AntidotePotion(Potion):
         return True
 
     def get_stats_info(self) -> str:
-        return console.colorize("Cura veneno, quemadura, parálisis y congelación", console.Fore.GREEN)
+        return console.colorize("Cura veneno, quemadura, parálisis, congelación y combustión", console.Fore.GREEN)
 
     @classmethod
     def from_dict(cls, data: dict) -> "AntidotePotion":

@@ -272,16 +272,27 @@ useful when you deal magical damage, never a hard shutdown, and thematically
   sagrado/oscuridad/arcano weapon was still mitigated by armour instead of
   magic resist. Now `is_magical_element(element)` also triggers it.
 
-### Elemental reactions *(planned — balance carefully)*
+### Elemental reactions *(implemented in v0.11.0-c)*
 
-- `fuego` already melts `congelado` (kept).
-- `rayo` on a `congelado` target: **shatter** — removes freeze, deals bonus
-  damage.
-- `fuego` + `veneno` on the same target: the two DoTs combine into a stronger
-  one for the shared remaining duration.
+- `fuego` already melts `congelado` (kept, no bonus damage — a separate,
+  smaller interaction than shatter below).
+- `rayo` on a `congelado` target: **shatter** — removes the freeze instantly
+  and deals ×1.5 bonus damage instead of attempting the usual paralysis roll.
+  Symmetric on `Player` and `Enemy`; four crafted/dropped weapons cover each
+  physical element today (Garra de Tormenta = rayo, Cetro de Escarcha =
+  hielo, plus fuego/veneno), so both sides of the reaction are reachable
+  through normal play, not just enemy spells.
+- `quemado` + `veneno` on the same target (in either order): **combustion** —
+  the two merge into a single `combustion` status instead of coexisting,
+  dealing more damage per turn than either alone (still halves physical
+  attack like burn, still curable by Antídoto), with duration = max of the
+  two merged effects.
 
-Watch that reactions don't become the only viable strategy or trivialise
-elite/guardian fights.
+Balance note: since shatter consumes the rayo hit's own paralysis roll and
+combustion replaces two separate DoTs with one (not simply adding their
+damage), reactions trade raw stacking for a single stronger effect rather than
+compounding — kept deliberately modest so they read as a nice bonus, not the
+only viable strategy against elite/guardian fights later.
 
 ---
 
@@ -612,8 +623,6 @@ is a living document and any of this can change.
   the elites + guardian, 5–6 from the Arena: the direction is set, the names /
   which-6-slots / exact numbers are not. Mine Diablo 3's set catalogue for
   adaptable ideas.
-- **Elemental reactions** (§5) — final rules and, above all, that they don't
-  break elite/guardian fights.
 - **Skill unlocks** — split between "by level" (early) and "by guardian defeat"
   (later); the exact split comes out of the power-budget phase.
 - **Standalone status immunities** — decided per enemy as the roster is built.

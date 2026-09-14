@@ -41,6 +41,8 @@ _STATUS_PATTERNS = (
     (re.compile(r"\b(?:confusi[oó]n|confundid[oa]s?)\b", re.IGNORECASE), Fore.CYAN),
     # contraataque / represalia: magenta claro.
     (re.compile(r"\b(?:contraataqu\w*|contraatac\w*|represalias?)\b", re.IGNORECASE), Fore.LIGHTMAGENTA_EX),
+    # combustión (fusión fuego+veneno): verde claro, distinta del verde normal del veneno.
+    (re.compile(r"\b(?:combusti[oó]n\w*)\b", re.IGNORECASE), Fore.LIGHTGREEN_EX),
 )
 
 

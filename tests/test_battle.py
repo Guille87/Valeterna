@@ -832,7 +832,7 @@ def test_defending_halves_incoming_damage(player):
 def test_run_player_turn_defender_sets_the_stance_and_consumes_the_turn(player, weak_enemy, monkeypatch):
     weak_enemy.stats.max_health = 50
     weak_enemy.stats.health = 50
-    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "5")  # Defender
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "2")  # Defender
 
     signal, _ = _run_player_turn(player, weak_enemy, defeated_enemies=[], is_auto=False)
 
@@ -855,6 +855,29 @@ def test_turbo_option_is_offered_only_for_defeated_enemies(player, weak_enemy, m
 
     monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "7")
     assert _player_menu(player, weak_enemy, defeated_enemies=[weak_enemy.name]) == "turbo"
+
+
+def test_player_menu_options_are_in_the_requested_order(player, weak_enemy, monkeypatch, capsys):
+    """Orden pedido por el usuario: Atacar, Habilidades, Defender, Objetos,
+    Huir, Info, Auto-Batalla, Auto-Batalla Turbo (Habilidades solo si hay
+    activas equipadas)."""
+    from valeterna.combat.battle import _player_menu
+
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda prompt: "1")
+
+    _player_menu(player, weak_enemy, defeated_enemies=[weak_enemy.name])
+    line = capsys.readouterr().out.splitlines()[0]
+    assert line == (
+        "1. Atacar | 2. Defender | 3. Objetos | 4. Huir | 5. Info | 6. Auto-Batalla | 7. Auto-Batalla Turbo"
+    )
+
+    player.equipped_skills = ["golpe_firme"]
+    _player_menu(player, weak_enemy, defeated_enemies=[weak_enemy.name])
+    line = capsys.readouterr().out.splitlines()[0]
+    assert line == (
+        "1. Atacar | 2. Habilidades | 3. Defender | 4. Objetos | 5. Huir | "
+        "6. Info | 7. Auto-Batalla | 8. Auto-Batalla Turbo"
+    )
 
 
 def test_turbo_auto_battle_runs_without_any_sleep(player, monkeypatch):

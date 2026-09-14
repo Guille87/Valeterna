@@ -310,6 +310,99 @@ el cambio a mitigación multiplicativa.
     oscuridad"), usados en `combat.super_effective`/`immune_hit`/
     `resisted_hit`. Si se añaden elementos nuevos que sean femeninos, hay que
     sumarlos a `_FEMININE_ELEMENTS`.
+- [x] **v0.11.0-c: reacciones elementales** (GDD §5, la pareja que quedó
+  pendiente de v0.11.0-b).
+  - **Fusión (rayo + congelado)**: un golpe de rayo contra un objetivo ya
+    congelado le rompe el hielo al instante y hace ×1.5 de daño extra, en vez
+    del intento normal de paralizar. Nueva `is_shatter_hit()` en
+    `combat/elements.py`, comprobada dentro de `Player.take_damage()` y
+    `Enemy.take_damage()` (simétrico en los dos lados). El problema fue que
+    "no paralizar esta vez" no lo decide `take_damage()`, sino una llamada
+    *aparte* justo después (`_try_inflict_weapon_status()` para un arma de
+    rayo del jugador, `Mago._cast_thunder()` para el rayo del enemigo) — así
+    que hizo falta un flag de instancia (`just_shattered`, se resetea en cada
+    `take_damage()`) que esa llamada aparte consulta antes de tirar el
+    paralizado, el mismo patrón que ya usaba `took_physical_hit` para la
+    Represalia del Guerrero. Los 4 elementos físicos ya tenían arma jugable
+    (Garra de Tormenta = rayo de la Gárgola, Cetro de Escarcha = hielo del
+    Nigromante, más las de fuego/veneno), así que la reacción es alcanzable
+    en ambas direcciones jugando normal, no solo desde los hechizos del Mago.
+  - **Combustión (fuego + veneno)**: aplicar quemado mientras ya hay veneno
+    activo (o al revés, o cualquiera de los dos si ya hay combustión) los
+    funde en un único estado `combustion` en vez de dejarlos coexistir, con
+    más daño por turno que cualquiera de los dos por separado (`max_health //
+    6`, frente a `// 16` de quemado y `// 8` de veneno) y duración = el
+    máximo de los dos fusionados. Nueva `resolve_status_reaction()` en
+    `combat/elements.py`, metida dentro de `apply_status()` en `Player` y
+    `Enemy` — al estar centralizada ahí, cada sitio que ya aplicaba quemado o
+    veneno (armas con elemento, los hechizos de fuego/veneno del Mago,
+    Veneno de Contacto del Pícaro, los ataques de fuego de Dragón/Orco/
+    Demonio) se beneficia de la fusión sin tocar ni una línea de esos sitios.
+    `combustion` también reduce el ataque físico a la mitad igual que
+    quemado (`get_attack_damage()`/`get_attack_range()` ahora comprueban los
+    dos nombres) y sigue en `AntidotePotion.CURABLE` — se detectó con un test
+    que fallaba (`test_antidote_removes_debuffs_and_leaves_the_rest`) al
+    fusionar quemado+veneno en un nombre que el antídoto no reconocía. Un
+    enemigo inmune al *estado* veneno (Esqueleto, Gárgola, Espíritu
+    Vengativo) nunca llega a tener las dos mitades a la vez, así que la
+    fusión queda bloqueada de forma natural sin necesitar una inmunidad a
+    `combustion` aparte en ningún enemigo de los 14 actuales.
+  - Mensajes nuevos en `i18n/catalog_es.py` (`combat.enemy_combustion`,
+    `status.combustion`) y color propio (`Fore.LIGHTGREEN_EX`) en
+    `ui/console.py::_STATUS_PATTERNS` para que "combustión" se resalte igual
+    que el resto de estados en cualquier línea que la mencione.
+- [x] **Ronda de feedback jugando con v0.11.0-c** (probando la combustión
+  contra el Gólem de Piedra con daga de veneno + espada de fuego, y la
+  pasiva Veneno de Contacto encima).
+  - **Orden de mensajes al fusionar**: salía primero "🔥☣️ ¡El fuego y el
+    veneno se funden en combustión!" y DESPUÉS "¡Gólem de Piedra ha sido
+    quemado!" — al revés de lo esperado (primero se ve qué le pasó, luego la
+    reacción). Causa: `apply_status()` imprimía el aviso de fusión ella misma,
+    antes de devolver el control a quien llamó (que imprime su propio "ha
+    sido quemado/envenenado" DESPUÉS). Arreglado quitando el `print()` de
+    dentro de `apply_status()`: ahora solo deja `self.last_status_reaction`
+    listo, y el nuevo `pop_status_reaction_message()` (`Player`/`Enemy`) lo
+    devuelve y limpia — cada sitio que aplica quemado/veneno llama a este
+    método justo DESPUÉS de imprimir su propio mensaje, así que el orden en
+    pantalla queda garantizado.
+  - **Reaplicar quemado/veneno estando ya en combustión no debería hacer
+    nada**: en la misma prueba, tras sangrar con Golpe Bajo y envenenar de
+    nuevo con Veneno de Contacto (el Gólem YA tenía combustión, no quemado),
+    volvía a salir el aviso de fusión — y aunque no se vio en el log, la
+    duración también se estaba refrescando, lo cual tampoco tenía sentido
+    (ya es las dos cosas a la vez, un enemigo no puede "quemarse más" estando
+    ya en combustión). Nueva `is_status_blocked_by_combustion()` en
+    `combat/elements.py`, comprobada al principio de `apply_status()` en
+    ambas clases: si el objetivo ya tiene combustión, un intento de aplicar
+    quemado o veneno no hace absolutamente nada (`return False`/no-op), ni
+    siquiera refresca duración.
+  - **Antídoto**: su texto (`get_stats_info()`, la descripción del ítem en la
+    tienda, y el docstring de la clase) ahora menciona explícitamente que
+    también cura la combustión, aunque el `CURABLE` ya la incluía desde el
+    principio — el usuario avisó de que en algún momento futuro puede que
+    cada objeto cure un subconjunto distinto de estados en vez de que el
+    Antídoto lo cure todo, pero por ahora, al no estar planificado, se deja
+    así.
+  - Tests nuevos en `tests/test_elemental_reactions.py`:
+    `pop_status_reaction_message` (sin reacción / con reacción y se
+    consume), bloqueo de reaplicación en `Player`/`Enemy` (sin refrescar
+    duración), y un test de integración que verifica con `capsys`/parcheando
+    `print` que el mensaje "ha sido quemado" sale antes que el de fusión.
+- [x] **Reordenado el menú de combate** (a petición del usuario, sin relación
+  con las reacciones elementales): de "Atacar, Objetos, Info, Huir, Defender,
+  Habilidades, Auto-Batalla, Auto-Batalla Turbo" a "Atacar, Habilidades,
+  Defender, Objetos, Huir, Info, Auto-Batalla, Auto-Batalla Turbo" — las dos
+  opciones de acción (atacar/habilidades) y la defensiva (defender) van
+  primero, las utilitarias después. `_player_menu()` ya construía la lista de
+  opciones dinámicamente como `(etiqueta, token)` y las numeraba por
+  enumeración, así que reordenar fue solo reordenar esa construcción; no hay
+  ningún sitio que dependa de un índice fijo. Un test en `test_battle.py`
+  hardcodeaba la posición antigua de "Defender" ("5") y se quedó colgado en
+  bucle infinito al pasar a probar contra la nueva numeración (pedía "Info"
+  una y otra vez con la misma respuesta fija) — corregido a "2", y añadido un
+  test nuevo (`test_player_menu_options_are_in_the_requested_order`) que fija
+  el orden completo, con y sin habilidades equipadas, para que un futuro
+  reordenamiento accidental no pase desapercibido.
 
 ## Pulido final (casi lo último antes de 1.0)
 

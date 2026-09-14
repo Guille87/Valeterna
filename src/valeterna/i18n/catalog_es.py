@@ -16,6 +16,7 @@ CATALOG: dict[str, str] = {
     "status.fractura_magica": "fractura mágica",
     "status.sangrado": "sangrado",
     "status.aturdido": "aturdimiento",
+    "status.combustion": "combustión",
     # --- Participios para "X ha sido {verbo}" al aplicar un estado ---
     "status.verb.quemado": "quemado",
     "status.verb.veneno": "envenenado",
@@ -42,6 +43,7 @@ CATALOG: dict[str, str] = {
     "combat.enemy_burn": "🔥 La quemadura le quita {amount} HP a {name}.",
     "combat.enemy_poison": "☣️ El veneno le quita {amount} HP a {name}.",
     "combat.enemy_bleed": "🩸 El sangrado le quita {amount} HP a {name}.",
+    "combat.enemy_combustion": "🔥☣️ La combustión le quita {amount} HP a {name}.",
     "combat.enemy_frozen": "❄️  {name} está congelado y no puede moverse.",
     "combat.enemy_thaws": "El hielo que envuelve a {name} se resquebraja.",
     "combat.enemy_paralysed": "⚡ ¡{name} está paralizado y pierde el turno!",

@@ -2,7 +2,15 @@ import random
 
 from valeterna import i18n
 from valeterna.characters.stats import Stats, apply_mitigation, resolve_hit
-from valeterna.combat.elements import affinity_multiplier
+from valeterna.combat.elements import (
+    COMBUSTION_MERGE_NAMES,
+    COMBUSTION_STATUS,
+    SHATTER_DAMAGE_MULT,
+    affinity_multiplier,
+    is_shatter_hit,
+    is_status_blocked_by_combustion,
+    resolve_status_reaction,
+)
 from valeterna.ui import console
 
 
@@ -29,6 +37,15 @@ class Enemy:
         # Mensajes a mostrar DESPUÉS del resumen del turno (barras de vida),
         # no en mitad de él: cambios de estado tipo "se ha enfurecido".
         self._announcements: list[str] = []
+        # ¿El último take_damage() disparó la reacción "fusión" (rayo contra
+        # congelado)? Lo consulta quien intente aplicar el estado del rayo justo
+        # después (p. ej. _try_inflict_weapon_status), para no paralizar encima
+        # de una reacción que ya "ha gastado" ese golpe de rayo.
+        self.just_shattered = False
+        # Si el último apply_status() disparó la reacción "combustión", su
+        # nombre (para que quien llamó imprima el aviso DESPUÉS de su propio
+        # mensaje de "ha sido quemado/envenenado" — ver pop_status_reaction_message()).
+        self.last_status_reaction: str | None = None
 
     def get_gold_drop(self) -> int:
         return random.randint(self.gold_min, self.gold_max)
@@ -78,6 +95,13 @@ class Enemy:
         if any(e["name"] == "consagrado" for e in self.status_effects):
             damage = int(damage * 1.25)
 
+        # Reacción "fusión": un golpe de rayo contra un enemigo congelado rompe
+        # el hielo al instante y hace daño extra, en vez del paralizado normal.
+        self.just_shattered = is_shatter_hit(element, {e["name"] for e in self.status_effects})
+        if self.just_shattered:
+            damage = int(damage * SHATTER_DAMAGE_MULT)
+            self.status_effects = [e for e in self.status_effects if e["name"] != "congelado"]
+
         if is_magical:
             # "fractura mágica": la resistencia mágica cuenta como 0 mientras dure.
             fractured = any(e["name"] == "fractura_magica" for e in self.status_effects)
@@ -87,6 +111,14 @@ class Enemy:
             mitigation = self.stats.armor - armor_penetration
         actual_damage = apply_mitigation(damage, mitigation)
         self.stats.health -= actual_damage
+        if self.just_shattered:
+            print(
+                console.colorize(
+                    f"⚡❄️ ¡El rayo hace añicos el hielo de {self.name}, causándole daño extra!",
+                    console.Fore.YELLOW,
+                    bright=True,
+                )
+            )
         return actual_damage
 
     def is_alive(self) -> bool:
@@ -94,9 +126,10 @@ class Enemy:
 
     def get_attack_damage(self) -> int:
         dmg = random.randint(self.stats.min_atk, self.stats.max_atk)
-        # "quemado" reduce el ataque FÍSICO a la mitad (los ataques mágicos de
-        # los enemigos calculan su daño aparte y no pasan por aquí).
-        if any(e["name"] == "quemado" for e in self.status_effects):
+        # "quemado" (y "combustión", que lo incluye) reduce el ataque FÍSICO a
+        # la mitad (los ataques mágicos de los enemigos calculan su daño aparte
+        # y no pasan por aquí).
+        if any(e["name"] in ("quemado", "combustion") for e in self.status_effects):
             dmg //= 2
         return dmg
 
@@ -117,9 +150,31 @@ class Enemy:
 
     def apply_status(self, name: str, duration: int, power: int = 0) -> bool:
         """Aplica un estado. Devuelve False (sin efecto) si el enemigo es inmune
-        a él. Si ya lo tiene, refresca la duración al máximo de ambas."""
+        a él. Si ya lo tiene, refresca la duración al máximo de ambas.
+
+        Reacción "combustión": si `name` es quemado/veneno y el otro de la
+        pareja ya está presente, los funde en un único estado combustión más
+        dañino en vez de dejarlos coexistir (`last_status_reaction` queda listo
+        para que `pop_status_reaction_message()` lo anuncie, DESPUÉS de que
+        quien llamó imprima su propio mensaje de "ha sido quemado/envenenado").
+        Mientras la combustión ya esté activa, un nuevo intento de quemar o
+        envenenar no hace nada (ni refresca duración, ni vuelve a fundirlos)."""
+        self.last_status_reaction = None
         if self.is_immune_to_status(name):
             return False
+        current_names = {e["name"] for e in self.status_effects}
+        if is_status_blocked_by_combustion(current_names, name):
+            return False
+        reaction = resolve_status_reaction(current_names, name)
+        if reaction and not self.is_immune_to_status(reaction):
+            merged_duration = duration
+            for effect in self.status_effects[:]:
+                if effect["name"] in COMBUSTION_MERGE_NAMES:
+                    merged_duration = max(merged_duration, effect["duration"])
+                    self.status_effects.remove(effect)
+            self.status_effects.append({"name": reaction, "duration": merged_duration, "power": power, "fresh": True})
+            self.last_status_reaction = reaction
+            return True
         for effect in self.status_effects:
             if effect["name"] == name:
                 effect["duration"] = max(effect["duration"], duration)
@@ -127,6 +182,21 @@ class Enemy:
                 return True
         self.status_effects.append({"name": name, "duration": duration, "power": power, "fresh": True})
         return True
+
+    def pop_status_reaction_message(self) -> str | None:
+        """Si el último `apply_status()` disparó la reacción "combustión",
+        devuelve su mensaje (y limpia el flag); `None` si no hubo ninguna.
+        Se llama DESPUÉS del mensaje propio de quien aplicó el estado, para
+        que el orden en pantalla sea "ha sido quemado" y luego "se funden en
+        combustión", no al revés."""
+        if self.last_status_reaction != COMBUSTION_STATUS:
+            return None
+        self.last_status_reaction = None
+        return console.colorize(
+            f"🔥☣️ ¡El fuego y el veneno se funden en combustión en {self.name}!",
+            console.Fore.LIGHTGREEN_EX,
+            bright=True,
+        )
 
     def on_turn_start(self) -> bool:
         """Procesa los estados al inicio del turno del enemigo. Devuelve si puede
@@ -165,6 +235,10 @@ class Enemy:
                 dmg = max(1, self.stats.max_health // 12)
                 self.stats.health -= dmg
                 console.error(i18n.t("combat.enemy_bleed", amount=dmg, name=self.name))
+            elif effect["name"] == "combustion":
+                dmg = max(1, self.stats.max_health // 6)
+                self.stats.health -= dmg
+                console.error(i18n.t("combat.enemy_combustion", amount=dmg, name=self.name))
 
         return can_act
 
