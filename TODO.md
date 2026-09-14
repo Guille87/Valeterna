@@ -403,6 +403,49 @@ el cambio a mitigación multiplicativa.
   test nuevo (`test_player_menu_options_are_in_the_requested_order`) que fija
   el orden completo, con y sin habilidades equipadas, para que un futuro
   reordenamiento accidental no pase desapercibido.
+- [x] **v0.12.0-a: cimientos del paquete de mundo** (GDD §3/§9.2/§9.4 — primera
+  sub-fase de v0.12.0, "El mundo, parte 1"). Deliberadamente solo datos +
+  migración de guardado, sin tocar todavía `game_loop` ni ningún menú: nada de
+  esto cambia cómo se juega hoy.
+  - `world/zone.py::Zone` (dataclass congelado: `id`, `name`, `theme`,
+    `enemies`, `sub_locations`, `key_npcs`) + un módulo por zona en
+    `world/data/` (8 en total: Piedrablanca — el pueblo, sin enemigos — y las
+    7 regiones de la tabla del GDD §3), reunidos en `world/map.py` como
+    `ZONE_ORDER` (la cadena lineal) y `ZONES` (dict por id).
+  - Los 14 enemigos actuales repartidos en sus zonas según la tabla del GDD
+    (Los Yermos: Goblin/Huargo/Esqueleto/Bandido; Bosque de los Susurros:
+    Orco/Espíritu Vengativo/Troll; Cañón del Trueno: Gárgola/Gólem de Piedra;
+    Torre de los Arcanos: Mago/Nigromante; Ciudadela en Ruinas: Ángel
+    Caído/Demonio; El Corazón de la Brecha: Dragón). Ciénaga de los Ahogados
+    se queda sin roster (todo nuevo, GDD §4) — zona con `enemies=()` a
+    propósito, no un descuido.
+  - `world/map.py::default_zone_for_progress(defeated_enemies)`: infiere la
+    zona "actual" recorriendo `ZONE_ORDER` y viendo hasta dónde hay algún
+    enemigo backbone ya derrotado, saltándose sin cortar el avance las zonas
+    que todavía no tienen roster (si no, Ciénaga bloquearía para siempre que
+    la zona inferida avanzase hasta Cañón del Trueno). Es una aproximación
+    deliberada: todavía no hay guardianes que abran zonas de verdad, así que
+    se infiere del progreso de combate existente.
+  - **Guardado v2**: `Player.mundo` (dict con `zona_actual`,
+    `zonas_visitadas`, `misiones`, `banderas`, `dialogos_vistos`, `diario`,
+    `arena_mejor_oleada`) se inicializa en `Player.__init__` (Piedrablanca por
+    defecto) y se persiste en `persistence/save_load.py`. `banderas`/
+    `dialogos_vistos` viven como `set` en memoria (más natural para
+    comprobar pertenencia) pero JSON no tiene sets, así que se guardan como
+    listas ordenadas y se reconstruyen como `set` al cargar. Migración v1 →
+    v2: una partida sin bloque `"mundo"` infiere `zona_actual` con
+    `default_zone_for_progress()` y rellena `zonas_visitadas` con toda la
+    cadena hasta ahí; el resto empieza vacío. No se tocó nada del guardado ya
+    existente (`clase`, `habilidades_equipadas` siguen donde estaban, no se
+    movieron dentro de `mundo` pese a que el GDD los mencione ahí — mover
+    algo que ya funciona solo para encajar con el documento habría sido una
+    migración innecesaria).
+  - Tests nuevos: `tests/test_world.py` (consistencia `ZONE_ORDER`/`ZONES`,
+    cada uno de los 14 enemigos backbone en exactamente una zona,
+    `zone_for_enemy`, varios casos de `default_zone_for_progress` incluyendo
+    el salto de una zona vacía) y en `tests/test_save_load.py` (ida y vuelta
+    de un `mundo` no vacío con sets, y migración de una partida vieja sin
+    bloque `mundo`).
 
 ## Pulido final (casi lo último antes de 1.0)
 

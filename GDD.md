@@ -563,7 +563,11 @@ migrates module by module, starting with combat and menus.
 Data-driven like `characters/enemies/` (one file per zone): `world/zone.py`
 (`Zone`), `world/npc.py` (`NPC`, `Conversation`, `DialogueNode`, `Choice`),
 `world/quest.py` (`Quest`), `world/map.py` (graph, travel, gating),
-`world/data/*.py` (one module per zone).
+`world/data/*.py` (one module per zone). **`Zone`, `world/data/*.py` and the
+`ZONE_ORDER`/`ZONES` registry in `world/map.py` are implemented (v0.12.0-a)**
+— `world/npc.py`/`world/quest.py` and the actual travel/gating logic (only a
+progress-inference helper, `default_zone_for_progress()`, exists so far, for
+save migration) are still to come.
 
 ### 9.3 Other new modules
 
@@ -573,14 +577,18 @@ Data-driven like `characters/enemies/` (one file per zone): `world/zone.py`
 - `items/loot.py` — common-drop roll tables per zone tier.
 - `ui/exploration.py` — the zone loop (`omit`ted from coverage like `ui/menus.py`).
 
-### 9.4 Save schema v2
+### 9.4 Save schema v2 *(implemented in v0.12.0-a)*
 
-Adds a `mundo` block: `clase`, `zona_actual`, `zonas_visitadas`,
-`habilidades_equipadas`, `misiones`, `banderas`, `dialogos_vistos`, `diario`,
-`arena_mejor_oleada`. Migration v1 → v2 (`persistence/save_load.py`, same
-pattern as prior back-fills): no `mundo` block → placed in the zone matching
-`defeated_enemies` progress, class `vagabundo`, everything else empty.
-`unlocked_enemies` / `defeated_enemies` stay the source of truth for gating.
+Adds a `mundo` block: `zona_actual`, `zonas_visitadas`, `misiones`,
+`banderas`, `dialogos_vistos`, `diario`, `arena_mejor_oleada`. Migration v1 →
+v2 (`persistence/save_load.py`, same pattern as prior back-fills): no `mundo`
+block → `zona_actual` inferred from `defeated_enemies` progress
+(`world.map.default_zone_for_progress()`), `zonas_visitadas` backfilled to
+every zone up to it, everything else empty. `unlocked_enemies` /
+`defeated_enemies` stay the source of truth for gating. (`clase` and
+`habilidades_equipadas` already existed as top-level save keys since v0.10.0,
+before this GDD section was written — they weren't moved under `mundo`, to
+avoid an unrelated migration for fields that already work.)
 
 ### 9.5 Testing
 

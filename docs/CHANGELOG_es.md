@@ -42,6 +42,16 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
   está activa, un nuevo intento de quemar o envenenar al mismo objetivo ya no
   hace nada (ni refresca la duración, ni repite el mensaje de fusión) — ya es
   las dos cosas a la vez.
+- **Cimientos del paquete de mundo** (GDD §3/§9.2/§9.4, v0.12.0-a): nuevo
+  paquete `world/` con los datos de zona — `Zone` (id, nombre, tema, enemigos
+  backbone, sub-lugares, NPCs clave) y un módulo por zona en `world/data/`,
+  reunidos en `world/map.py` (`ZONE_ORDER`/`ZONES`). El esquema de guardado v2
+  añade un bloque `mundo` al archivo (`zona_actual`, `zonas_visitadas`,
+  `misiones`, `banderas`, `dialogos_vistos`, `diario`,
+  `arena_mejor_oleada`), migrado automáticamente para partidas anteriores a
+  este cambio (la zona actual se infiere del progreso de combate). Es solo
+  la base — `game_loop` todavía no usa zonas, eso llega en la siguiente
+  sub-fase.
 
 ### Cambiado
 

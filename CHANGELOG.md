@@ -41,6 +41,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   and once combustion is active, a further attempt to burn or poison the same
   target no longer does anything (no duration refresh, no repeated fusion
   message) — it's already both at once.
+- **World package foundations** (GDD §3/§9.2/§9.4, v0.12.0-a): a new `world/`
+  package holds zone data — `Zone` (id, name, theme, backbone enemies,
+  sub-locations, key NPCs) and one module per zone in `world/data/`, collected
+  into `world/map.py`'s `ZONE_ORDER`/`ZONES`. Save schema v2 adds a `mundo`
+  block to the save file (`zona_actual`, `zonas_visitadas`, `misiones`,
+  `banderas`, `dialogos_vistos`, `diario`, `arena_mejor_oleada`), migrated
+  automatically for saves from before this change (the current zone is
+  inferred from combat progress). Purely groundwork — nothing in `game_loop`
+  uses zones yet; that's the next sub-phase.
 
 ### Changed
 

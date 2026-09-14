@@ -14,6 +14,7 @@ from valeterna.combat.elements import (
 from valeterna.inventory.inventory import Inventory
 from valeterna.items.equipment import ARMOR_SLOTS, slot_label
 from valeterna.ui import console
+from valeterna.world.map import ZONE_ORDER
 
 
 class Player(Character):
@@ -61,6 +62,22 @@ class Player(Character):
         # vez (a diferencia de defeated_enemies, que solo marca "ya visto"). Usado
         # por el Bestiario.
         self.enemy_kill_counts: dict[str, int] = {}
+
+        # Estado de mundo (GDD §8/§9.4, cimientos de v0.12.0-a): posición
+        # actual, zonas ya visitadas, misiones, banderas de historia, diálogos
+        # vistos, diario y mejor oleada de la Arena. Todavía no lo usa el bucle
+        # de juego (game_loop sigue siendo el menú plano de siempre) — se
+        # persiste ya para no tener que migrar el guardado una segunda vez
+        # cuando llegue el viaje/exploración de verdad.
+        self.mundo: dict = {
+            "zona_actual": ZONE_ORDER[0],
+            "zonas_visitadas": [ZONE_ORDER[0]],
+            "misiones": {},
+            "banderas": set(),
+            "dialogos_vistos": set(),
+            "diario": [],
+            "arena_mejor_oleada": 0,
+        }
 
     # --- LÓGICA DE COMBATE ---
 

@@ -53,6 +53,7 @@ def test_save_and_load_round_trip(tmp_save_dir):
     assert loaded_player.equipped_armor["amuleto"].name == "Amuleto de Resistencia"
     assert loaded_player.equipped_armor["peto"] is None
     assert loaded_player.enemy_kill_counts == {"Goblin": 3, "Esqueleto": 1}
+    assert loaded_player.mundo == original.mundo
 
 
 def test_load_recognizes_player_by_registered_name_ignoring_case(tmp_save_dir):
@@ -112,6 +113,68 @@ def test_load_backfills_kill_count_for_legacy_saves_without_the_field(tmp_save_d
 
     assert result is not None
     assert loaded_player.enemy_kill_counts == {"Goblin": 1}
+
+
+def test_save_and_load_round_trips_a_non_default_mundo_state(tmp_save_dir):
+    """`banderas`/`dialogos_vistos` viven como `set` en memoria (JSON no tiene
+    sets) — confirma que sobreviven al guardado/carga como lo que son."""
+    original = _build_player()
+    original.mundo["zona_actual"] = "los_yermos"
+    original.mundo["zonas_visitadas"] = ["piedrablanca", "los_yermos"]
+    original.mundo["misiones"] = {"cazar_goblins": {"estado": "activa", "progreso": 2}}
+    original.mundo["banderas"] = {"conocio_a_cael"}
+    original.mundo["dialogos_vistos"] = {"cael_intro"}
+    original.mundo["diario"] = ["Llegué a Los Yermos."]
+    original.mundo["arena_mejor_oleada"] = 3
+    save_game(original, unlocked_enemies=["Goblin"], defeated_enemies=[])
+
+    loaded_player = Player(original.name, Stats(1, 1, 1, 1, 1))
+    load_game(loaded_player)
+
+    assert loaded_player.mundo == original.mundo
+    assert isinstance(loaded_player.mundo["banderas"], set)
+    assert isinstance(loaded_player.mundo["dialogos_vistos"], set)
+
+
+def test_load_migrates_legacy_save_without_the_mundo_block(tmp_save_dir):
+    """Partidas guardadas antes de v0.12.0-a no tienen bloque "mundo": se
+    infiere la zona actual del progreso de combate (`defeated_enemies`) y se
+    marcan como visitadas todas las zonas de la cadena hasta ahí."""
+    legacy_save_data = {
+        "player_name": "Guille",
+        "unlocked_enemies": ["Goblin", "Huargo", "Esqueleto", "Bandido", "Orco"],
+        "defeated_enemies": ["Goblin", "Huargo", "Esqueleto"],
+        "gold": 10,
+        "player_stats": {
+            "level": 1,
+            "experience": 0,
+            "health": 100,
+            "max_health": 100,
+            "min_atk": 5,
+            "max_atk": 10,
+            "armor": 2,
+            "magic_resist": 0,
+        },
+        "inventory": [],
+        "inventory_quantities": {},
+        "equipped_weapon": None,
+        "equipped_armor": None,
+        # sin "mundo"
+    }
+    encoded = base64.b64encode(json.dumps(legacy_save_data).encode("utf-8"))
+    (tmp_save_dir / "Guille.sav").write_bytes(encoded)
+
+    loaded_player = Player("Guille", Stats(1, 1, 1, 1, 1))
+    result = load_game(loaded_player)
+
+    assert result is not None
+    assert loaded_player.mundo["zona_actual"] == "los_yermos"
+    assert loaded_player.mundo["zonas_visitadas"] == ["piedrablanca", "los_yermos"]
+    assert loaded_player.mundo["misiones"] == {}
+    assert loaded_player.mundo["banderas"] == set()
+    assert loaded_player.mundo["dialogos_vistos"] == set()
+    assert loaded_player.mundo["diario"] == []
+    assert loaded_player.mundo["arena_mejor_oleada"] == 0
 
 
 def test_save_creates_backup_of_previous_save(tmp_save_dir):
