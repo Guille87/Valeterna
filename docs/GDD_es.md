@@ -597,7 +597,11 @@ combate y menús.
 Guiado por datos como `characters/enemies/` (un archivo por zona):
 `world/zone.py` (`Zone`), `world/npc.py` (`NPC`, `Conversation`, `DialogueNode`,
 `Choice`), `world/quest.py` (`Quest`), `world/map.py` (grafo, viaje, puertas),
-`world/data/*.py` (un módulo por zona).
+`world/data/*.py` (un módulo por zona). **`Zone`, `world/data/*.py` y el
+registro `ZONE_ORDER`/`ZONES` de `world/map.py` ya están implementados
+(v0.12.0-a)** — `world/npc.py`/`world/quest.py` y la lógica real de
+viaje/puertas todavía no existen (solo hay una ayuda para inferir progreso,
+`default_zone_for_progress()`, usada por la migración de guardado).
 
 ### 9.3 Otros módulos nuevos
 
@@ -608,15 +612,19 @@ Guiado por datos como `characters/enemies/` (un archivo por zona):
 - `ui/exploration.py` — el bucle de zona (`omit`ido de la cobertura como
   `ui/menus.py`).
 
-### 9.4 Esquema de guardado v2
+### 9.4 Esquema de guardado v2 *(implementado en v0.12.0-a)*
 
-Añade un bloque `mundo`: `clase`, `zona_actual`, `zonas_visitadas`,
-`habilidades_equipadas`, `misiones`, `banderas`, `dialogos_vistos`, `diario`,
-`arena_mejor_oleada`. Migración v1 → v2 (`persistence/save_load.py`, mismo
-patrón que los back-fills anteriores): sin bloque `mundo` → se coloca en la zona
-que corresponda al progreso de `defeated_enemies`, clase `vagabundo`, todo lo
-demás vacío. `unlocked_enemies` / `defeated_enemies` siguen siendo la fuente de
-verdad para las puertas.
+Añade un bloque `mundo`: `zona_actual`, `zonas_visitadas`, `misiones`,
+`banderas`, `dialogos_vistos`, `diario`, `arena_mejor_oleada`. Migración v1 →
+v2 (`persistence/save_load.py`, mismo patrón que los back-fills anteriores):
+sin bloque `mundo` → `zona_actual` se infiere del progreso de
+`defeated_enemies` (`world.map.default_zone_for_progress()`),
+`zonas_visitadas` se rellena con todas las zonas hasta ahí, todo lo demás
+vacío. `unlocked_enemies` / `defeated_enemies` siguen siendo la fuente de
+verdad para las puertas. (`clase` y `habilidades_equipadas` ya existían como
+claves de nivel superior en el guardado desde v0.10.0, antes de escribirse
+esta sección del GDD — no se movieron dentro de `mundo` para no forzar una
+migración innecesaria de algo que ya funcionaba.)
 
 ### 9.5 Tests
 

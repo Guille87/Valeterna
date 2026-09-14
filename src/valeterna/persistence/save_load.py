@@ -9,6 +9,7 @@ from valeterna.config.paths import SAVE_DIR
 from valeterna.items.equipment import ARMOR_SLOTS
 from valeterna.items.factory import item_factory
 from valeterna.ui import console
+from valeterna.world.map import ZONE_ORDER, default_zone_for_progress
 
 
 def check_save_directory() -> None:
@@ -67,6 +68,16 @@ def save_game(player, unlocked_enemies: list, defeated_enemies: list) -> None:
         "enemy_kill_counts": player.enemy_kill_counts,
         "equipped_weapon": player.equipped_weapon.to_dict() if player.equipped_weapon else None,
         "equipped_armor": {slot: item.to_dict() if item else None for slot, item in player.equipped_armor.items()},
+        # Bloque "mundo" (GDD §9.4, save schema v2, cimientos de v0.12.0-a).
+        "mundo": {
+            "zona_actual": player.mundo["zona_actual"],
+            "zonas_visitadas": list(player.mundo["zonas_visitadas"]),
+            "misiones": player.mundo["misiones"],
+            "banderas": sorted(player.mundo["banderas"]),
+            "dialogos_vistos": sorted(player.mundo["dialogos_vistos"]),
+            "diario": list(player.mundo["diario"]),
+            "arena_mejor_oleada": player.mundo["arena_mejor_oleada"],
+        },
     }
 
     try:
@@ -222,6 +233,34 @@ def _perform_load(player, path):
         for slot, item_data in equipped_armor_data.items():
             if slot in player.equipped_armor and item_data:
                 player.equipped_armor[slot] = item_factory(item_data)
+
+    # Bloque "mundo" (GDD §9.4, save schema v2). Migración v1 -> v2: sin
+    # bloque "mundo" en el guardado, se infiere la zona actual del progreso de
+    # combate (default_zone_for_progress) y se marcan como visitadas todas las
+    # zonas de la cadena hasta ahí; el resto empieza vacío.
+    mundo_data = save_data.get("mundo")
+    if mundo_data:
+        player.mundo = {
+            "zona_actual": mundo_data.get("zona_actual", ZONE_ORDER[0]),
+            "zonas_visitadas": list(mundo_data.get("zonas_visitadas", [ZONE_ORDER[0]])),
+            "misiones": dict(mundo_data.get("misiones", {})),
+            "banderas": set(mundo_data.get("banderas", [])),
+            "dialogos_vistos": set(mundo_data.get("dialogos_vistos", [])),
+            "diario": list(mundo_data.get("diario", [])),
+            "arena_mejor_oleada": mundo_data.get("arena_mejor_oleada", 0),
+        }
+    else:
+        zona_actual = default_zone_for_progress(save_data.get("defeated_enemies", []))
+        idx = ZONE_ORDER.index(zona_actual)
+        player.mundo = {
+            "zona_actual": zona_actual,
+            "zonas_visitadas": list(ZONE_ORDER[: idx + 1]),
+            "misiones": {},
+            "banderas": set(),
+            "dialogos_vistos": set(),
+            "diario": [],
+            "arena_mejor_oleada": 0,
+        }
 
     console.info(f"Carga exitosa desde: {os.path.basename(path)}")
     return save_data["player_name"], save_data["unlocked_enemies"], save_data["defeated_enemies"]
