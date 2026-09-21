@@ -23,11 +23,12 @@ from valeterna.world.npc import (
 
 def _scripted(*picks):
     """(show, pick, notify, log): `pick` consume `picks` en orden."""
-    log = {"shown": [], "options": [], "notified": []}
+    log = {"shown": [], "options": [], "done": [], "notified": []}
     answers = iter(picks)
 
-    def pick(options):
+    def pick(options, done):
         log["options"].append(list(options))
+        log["done"].append(list(done))
         return next(answers)
 
     return log["shown"].append, pick, log["notified"].append, log
@@ -162,7 +163,7 @@ def test_node_effects_apply_when_the_node_is_shown_before_the_replies(player):
     )
     gold_before = player.inventory.gold
 
-    def pick(options):
+    def pick(options, done):
         order.append(("pick", player.inventory.gold - gold_before))
         return 0
 
@@ -215,9 +216,13 @@ def test_missing_node_raises(player):
         play_conversation(conv, player, show, pick, notify)
 
 
-def test_one_time_conversation_is_recorded_when_it_ends(player):
-    show, pick, notify, _ = _scripted(2)
+def test_one_time_conversation_is_recorded_once_every_reply_is_exhausted(player):
+    for picks in [(2,), (1,)]:
+        show, pick, notify, _ = _scripted(*picks)
+        play_conversation(_simple_conversation(), player, show, pick, notify)
+        assert "c1" not in player.mundo["dialogos_vistos"]
 
+    show, pick, notify, _ = _scripted(0)  # "Uno" -> nodos lineales
     play_conversation(_simple_conversation(), player, show, pick, notify)
 
     assert "c1" in player.mundo["dialogos_vistos"]
@@ -228,7 +233,180 @@ def test_repeatable_conversation_is_never_recorded(player):
 
     play_conversation(_simple_conversation(repeatable=True), player, show, pick, notify)
 
-    assert player.mundo["dialogos_vistos"] == set()
+    assert "c1" not in player.mundo["dialogos_vistos"]
+
+
+# --- Volver a hablar: checks y agotamiento ------------------------------------
+
+
+def _tree():
+    """raíz: [A -> nodo n1 con [A1, A2] , B (final), C (final)]"""
+    return Conversation(
+        id="t",
+        start="root",
+        nodes=(
+            DialogueNode(
+                "root",
+                "Raíz.",
+                choices=(Choice("A", next="n1"), Choice("B", reply="b"), Choice("C", reply="c")),
+            ),
+            DialogueNode(
+                "n1",
+                "Rama.",
+                choices=(Choice("A1", reply="a1"), Choice("A2", reply="a2"), Choice("A3", reply="a3")),
+            ),
+        ),
+    )
+
+
+def test_a_picked_final_reply_is_checked_next_time(player):
+    show, pick, notify, log = _scripted(1)  # B
+
+    play_conversation(_tree(), player, show, pick, notify)
+    show, pick, notify, log = _scripted(2)
+    play_conversation(_tree(), player, show, pick, notify)
+
+    assert log["done"][0] == [False, True, False]
+
+
+def test_a_branch_is_checked_only_when_all_its_replies_are(player):
+    def run(*picks):
+        show, pick, notify, log = _scripted(*picks)
+        play_conversation(_tree(), player, show, pick, notify)
+        return log
+
+    first = run(0, 0)  # A -> A1
+    assert first["done"][0] == [False, False, False]
+
+    second = run(0, 1)  # A -> A2
+    assert second["done"][0][0] is False
+    assert second["done"][1] == [True, False, False]
+
+    third = run(0, 2)  # A -> A3
+    assert third["done"][0][0] is False  # todavia faltaba A3
+    assert third["done"][1] == [True, True, False]
+
+    fourth = run(0, 0)  # ahora la rama A entera esta agotada
+    assert fourth["done"][0] == [True, False, False]
+    assert fourth["done"][1] == [True, True, True]
+
+
+def test_conversation_is_offered_again_until_the_whole_tree_is_exhausted(player):
+    npc = _npc(_tree())
+    show, pick, notify, _ = _scripted(1)
+
+    play_conversation(_tree(), player, show, pick, notify)  # solo B
+
+    assert "t" not in player.mundo["dialogos_vistos"]
+    assert npc.next_conversation(player) is not None
+
+
+def test_conversation_is_retired_once_everything_is_checked(player):
+    npc = _npc(_tree(), idle=("Idle.",))
+    for picks in [(0, 0), (0, 1), (0, 2), (1,), (2,)]:
+        show, pick, notify, _ = _scripted(*picks)
+        play_conversation(_tree(), player, show, pick, notify)
+
+    assert "t" in player.mundo["dialogos_vistos"]
+    assert npc.next_conversation(player) is None
+
+
+def test_gold_and_item_effects_are_given_only_once(player):
+    conv = Conversation(
+        id="g",
+        start="a",
+        nodes=(
+            DialogueNode(
+                "a",
+                "Toma.",
+                effects=(give_gold(5),),
+                choices=(
+                    Choice("Uno", effects=(give_gold(2),), reply="r"),
+                    Choice("Dos", reply="r"),
+                    Choice("Tres", reply="r"),
+                ),
+            ),
+        ),
+    )
+    gold = player.inventory.gold
+
+    for _ in range(3):
+        show, pick, notify, log = _scripted(0)
+        play_conversation(conv, player, show, pick, notify)
+
+    assert player.inventory.gold == gold + 5 + 2
+    assert len(log["notified"]) == 0  # la tercera vez ya no avisa de nada
+
+
+def test_flag_only_effects_are_not_recorded(player):
+    show, pick, notify, _ = _scripted(1)
+    conv = Conversation(
+        id="f",
+        start="a",
+        nodes=(
+            DialogueNode(
+                "a",
+                "Hola.",
+                choices=(Choice("x", reply="r"), Choice("y", effects=(set_flag("z"),), reply="r"), Choice("w")),
+            ),
+        ),
+    )
+
+    play_conversation(conv, player, show, pick, notify)
+
+    assert "z" in player.mundo["banderas"]
+    assert not any(k.endswith("#efectos") for k in player.mundo["dialogos_vistos"])
+
+
+def test_hidden_choices_do_not_block_exhaustion(player):
+    conv = Conversation(
+        id="h",
+        start="a",
+        nodes=(
+            DialogueNode(
+                "a",
+                "Hola.",
+                choices=(
+                    Choice("Visible", reply="r"),
+                    Choice("Oculta", condition=Condition(requires_flags=("nunca",)), reply="r"),
+                    Choice("Otra", reply="r"),
+                ),
+            ),
+        ),
+    )
+    for pick_index in (0, 1):  # solo hay 2 visibles
+        show, pick, notify, _ = _scripted(pick_index)
+        play_conversation(conv, player, show, pick, notify)
+
+    assert "h" in player.mundo["dialogos_vistos"]
+
+
+def test_looping_trees_do_not_recurse_forever(player):
+    conv = Conversation(
+        id="l",
+        start="a",
+        nodes=(
+            DialogueNode(
+                "a",
+                "Hola.",
+                choices=(Choice("Otra vez", next="a"), Choice("Adiós", reply="r"), Choice("Adiós 2", reply="r")),
+            ),
+        ),
+    )
+    show, pick, notify, _ = _scripted(0, 1)  # bucle una vez y luego Adiós
+
+    play_conversation(conv, player, show, pick, notify)
+
+    assert "l/a/1" in player.mundo["dialogos_vistos"]
+
+
+def test_purely_linear_conversation_is_retired_after_one_play(player):
+    conv = Conversation(id="lin", start="a", nodes=(DialogueNode("a", "Hola.", next="b"), DialogueNode("b", "Fin.")))
+    show, pick, notify, _ = _scripted()
+
+    play_conversation(conv, player, show, pick, notify)
+
+    assert "lin" in player.mundo["dialogos_vistos"]
 
 
 # --- NPC ----------------------------------------------------------------------
@@ -281,14 +459,14 @@ def test_npc_talk_without_idle_lines_has_a_default(player):
     assert log["shown"] == ["No tiene nada más que decirte."]
 
 
-def test_npc_talk_plays_the_conversation_then_goes_idle(player):
+def test_npc_talk_replays_the_conversation_until_exhausted_then_goes_idle(player):
     npc = _npc(_simple_conversation(id="once"), idle=("Otra vez tú.",))
-    show, pick, notify, log = _scripted(2)
+    show, pick, notify, log = _scripted(2, 1, 0)
 
-    npc.talk(player, show, pick, notify)
-    npc.talk(player, show, pick, notify)
+    for _ in range(4):
+        npc.talk(player, show, pick, notify)
 
-    assert log["shown"] == ["Hola.", "Otra vez tú."]
+    assert log["shown"] == ["Hola.", "Hola.", "Hola.", "Segundo nodo.", "Fin lineal.", "Otra vez tú."]
 
 
 # --- Contenido real -----------------------------------------------------------
@@ -339,6 +517,23 @@ def test_every_real_effect_can_be_applied():
                 assert effect.kind in {"set_flag", "give_gold", "give_item"}
                 if effect.kind == "give_item":
                     assert item_factory(effect.item) is not None
+
+
+def test_yermas_tree_can_be_exhausted_and_the_potion_is_given_once(player):
+    npc = NPCS["yerma"]
+
+    def first_unchecked(options, done):
+        return done.index(False) if False in done else 0
+
+    plays = 0
+    while npc.next_conversation(player) is not None:
+        npc.talk(player, lambda t: None, first_unchecked, lambda m: None)
+        plays += 1
+        assert plays < 30, "el árbol de Yerma no se agota"
+
+    assert player.inventory.quantities["Poción de Salud"] == 1
+    assert "recibio_pocion_yerma" in player.mundo["banderas"]
+    assert "yerma_intro" in player.mundo["dialogos_vistos"]
 
 
 def test_yermas_intro_can_be_played_through_every_first_branch(player):

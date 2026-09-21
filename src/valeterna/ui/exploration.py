@@ -231,11 +231,13 @@ def _talk_flow(player, zone) -> None:
     )
 
 
-def _pick_reply(options: list[str]) -> int:
-    """Muestra las respuestas del jugador numeradas y devuelve el índice
-    elegido (repite hasta que sea válido)."""
-    for i, text in enumerate(options, 1):
-        print(f"  {console.colorize(f'{i}.', console.Fore.CYAN)} {text}")
+def _pick_reply(options: list[str], done: list[bool]) -> int:
+    """Muestra las respuestas del jugador numeradas (con un check verde a la
+    derecha de las ya agotadas) y devuelve el índice elegido (repite hasta que
+    sea válido)."""
+    for i, (text, is_done) in enumerate(zip(options, done, strict=True), 1):
+        check = " " + console.colorize("✔", console.Fore.GREEN, bright=True) if is_done else ""
+        print(f"  {console.colorize(f'{i}.', console.Fore.CYAN)} {text}{check}")
     while True:
         choice = console.ask(f"Responde (1-{len(options)}): ").strip()
         if choice.isdigit() and 1 <= int(choice) <= len(options):

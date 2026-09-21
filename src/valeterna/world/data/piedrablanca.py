@@ -1,5 +1,5 @@
 from valeterna.items.potions.healing_potion import HealingPotion
-from valeterna.world.npc import NPC, Choice, Conversation, DialogueNode, give_item, set_flag
+from valeterna.world.npc import NPC, Choice, Condition, Conversation, DialogueNode, give_item, set_flag
 from valeterna.world.zone import Zone
 
 ZONE = Zone(
@@ -26,7 +26,11 @@ _YERMA_INTRO = Conversation(
             "Otra cara viva... Pasa, pasa. Soy Yerma, y la Taberna es mía, o lo que queda de ella. "
             "Tienes pinta de haber visto arder Valeterna.",
             choices=(
-                Choice("Sí. Fui de los pocos que salieron con vida.", next="superviviente"),
+                Choice(
+                    "Sí. Fui de los pocos que salieron con vida.",
+                    next="superviviente",
+                    condition=Condition(forbids_flags=("recibio_pocion_yerma",)),
+                ),
                 Choice("Solo busco una cama y algo caliente.", next="cama"),
                 Choice("¿Qué está pasando en estas tierras?", next="brecha"),
             ),
@@ -35,7 +39,7 @@ _YERMA_INTRO = Conversation(
             "superviviente",
             "Entonces ya sabes lo que es perderlo todo. Aquí nadie te pedirá cuentas de lo que hiciste para "
             "salir. Toma, invita la casa; nunca se sabe cuándo hará falta.",
-            effects=(_POTION,),
+            effects=(_POTION, set_flag("recibio_pocion_yerma")),
             choices=(
                 Choice("Gracias, Yerma.", effects=(_MET_YERMA,), reply="No hay de qué. Ve con cuidado ahí fuera."),
                 Choice("No hacía falta.", effects=(_MET_YERMA,), reply="Lo sé. Por eso mismo se hace."),

@@ -125,35 +125,104 @@ class Conversation:
 
 
 Show = Callable[[str], None]
-Pick = Callable[[list[str]], int]
+# `pick(textos, hechas)`: `hechas[i]` indica si la respuesta i ya está agotada
+# (para que la UI le ponga un check); devuelve el índice elegido.
+Pick = Callable[[list[str], list[bool]], int]
+
+
+def _choice_key(conversation: Conversation, node: DialogueNode, index: int) -> str:
+    return f"{conversation.id}/{node.id}/{index}"
+
+
+def _visible_indices(node: DialogueNode, player) -> list[int]:
+    return [i for i, c in enumerate(node.choices) if c.condition.is_met(player)]
+
+
+def _resolve(conversation: Conversation, node_id: str | None) -> DialogueNode | None:
+    """Sigue los nodos lineales hasta llegar a uno con respuestas; `None` si la
+    cadena termina antes."""
+    while node_id is not None:
+        node = conversation.get_node(node_id)
+        if node.choices:
+            return node
+        node_id = node.next
+    return None
+
+
+def _choice_done(conversation: Conversation, node: DialogueNode, index: int, player, path: frozenset) -> bool:
+    """Una respuesta está agotada si es una respuesta final que ya se eligió, o
+    si lleva a más respuestas y todas las visibles están agotadas. `path` evita
+    recursión infinita en árboles con bucles (volver a un nodo ya recorrido
+    cuenta como agotado)."""
+    if _choice_key(conversation, node, index) in player.mundo["dialogos_vistos"]:
+        return True
+    target = _resolve(conversation, node.choices[index].next)
+    if target is None:
+        return False
+    if target.id in path:
+        return True
+    return _all_done(conversation, target, player, path | {target.id})
+
+
+def _all_done(conversation: Conversation, node: DialogueNode, player, path: frozenset) -> bool:
+    return all(_choice_done(conversation, node, i, player, path) for i in _visible_indices(node, player))
+
+
+def _apply_once(effects: tuple[Effect, ...], key: str, player, notify: Show) -> None:
+    """Aplica los efectos. Los que dan algo (oro/objetos) se entregan una sola
+    vez por partida aunque el jugador vuelva a pasar por ahí; los que solo
+    activan banderas son idempotentes y no hace falta recordarlos."""
+    if not effects:
+        return
+    once = any(e.kind != "set_flag" for e in effects)
+    marker = f"{key}#efectos"
+    seen = player.mundo["dialogos_vistos"]
+    if once and marker in seen:
+        return
+    for message in apply_effects(effects, player):
+        notify(message)
+    if once:
+        seen.add(marker)
 
 
 def play_conversation(conversation: Conversation, player, show: Show, pick: Pick, notify: Show) -> None:
     """Recorre el árbol: muestra cada nodo, ofrece las respuestas cuya
-    condición se cumple (`pick` recibe sus textos y devuelve el índice
-    elegido), aplica sus efectos (`notify` recibe los avisos) y sigue por su
-    `next`. Al terminar, una conversación no repetible queda registrada como
-    vista."""
+    condición se cumple (`pick` recibe sus textos y cuáles están ya agotadas, y
+    devuelve el índice elegido), aplica sus efectos (`notify` recibe los avisos)
+    y sigue por su `next`.
+
+    La conversación se puede volver a recorrer: cada respuesta final elegida
+    queda registrada en `mundo["dialogos_vistos"]` y las respuestas agotadas se
+    marcan. Una conversación no repetible solo se da por vista (y el NPC deja
+    de ofrecerla) cuando todo su árbol está agotado."""
+    seen = player.mundo["dialogos_vistos"]
+    last_key: str | None = None
     node_id: str | None = conversation.start
     while node_id is not None:
         node = conversation.get_node(node_id)
         show(node.text)
-        for message in apply_effects(node.effects, player):
-            notify(message)
+        _apply_once(node.effects, f"{conversation.id}/{node.id}", player, notify)
         if not node.choices:
             node_id = node.next
             continue
-        options = [c for c in node.choices if c.condition.is_met(player)]
-        if not options:
+        visible = _visible_indices(node, player)
+        if not visible:
             break
-        choice = options[pick([c.text for c in options])]
+        path = frozenset({node.id})
+        done = [_choice_done(conversation, node, i, player, path) for i in visible]
+        index = visible[pick([node.choices[i].text for i in visible], done)]
+        choice = node.choices[index]
         if choice.reply:
             show(choice.reply)
-        for message in apply_effects(choice.effects, player):
-            notify(message)
+        last_key = _choice_key(conversation, node, index)
+        _apply_once(choice.effects, last_key, player, notify)
         node_id = choice.next
+    if last_key:
+        seen.add(last_key)
     if not conversation.repeatable:
-        player.mundo["dialogos_vistos"].add(conversation.id)
+        start = _resolve(conversation, conversation.start)
+        if start is None or _all_done(conversation, start, player, frozenset({start.id})):
+            seen.add(conversation.id)
 
 
 @dataclass(frozen=True)

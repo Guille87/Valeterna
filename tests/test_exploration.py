@@ -293,7 +293,8 @@ def test_talk_flow_plays_a_conversation_end_to_end(player, monkeypatch, capsys):
     exploration._talk_flow(player, ZONES["piedrablanca"])
 
     assert "conocio_a_yerma" in player.mundo["banderas"]
-    assert "yerma_intro" in player.mundo["dialogos_vistos"]
+    assert "yerma_intro/cama/0" in player.mundo["dialogos_vistos"]
+    assert "yerma_intro" not in player.mundo["dialogos_vistos"]  # aún quedan ramas por hablar
     assert "Yerma" in capsys.readouterr().out
 
 
@@ -301,4 +302,15 @@ def test_pick_reply_reprompts_until_valid(monkeypatch):
     answers = iter(["x", "9", "2"])
     monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
 
-    assert exploration._pick_reply(["a", "b", "c"]) == 1
+    assert exploration._pick_reply(["a", "b", "c"], [False, False, False]) == 1
+
+
+def test_pick_reply_puts_a_check_next_to_exhausted_replies(monkeypatch, capsys):
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "1")
+
+    exploration._pick_reply(["uno", "dos", "tres"], [False, True, False])
+
+    lines = [line for line in capsys.readouterr().out.splitlines() if "uno" in line or "dos" in line or "tres" in line]
+    assert "✔" not in lines[0]
+    assert "✔" in lines[1]
+    assert "✔" not in lines[2]
