@@ -127,6 +127,50 @@ def test_play_conversation_applies_choice_effects_and_notifies(player):
     assert log["notified"] == ["Recibes 3 de oro."]
 
 
+def test_choice_reply_is_shown_right_after_picking(player):
+    conv = Conversation(
+        id="c",
+        start="a",
+        nodes=(
+            DialogueNode(
+                "a",
+                "Hola.",
+                choices=(Choice("Adiós", reply="Hasta luego."), Choice("Otra"), Choice("Otra más")),
+            ),
+        ),
+    )
+    show, pick, notify, log = _scripted(0)
+
+    play_conversation(conv, player, show, pick, notify)
+
+    assert log["shown"] == ["Hola.", "Hasta luego."]
+
+
+def test_node_effects_apply_when_the_node_is_shown_before_the_replies(player):
+    order = []
+    conv = Conversation(
+        id="c",
+        start="a",
+        nodes=(
+            DialogueNode(
+                "a",
+                "Toma.",
+                effects=(give_gold(4),),
+                choices=(Choice("Gracias"), Choice("Vale"), Choice("Bien")),
+            ),
+        ),
+    )
+    gold_before = player.inventory.gold
+
+    def pick(options):
+        order.append(("pick", player.inventory.gold - gold_before))
+        return 0
+
+    play_conversation(conv, player, lambda t: order.append(("show", t)), pick, lambda m: order.append(("notify", m)))
+
+    assert order == [("show", "Toma."), ("notify", "Recibes 4 de oro."), ("pick", 4)]
+
+
 def test_choices_with_unmet_conditions_are_hidden(player):
     conv = Conversation(
         id="c",
@@ -281,16 +325,20 @@ def test_every_real_conversation_is_well_formed():
             for choice in node.choices:
                 if choice.next is not None:
                     assert choice.next in node_ids
+                else:
+                    # una respuesta que cierra la conversación necesita réplica:
+                    # si no, el jugador se despide y el NPC se queda callado.
+                    assert choice.reply, f"{conv.id}/{node.id}: {choice.text!r} cierra sin réplica del NPC"
 
 
 def test_every_real_effect_can_be_applied():
     for _, conv in _all_conversations():
         for node in conv.nodes:
-            for choice in node.choices:
-                for effect in choice.effects:
-                    assert effect.kind in {"set_flag", "give_gold", "give_item"}
-                    if effect.kind == "give_item":
-                        assert item_factory(effect.item) is not None
+            all_effects = list(node.effects) + [e for c in node.choices for e in c.effects]
+            for effect in all_effects:
+                assert effect.kind in {"set_flag", "give_gold", "give_item"}
+                if effect.kind == "give_item":
+                    assert item_factory(effect.item) is not None
 
 
 def test_yermas_intro_can_be_played_through_every_first_branch(player):

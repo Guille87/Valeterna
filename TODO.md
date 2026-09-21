@@ -582,6 +582,15 @@ el cambio a mitigación multiplicativa.
     Yerma (tabernera de Piedrablanca; papel inventado, el GDD solo da el
     nombre): conversación de primer encuentro de 5 nodos que pone la bandera
     `conocio_a_yerma` (una rama regala una Poción de Salud) y 3 líneas sueltas.
+  - **Ronda de feedback (probando a Yerma)**: (1) la poción llegaba *después* de
+    elegir respuesta, así que el jugador contestaba "gracias / no hacía falta" sin
+    saber que había recibido algo — nuevo `DialogueNode.effects`, que se aplican
+    al mostrar el nodo (el aviso "Recibes X" sale justo bajo el texto del NPC,
+    antes de las respuestas); (2) al despedirse o elegir una respuesta final el
+    NPC se quedaba callado — nuevo `Choice.reply` (lo que contesta el NPC al
+    momento) y todas las respuestas finales de Yerma tienen ya réplica. Para que
+    no se repita con el contenido de -b, un test exige `reply` en toda respuesta
+    que cierra la conversación (`next=None`).
   - Tropiezo: al insertar `_talk_flow` con un script de Python, los `
 ` de
     los literales se escribieron como saltos de línea reales y rompieron el

@@ -84,23 +84,29 @@ def apply_effects(effects: tuple[Effect, ...], player) -> list[str]:
 @dataclass(frozen=True)
 class Choice:
     """Una respuesta del jugador. `next` = id del siguiente nodo (`None` =
-    fin de la conversación)."""
+    fin de la conversación). `reply` = lo que contesta el NPC nada más elegirla
+    (imprescindible si la respuesta cierra la conversación: si no, el jugador
+    se despide y el NPC se queda callado)."""
 
     text: str
     next: str | None = None
     condition: Condition = field(default_factory=Condition)
     effects: tuple[Effect, ...] = ()
+    reply: str | None = None
 
 
 @dataclass(frozen=True)
 class DialogueNode:
     """Texto del NPC + respuestas. Sin `choices`, el nodo es lineal: tras
-    mostrarlo se pasa a `next` (o termina si es `None`)."""
+    mostrarlo se pasa a `next` (o termina si es `None`). Los `effects` del nodo
+    se aplican al mostrarlo, antes de las respuestas — para que el jugador vea
+    que recibe algo (p. ej. un regalo) *antes* de contestar."""
 
     id: str
     text: str
     choices: tuple[Choice, ...] = ()
     next: str | None = None
+    effects: tuple[Effect, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -132,6 +138,8 @@ def play_conversation(conversation: Conversation, player, show: Show, pick: Pick
     while node_id is not None:
         node = conversation.get_node(node_id)
         show(node.text)
+        for message in apply_effects(node.effects, player):
+            notify(message)
         if not node.choices:
             node_id = node.next
             continue
@@ -139,6 +147,8 @@ def play_conversation(conversation: Conversation, player, show: Show, pick: Pick
         if not options:
             break
         choice = options[pick([c.text for c in options])]
+        if choice.reply:
+            show(choice.reply)
         for message in apply_effects(choice.effects, player):
             notify(message)
         node_id = choice.next
