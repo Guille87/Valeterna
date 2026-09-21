@@ -446,3 +446,18 @@ def test_pick_reply_puts_a_check_next_to_exhausted_replies(monkeypatch, capsys):
     assert "✔" not in lines[0]
     assert "✔" in lines[1]
     assert "✔" not in lines[2]
+
+
+def test_lore_texts_with_status_words_are_not_tinted(player, monkeypatch, capsys):
+    """ "quemado/quemada" en un título de nota o en un nombre de sub-lugar es
+    solo una palabra, no el estado alterado: no debe salir en rojo."""
+    from colorama import Fore
+
+    _visit(player, monkeypatch, "ciudadela_en_ruinas", "Plaza")  # nota "Bando quemado"
+    _visit(player, monkeypatch, "bosque_de_los_susurros", "Cabaña quemada")  # 1ª visita: nota
+    _visit(player, monkeypatch, "bosque_de_los_susurros", "Cabaña quemada")  # repetida: "Recorres ..."
+    out = capsys.readouterr().out
+
+    assert "Bando quemado" in out
+    assert "Cabaña quemada" in out
+    assert Fore.RED not in out

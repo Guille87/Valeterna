@@ -59,11 +59,14 @@ def tint_status(text: str, back_to: str = "") -> str:
     return text
 
 
-def colorize(text: str, color: str, bright: bool = False) -> str:
+def colorize(text: str, color: str, bright: bool = False, tint: bool = True) -> str:
     """Envuelve un fragmento de texto en un color, sin resetear el estilo global.
-    De paso resalta cualquier estado alterado que se mencione en el texto."""
+    De paso resalta cualquier estado alterado que se mencione en el texto; con
+    `tint=False` no lo hace (texto narrativo donde "quemado" es solo una palabra,
+    p. ej. el título de una nota de lore)."""
     prefix = f"{Style.BRIGHT}{color}" if bright else color
-    return f"{prefix}{tint_status(text, prefix)}{Style.RESET_ALL}"
+    body = tint_status(text, prefix) if tint else text
+    return f"{prefix}{body}{Style.RESET_ALL}"
 
 
 def success(message: str) -> None:

@@ -672,6 +672,11 @@ el cambio a mitigación multiplicativa.
     al visitar un sub-lugar (el Diario ya la tenía) y tras la última frase de un NPC, como en otros
     sitios del juego. Añadidas en `_sublocation_flow` (solo la primera visita, cuando sale la nota) y
     en `_talk_flow` (tras cada conversación, también tras una línea suelta). Tests nuevos para ambas.
+  - **Feedback probando (2)**: palabras como "quemado/quemada" salían en rojo en textos de lore (el
+    título "Bando quemado" y la línea "Recorres Cabaña quemada de nuevo") porque `colorize()` y
+    `console.say()` tiñen los estados alterados automáticamente. Se eligió que las notas **no** se
+    tiñan (en vez de colorearlas a mano): `colorize(..., tint=False)` para el título y `print()` en
+    las líneas de "Recorres...". El cuerpo de las notas y los diálogos ya se imprimían sin teñir.
   - Tropiezo: al parchear `exploration.py` con un script de Python vía heredoc,
     los `\n` de los f-strings volvieron a convertirse en saltos de línea reales
     (mismo error que en v0.13.0-a); arreglado con Edit. Y un test con índice de

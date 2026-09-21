@@ -205,17 +205,18 @@ def _sublocation_flow(player, zone) -> None:
         return
     note = note_for_sub_location(zone.id, place)
     if note is None:
-        console.say(f"Recorres {place}, pero todavía no hay nada que hacer aquí.")
+        # print, no console.say: "Cabaña quemada" no es un estado alterado.
+        print(f"Recorres {place}, pero todavía no hay nada que hacer aquí.")
     elif add_note(player, note):
         _show_note(note)
         console.ask("\nPresiona Enter para continuar...")
     else:
-        console.say(f"Recorres {place} de nuevo. Ya has leído todo lo que había que leer aquí.")
+        print(f"Recorres {place} de nuevo. Ya has leído todo lo que había que leer aquí.")
 
 
 def _show_note(note) -> None:
     """Muestra una nota de lore (al encontrarla o al releerla en el Diario)."""
-    print(console.colorize(f"\n--- {note.title} ---", console.Fore.YELLOW, bright=True))
+    print(console.colorize(f"\n--- {note.title} ---", console.Fore.YELLOW, bright=True, tint=False))
     print(note.text)
 
 
