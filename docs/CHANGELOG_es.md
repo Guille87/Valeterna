@@ -71,6 +71,8 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
   provisional todavía sin ajustar). El hallazgo de Explorar ahora a veces da
   una poción de salud gratis en vez de siempre oro.
 
+- **Motor de diálogo** (GDD §8.2, v0.13.0-a): nuevo `world/npc.py` con NPCs, conversaciones ramificadas, respuestas del jugador (condiciones sobre banderas de historia/nivel, efectos: activar una bandera, dar oro u objeto), conversaciones únicas vs repetibles (las únicas se recuerdan en el guardado y el NPC pasa a líneas sueltas) y una opción nueva "Hablar con..." en el menú de zona. De momento solo Yerma (Piedrablanca) tiene contenido; el resto del reparto llega a continuación.
+
 ### Cambiado
 
 - **Reordenado el menú de combate**: Atacar, Habilidades, Defender, Objetos,

@@ -68,6 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   discovery outcome now sometimes gives a free healing potion instead of
   always gold.
 
+- **Dialogue engine** (GDD §8.2, v0.13.0-a): new `world/npc.py` with NPCs, branching conversations, player replies (conditions on story flags/level, effects: set a flag, give gold or an item), one-time vs repeatable conversations (one-time ones are remembered in the save and the NPC falls back to idle lines), and a new "Hablar con..." option in the zone menu. Only Yerma (Piedrablanca) has content so far; the rest of the cast comes next.
+
 ### Changed
 
 - **Combat menu reordered**: Attack, Skills, Defend, Items, Flee, Info,

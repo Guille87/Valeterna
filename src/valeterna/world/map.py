@@ -16,6 +16,7 @@ from valeterna.world.data import (
     piedrablanca,
     torre_de_los_arcanos,
 )
+from valeterna.world.npc import NPC
 from valeterna.world.zone import Zone
 
 # Orden de la cadena del mapa (GDD §3): Piedrablanca es el pueblo (sin
@@ -44,6 +45,28 @@ ZONES: dict[str, Zone] = {
         corazon_de_la_brecha.ZONE,
     )
 }
+
+# Todos los NPC del juego por id; cada módulo de zona aporta los suyos en un
+# `NPCS` opcional (v0.13.0).
+NPCS: dict[str, NPC] = {
+    npc.id: npc
+    for module in (
+        piedrablanca,
+        los_yermos,
+        bosque_de_los_susurros,
+        cienaga_de_los_ahogados,
+        canon_del_trueno,
+        torre_de_los_arcanos,
+        ciudadela_en_ruinas,
+        corazon_de_la_brecha,
+    )
+    for npc in getattr(module, "NPCS", ())
+}
+
+
+def npcs_in_zone(zone_id: str) -> list[NPC]:
+    """Los NPC con los que se puede hablar en `zone_id`."""
+    return [npc for npc in NPCS.values() if npc.zone_id == zone_id]
 
 
 def zone_for_enemy(enemy_name: str) -> str | None:

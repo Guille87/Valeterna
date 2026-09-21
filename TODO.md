@@ -553,6 +553,40 @@ el cambio a mitigación multiplicativa.
     forma" a vida completa, y el menú Personaje quedó con 11 opciones (antes
     13) sin Tienda/Herrería.
 
+- [x] **v0.13.0-a: motor de diálogo** (GDD §8.2 — primera sub-fase de v0.13.0,
+  "Diálogo y NPCs"). Motor + un NPC de muestra; el reparto completo es -b.
+  - `world/npc.py`: dataclasses congeladas (`NPC`, `Conversation`,
+    `DialogueNode`, `Choice`, `Condition`, `Effect`) y funciones puras.
+    `play_conversation()` no imprime ni pregunta: recibe tres callbacks
+    (`show`, `pick`, `notify`), así toda la lógica queda testeada al 100% y
+    `ui/exploration.py` solo aporta `print`/`input`.
+  - Decisiones: un nodo sin `choices` es lineal (sigue por `next`); si todas
+    las respuestas de un nodo quedan ocultas por sus condiciones, la
+    conversación termina en vez de colgarse; una conversación única se
+    registra en `mundo["dialogos_vistos"]` **al terminar** (GDD: "una vez
+    jugada entera"), no al empezar; el NPC elige la primera conversación en
+    orden declarado cuyo disparo se cumple y que no sea una única ya vista, y
+    si no hay ninguna suelta una línea de `idle_lines`. Efectos disponibles:
+    activar bandera, dar oro, dar objeto (dict de `Item.to_dict()`, reusando
+    `item_factory`); los de misión esperan a que exista el sistema de misiones.
+  - La regla "≥3 respuestas por nodo de elección" no la impone el dataclass
+    (los tests del motor usan árboles pequeños) sino un test sobre el contenido
+    real (`test_every_real_conversation_is_well_formed`), que además comprueba
+    ids únicos, que todo `next` apunte a un nodo existente y que los ítems de
+    los efectos se puedan reconstruir.
+  - Los NPC se declaran en el módulo de su zona (`NPCS = (...)`) y
+    `world/map.py` los agrega en `NPCS`/`npcs_in_zone()`; un test comprueba que
+    el nombre de cada NPC figure en `Zone.key_npcs`.
+  - Nueva opción "Hablar con..." en el menú de zona (los índices del menú
+    pasan a 5 opciones; actualizado el test de `zone_loop`). Contenido: solo
+    Yerma (tabernera de Piedrablanca; papel inventado, el GDD solo da el
+    nombre): conversación de primer encuentro de 5 nodos que pone la bandera
+    `conocio_a_yerma` (una rama regala una Poción de Salud) y 3 líneas sueltas.
+  - Tropiezo: al insertar `_talk_flow` con un script de Python, los `
+` de
+    los literales se escribieron como saltos de línea reales y rompieron el
+    fichero; detectado por ruff/pytest antes de commitear.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

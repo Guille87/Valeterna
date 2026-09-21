@@ -17,7 +17,7 @@ from valeterna import __version__
 from valeterna.audio.resource_manager import ResourceManager
 from valeterna.combat.battle import initiate_battle
 from valeterna.ui import console
-from valeterna.world.map import ZONES, is_zone_reachable, next_zone
+from valeterna.world.map import ZONES, is_zone_reachable, next_zone, npcs_in_zone
 
 resource_manager = ResourceManager()
 
@@ -52,7 +52,7 @@ def zone_loop(player, unlocked_enemies: list, defeated_enemies: list, is_admin: 
         print(console.colorize(f"v{__version__}", console.Fore.BLACK, bright=True))
         print("=" * 40)
 
-        labels = ["Explorar", "Ir a...", "Viajar", "Personaje"]
+        labels = ["Explorar", "Ir a...", "Hablar con...", "Viajar", "Personaje"]
         for i, label in enumerate(labels, 1):
             print(f"{i}. {label}")
 
@@ -67,8 +67,10 @@ def zone_loop(player, unlocked_enemies: list, defeated_enemies: list, is_admin: 
         elif idx == 2:
             _sublocation_flow(player, zone)
         elif idx == 3:
+            _talk_flow(player, zone)
+        elif idx == 4:
             _travel_flow(player, unlocked_enemies)
-        elif idx == 4 and _character_menu(player, unlocked_enemies, defeated_enemies, is_admin) == "volver_menu":
+        elif idx == 5 and _character_menu(player, unlocked_enemies, defeated_enemies, is_admin) == "volver_menu":
             break
 
 
@@ -193,6 +195,52 @@ def _sublocation_flow(player, zone) -> None:
         service(player)
         return
     console.say(f"Recorres {place}, pero todavía no hay nada que hacer aquí.")
+
+
+def _talk_flow(player, zone) -> None:
+    """Lista los NPC de la zona y abre la conversación del elegido (GDD §8.2,
+    v0.13.0-a). La lógica del diálogo vive en `world/npc.py`; aquí solo se
+    imprime y se pregunta."""
+    npcs = npcs_in_zone(zone.id)
+    if not npcs:
+        console.info("No hay nadie con quien hablar aquí.")
+        return
+
+    print(console.colorize("\n--- HABLAR CON... ---", console.Fore.CYAN))
+    for i, npc in enumerate(npcs, 1):
+        print(f"{i}. {npc.name}")
+    print(f"{len(npcs) + 1}. Volver")
+
+    choice = console.ask(f"\nElige con quién hablar (1-{len(npcs) + 1}): ")
+    if not choice.isdigit():
+        console.error("Opción no válida.")
+        return
+    idx = int(choice) - 1
+    if idx == len(npcs):
+        return
+    if not (0 <= idx < len(npcs)):
+        console.error("Opción fuera de rango.")
+        return
+
+    npc = npcs[idx]
+    npc.talk(
+        player,
+        show=lambda text: print(f"\n{console.colorize(npc.name + ':', console.Fore.MAGENTA, bright=True)} {text}"),
+        pick=_pick_reply,
+        notify=console.success,
+    )
+
+
+def _pick_reply(options: list[str]) -> int:
+    """Muestra las respuestas del jugador numeradas y devuelve el índice
+    elegido (repite hasta que sea válido)."""
+    for i, text in enumerate(options, 1):
+        print(f"  {console.colorize(f'{i}.', console.Fore.CYAN)} {text}")
+    while True:
+        choice = console.ask(f"Responde (1-{len(options)}): ").strip()
+        if choice.isdigit() and 1 <= int(choice) <= len(options):
+            return int(choice) - 1
+        console.error("Opción no válida.")
 
 
 def _travel_flow(player, unlocked_enemies: list) -> None:

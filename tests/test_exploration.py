@@ -258,8 +258,47 @@ def test_character_menu_shows_admin_panel_only_for_admins(player, monkeypatch, c
 
 
 def test_zone_loop_exits_to_main_menu_via_the_character_menu(player, monkeypatch):
-    answers = iter(["4", "10"])  # Personaje -> Volver al Menú Principal
+    answers = iter(["5", "10"])  # Personaje -> Volver al Menú Principal
     monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
 
     exploration.zone_loop(player, unlocked_enemies=[], defeated_enemies=[], is_admin=False)
     # Si no lanza y termina, el bucle salió correctamente.
+
+
+def test_talk_flow_without_npcs_reports_nobody_to_talk_to(player, capsys):
+    from valeterna.world.map import ZONES
+
+    exploration._talk_flow(player, ZONES["los_yermos"])
+
+    assert "No hay nadie con quien hablar" in capsys.readouterr().out
+
+
+def test_talk_flow_lists_the_zones_npcs_and_can_go_back(player, monkeypatch, capsys):
+    from valeterna.world.map import ZONES
+
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "2")  # Volver (Yerma=1, Volver=2)
+
+    exploration._talk_flow(player, ZONES["piedrablanca"])
+
+    assert "Yerma" in capsys.readouterr().out
+
+
+def test_talk_flow_plays_a_conversation_end_to_end(player, monkeypatch, capsys):
+    from valeterna.world.map import ZONES
+
+    # Yerma (1) -> "Solo busco una cama..." (2) -> primera respuesta (1)
+    answers = iter(["1", "2", "1"])
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
+
+    exploration._talk_flow(player, ZONES["piedrablanca"])
+
+    assert "conocio_a_yerma" in player.mundo["banderas"]
+    assert "yerma_intro" in player.mundo["dialogos_vistos"]
+    assert "Yerma" in capsys.readouterr().out
+
+
+def test_pick_reply_reprompts_until_valid(monkeypatch):
+    answers = iter(["x", "9", "2"])
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
+
+    assert exploration._pick_reply(["a", "b", "c"]) == 1
