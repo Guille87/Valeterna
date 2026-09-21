@@ -611,6 +611,35 @@ el cambio a mitigación multiplicativa.
     los literales se escribieron como saltos de línea reales y rompieron el
     fichero; detectado por ruff/pytest antes de commitear.
 
+- [x] **v0.13.0-b: reparto de NPCs** (GDD §3/§8.2). Solo contenido, sin cambios
+  de motor salvo el atajo `end(text, reply, *effects)` para respuestas finales.
+  - 9 NPCs según la tabla de zonas del GDD: Piedrablanca (Yerma, Halbrand,
+    Dorn, Nia), Los Yermos (Cael), Bosque (Mirelle), Ciénaga (Oren, barquero
+    inventado: el GDD deja la zona sin NPC), Cañón (Kort), Torre/Necrópolis
+    (Sella), Ciudadela (Aldric). Yerma sigue la primera del menú.
+  - Cada uno: conversación de primer encuentro (raíz con 3 respuestas, dos
+    ramas de 3 respuestas finales, cada una con réplica del NPC; la bandera
+    `conocio_a_<npc>` se pone con un efecto del nodo raíz) + una segunda
+    conversación cuyo `trigger` exige haber conocido a *otro* NPC + 3 líneas
+    sueltas. Los cruces (Halbrand←Cael, Dorn←Mirelle, Nia←Halbrand,
+    Cael←Mirelle, Mirelle←Oren, Oren←Kort, Kort←Sella, Sella←Aldric,
+    Aldric←Kort) premian hablar con todos y volver atrás por el mapa.
+  - Regalos de una sola vez, con la rama oculta después (`forbids_flags`, como
+    la poción de Yerma): Dorn 20 de oro (y planta `dorn_encargo_troll`, semilla
+    de "El encargo de Dorn"), Oren 25 de oro, Kort una Poción de Salud. Sella
+    activa `sella_tomo_pista` (semilla de "El tomo prohibido"), Cael
+    `sabe_del_altar`.
+  - El GDD se contradice en dos sitios: Mirelle (Acto IV dice Cañón, la tabla
+    dice Bosque) y Dorn (su encargo figura en el Bosque pero vive en
+    Piedrablanca). Se siguió la tabla; el encargo se reubicará con el sistema
+    de misiones.
+  - Tests nuevos: cada `key_npcs` tiene su NPC (y viceversa), toda bandera
+    exigida la activa alguna conversación, cada NPC se puede agotar con todas
+    las banderas puestas (sin bucles, regalos una vez) y las ramas de regalo
+    desaparecen al cogerlas. Los tests de `test_exploration` que asumían que
+    Yerma era la única NPC / que Los Yermos no tenía a nadie se ajustaron (la
+    zona sin NPC es ahora El Corazón de la Brecha).
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

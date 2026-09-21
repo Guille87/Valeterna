@@ -268,7 +268,7 @@ def test_zone_loop_exits_to_main_menu_via_the_character_menu(player, monkeypatch
 def test_talk_flow_without_npcs_reports_nobody_to_talk_to(player, capsys):
     from valeterna.world.map import ZONES
 
-    exploration._talk_flow(player, ZONES["los_yermos"])
+    exploration._talk_flow(player, ZONES["corazon_de_la_brecha"])
 
     assert "No hay nadie con quien hablar" in capsys.readouterr().out
 
@@ -276,7 +276,7 @@ def test_talk_flow_without_npcs_reports_nobody_to_talk_to(player, capsys):
 def test_talk_flow_lists_the_zones_npcs_and_can_go_back(player, monkeypatch, capsys):
     from valeterna.world.map import ZONES
 
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "2")  # Volver (Yerma=1, Volver=2)
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "5")  # Volver (4 NPCs + Volver)
 
     exploration._talk_flow(player, ZONES["piedrablanca"])
 

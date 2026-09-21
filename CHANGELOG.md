@@ -68,7 +68,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   discovery outcome now sometimes gives a free healing potion instead of
   always gold.
 
-- **Dialogue engine** (GDD §8.2, v0.13.0-a): new `world/npc.py` with NPCs, branching conversations, player replies (conditions on story flags/level, effects: set a flag, give gold or an item), conversations you can come back to (replies you have already exhausted get a green check, gifts are only given once, and the NPC falls back to idle lines once the whole tree is done), and a new "Hablar con..." option in the zone menu. Only Yerma (Piedrablanca) has content so far; the rest of the cast comes next.
+- **Dialogue engine** (GDD §8.2, v0.13.0-a): new `world/npc.py` with NPCs, branching conversations, player replies (conditions on story flags/level, effects: set a flag, give gold or an item), conversations you can come back to (replies you have already exhausted get a green check, gifts are only given once, and the NPC falls back to idle lines once the whole tree is done), and a new "Hablar con..." option in the zone menu. Only Yerma (Piedrablanca) had content at first.
+
+- **NPC cast** (GDD §3, v0.13.0-b): Halbrand, Dorn and Nia join Yerma in Piedrablanca, and every other region gets its key NPC — Cael (Los Yermos), Mirelle (Bosque de los Susurros), Oren (Ciénaga, a new ferryman), Kort (Cañón del Trueno), Sella (Torre/Necrópolis) and Aldric (Ciudadela). Each has a branching first-meeting conversation, a follow-up that only unlocks once you have met another NPC (so talking around and backtracking pays off), and idle lines. Dorn, Oren and Kort give small one-time gifts. Story-only for now: quests arrive later.
 
 ### Changed
 
