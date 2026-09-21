@@ -71,7 +71,9 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
   provisional todavía sin ajustar). El hallazgo de Explorar ahora a veces da
   una poción de salud gratis en vez de siempre oro.
 
-- **Motor de diálogo** (GDD §8.2, v0.13.0-a): nuevo `world/npc.py` con NPCs, conversaciones ramificadas, respuestas del jugador (condiciones sobre banderas de historia/nivel, efectos: activar una bandera, dar oro u objeto), conversaciones a las que se puede volver (las respuestas ya agotadas llevan un check verde, los regalos se dan una sola vez y el NPC pasa a líneas sueltas cuando todo el árbol está hecho) y una opción nueva "Hablar con..." en el menú de zona. De momento solo Yerma (Piedrablanca) tiene contenido; el resto del reparto llega a continuación.
+- **Motor de diálogo** (GDD §8.2, v0.13.0-a): nuevo `world/npc.py` con NPCs, conversaciones ramificadas, respuestas del jugador (condiciones sobre banderas de historia/nivel, efectos: activar una bandera, dar oro u objeto), conversaciones a las que se puede volver (las respuestas ya agotadas llevan un check verde, los regalos se dan una sola vez y el NPC pasa a líneas sueltas cuando todo el árbol está hecho) y una opción nueva "Hablar con..." en el menú de zona. Al principio solo Yerma (Piedrablanca) tenía contenido.
+
+- **Reparto de NPCs** (GDD §3, v0.13.0-b): Halbrand, Dorn y Nia se unen a Yerma en Piedrablanca y cada otra región recibe a su NPC clave — Cael (Los Yermos), Mirelle (Bosque de los Susurros), Oren (Ciénaga, un barquero nuevo), Kort (Cañón del Trueno), Sella (Torre/Necrópolis) y Aldric (Ciudadela). Cada uno tiene una conversación ramificada de primer encuentro, una segunda que solo se desbloquea al haber conocido a otro NPC (así compensa hablar con todos y volver atrás) y líneas sueltas. Dorn, Oren y Kort dan pequeños regalos que se entregan una sola vez. Solo historia por ahora: las misiones llegan más adelante.
 
 ### Cambiado
 

@@ -578,7 +578,7 @@ esta sección.
 
 ### 8.2 Diálogo — ramificado, con respuestas del jugador *(motor implementado en v0.13.0-a; contenido en -b)*
 
-El motor (`world/npc.py`) soporta todo lo de abajo salvo efectos de misión (aún no hay sistema de misiones): hoy los efectos disponibles son activar una bandera, dar oro y dar un objeto. Las condiciones dependen de banderas de historia y del nivel del jugador. La regla de "≥3 respuestas" la vigila un test sobre el contenido real. De momento solo Yerma tiene conversaciones.
+El motor (`world/npc.py`) soporta todo lo de abajo salvo efectos de misión (aún no hay sistema de misiones): hoy los efectos disponibles son activar una bandera, dar oro y dar un objeto. Las condiciones dependen de banderas de historia y del nivel del jugador. La regla de "≥3 respuestas" la vigila un test sobre el contenido real. Los nueve NPCs de la tabla de §3 existen desde v0.13.0-b (más Oren, un barquero inventado para la Ciénaga); sus conversaciones son solo de historia hasta que haya misiones.
 
 Un NPC tiene un conjunto de **conversaciones**. Cada conversación tiene: un id,
 una condición de disparo (estado de misión / bandera de historia / primer
@@ -633,7 +633,7 @@ Guiado por datos como `characters/enemies/` (un archivo por zona):
 `world/data/*.py` (un módulo por zona). **`Zone`, `world/data/*.py`, el
 registro `ZONE_ORDER`/`ZONES`, y el viaje/puertas (`next_zone()`,
 `is_zone_reachable()`) de `world/map.py` ya están implementados
-(v0.12.0-a/b)** — `world/npc.py` existe desde v0.13.0-a (motor + Yerma);
+(v0.12.0-a/b)** — `world/npc.py` existe desde v0.13.0-a (motor + los nueve NPCs);
 `world/quest.py` todavía no.
 
 ### 9.3 Otros módulos nuevos

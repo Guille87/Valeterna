@@ -481,8 +481,82 @@ def test_npc_ids_are_unique_and_registered_in_their_zone():
     for npc in NPCS.values():
         assert npc.zone_id in ZONES
         assert npc.name in ZONES[npc.zone_id].key_npcs
-    assert [n.id for n in npcs_in_zone("piedrablanca")] == ["yerma"]
-    assert npcs_in_zone("los_yermos") == []
+    assert {n.id for n in npcs_in_zone("piedrablanca")} == {"yerma", "dorn", "halbrand", "nia"}
+    assert [n.id for n in npcs_in_zone("los_yermos")] == ["cael"]
+
+
+def test_every_key_npc_of_every_zone_exists():
+    """El reparto del GDD §3: cada nombre de `key_npcs` tiene su NPC definido
+    en esa misma zona (y no sobran NPCs sin figurar en `key_npcs`)."""
+    for zone in ZONES.values():
+        defined = sorted(n.name for n in npcs_in_zone(zone.id))
+        assert defined == sorted(zone.key_npcs), zone.id
+
+
+def test_every_npc_has_a_story_conversation_a_follow_up_and_idle_lines():
+    for npc in NPCS.values():
+        assert npc.conversations, npc.id
+        assert not npc.conversations[0].repeatable
+        assert npc.conversations[0].trigger == Condition()  # la primera siempre sale al conocerlo
+        assert len(npc.idle_lines) >= 3, npc.id
+    for npc_id in ("halbrand", "dorn", "nia", "cael", "mirelle", "oren", "kort", "sella", "aldric"):
+        assert len(NPCS[npc_id].conversations) == 2, npc_id
+        assert NPCS[npc_id].conversations[1].trigger.requires_flags, npc_id
+
+
+def _flags(effects):
+    return {e.value for e in effects if e.kind == "set_flag"}
+
+
+def test_every_required_flag_is_set_by_some_conversation():
+    """Ninguna condición espera una bandera que nadie activa: evita
+    conversaciones inalcanzables por un error de nombre."""
+    set_by_content = set()
+    required = set()
+    for _, conv in _all_conversations():
+        required.update(conv.trigger.requires_flags)
+        for node in conv.nodes:
+            set_by_content |= _flags(node.effects)
+            for choice in node.choices:
+                set_by_content |= _flags(choice.effects)
+                required.update(choice.condition.requires_flags)
+    assert required <= set_by_content, required - set_by_content
+
+
+def test_every_conversation_can_be_exhausted_and_gifts_are_given_once(player):
+    """Con todas las banderas ya puestas, recorrer cada NPC hasta agotarlo
+    termina (sin bucles) y deja todas sus conversaciones como vistas."""
+
+    def first_unchecked(options, done):
+        return done.index(False) if False in done else 0
+
+    for _, conv in _all_conversations():
+        player.mundo["banderas"] |= set(conv.trigger.requires_flags)
+    gold = player.inventory.gold
+
+    for npc in NPCS.values():
+        plays = 0
+        while npc.next_conversation(player) is not None:
+            npc.talk(player, lambda t: None, first_unchecked, lambda m: None)
+            plays += 1
+            assert plays < 60, f"{npc.id} no se agota"
+        for conv in npc.conversations:
+            assert conv.id in player.mundo["dialogos_vistos"], conv.id
+
+    # Dorn (20) y Oren (25) dan oro una sola vez; Kort y Yerma una poción cada uno.
+    assert player.inventory.gold == gold + 20 + 25
+    assert player.inventory.quantities["Poción de Salud"] == 2
+
+
+def test_gift_branches_disappear_once_taken(player):
+    for npc_id, flag in (("dorn", "dorn_encargo_troll"), ("oren", "recibio_oro_oren"), ("kort", "recibio_pocion_kort")):
+        conv = NPCS[npc_id].conversations[0]
+        root = conv.get_node(conv.start)
+        gated = [c for c in root.choices if flag in c.condition.forbids_flags]
+        assert len(gated) == 1, npc_id
+        assert gated[0].condition.is_met(player)
+        player.mundo["banderas"].add(flag)
+        assert not gated[0].condition.is_met(player)
 
 
 def test_conversation_ids_are_globally_unique():

@@ -95,6 +95,12 @@ class Choice:
     reply: str | None = None
 
 
+def end(text: str, reply: str, *effects: Effect) -> Choice:
+    """Atajo para una respuesta que cierra la conversación: el jugador dice
+    `text`, el NPC contesta `reply` y termina."""
+    return Choice(text, reply=reply, effects=effects)
+
+
 @dataclass(frozen=True)
 class DialogueNode:
     """Texto del NPC + respuestas. Sin `choices`, el nodo es lineal: tras

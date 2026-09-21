@@ -1,5 +1,15 @@
 from valeterna.items.potions.healing_potion import HealingPotion
-from valeterna.world.npc import NPC, Choice, Condition, Conversation, DialogueNode, give_item, set_flag
+from valeterna.world.npc import (
+    NPC,
+    Choice,
+    Condition,
+    Conversation,
+    DialogueNode,
+    end,
+    give_gold,
+    give_item,
+    set_flag,
+)
 from valeterna.world.zone import Zone
 
 ZONE = Zone(
@@ -14,9 +24,6 @@ ZONE = Zone(
 _MET_YERMA = set_flag("conocio_a_yerma")
 _POTION = give_item(HealingPotion("Poción de Salud", "Restaura 20 HP", 2, 20).to_dict())
 
-# Solo Yerma por ahora (v0.13.0-a, para poder jugar el motor de diálogo de
-# punta a punta); el resto de NPCs de Piedrablanca y de las demás regiones
-# llegan en v0.13.0-b.
 _YERMA_INTRO = Conversation(
     id="yerma_intro",
     start="bienvenida",
@@ -111,6 +118,238 @@ _YERMA_INTRO = Conversation(
     ),
 )
 
+_HALBRAND_INTRO = Conversation(
+    id="halbrand_intro",
+    start="saludo",
+    nodes=(
+        DialogueNode(
+            "saludo",
+            "Alto ahí... ah, no eres uno de ellos. Soy Halbrand, capitán de lo que queda de la guardia: once "
+            "hombres, y tres duermen con fiebre. Los bandidos de los Yermos nos quitan las caravanas y nos cortan "
+            "los caminos. Sin comida no habrá pueblo.",
+            effects=(set_flag("conocio_a_halbrand"),),
+            choices=(
+                Choice("¿Qué quieren esos bandidos?", next="bandidos"),
+                Choice("¿Por qué no atacáis su campamento?", next="campamento"),
+                end(
+                    "Yo me encargaré de ellos.",
+                    "Cada bandido que caiga es un carro que llega al mercado. No lo olvidaremos.",
+                ),
+            ),
+        ),
+        DialogueNode(
+            "bandidos",
+            "Lo que quieren todos: lo que otros tienen. Antes eran mercenarios del rey; cuando cayó la capital "
+            "nadie les pagó y aprendieron que es más fácil quitar que ganar. Ya no distinguen entre soldado y "
+            "campesino.",
+            choices=(
+                end(
+                    "¿Eran soldados del reino?",
+                    "Algunos. Los reconocerás por cómo se mueven. Eso los hace más peligrosos, no menos.",
+                ),
+                end(
+                    "Entonces no hay quien razone con ellos.",
+                    "Lo intenté dos veces. La segunda me devolvieron a un explorador sin botas y sin caballo.",
+                ),
+                end(
+                    "Tendrán un cabecilla.",
+                    "Lo tienen. Pero mientras siga en pie el campamento, cortarle la cabeza solo cambiaría el nombre.",
+                ),
+            ),
+        ),
+        DialogueNode(
+            "campamento",
+            "Con once hombres, la mitad enfermos, dejaría los muros vacíos y se colarían por la puerta de atrás. "
+            "Necesito a alguien que no tenga que proteger ninguna puerta.",
+            choices=(
+                end("Un mercenario, en resumen.", "Un aliado. La diferencia es que a ti te doy las gracias."),
+                end(
+                    "¿Y qué ofreces a cambio?",
+                    "Lo que pueda: la gratitud de la guardia y una puerta que se abre sin preguntas.",
+                ),
+                end("Entendido. Tendrás noticias mías.", "Ojalá sean buenas."),
+            ),
+        ),
+    ),
+)
+
+_HALBRAND_INFORME = Conversation(
+    id="halbrand_informe",
+    start="informe",
+    trigger=Condition(requires_flags=("conocio_a_cael",)),
+    nodes=(
+        DialogueNode(
+            "informe",
+            "Me dicen que hablaste con el erudito de los Yermos. Cree que los bandidos y la Brecha tienen algo "
+            "que ver. Yo solo sé que desde que se abrió los ataques son más rabiosos. ¿Qué te contó?",
+            choices=(
+                end(
+                    "Dice que la Brecha se alimenta de algo.",
+                    "Lo que sea, que se alimente de otra cosa que no sea mi gente.",
+                ),
+                end(
+                    "Que no todo enemigo es humano.",
+                    "Eso ya lo sé. Los bandidos, al menos, me dejan un cuerpo que enterrar.",
+                ),
+                end(
+                    "No me fío de todo lo que dice.",
+                    "Haces bien. Un erudito cree lo que ha leído; un soldado, lo que ha visto. Yo prefiero lo segundo.",
+                ),
+            ),
+        ),
+    ),
+)
+
+_DORN_INTRO = Conversation(
+    id="dorn_intro",
+    start="saludo",
+    nodes=(
+        DialogueNode(
+            "saludo",
+            "¿Buscas piezas o buscas consejo? Uno se paga con oro, el otro con atención. Soy Dorn. Cazaba en el "
+            "Bosque de los Susurros antes de que se llenara de lo que hoy lo llena; ahora vendo lo que otros "
+            "traen y guardo lo que nadie quiere.",
+            effects=(set_flag("conocio_a_dorn"),),
+            choices=(
+                Choice("¿Qué se caza en el Bosque de los Susurros?", next="bosque"),
+                Choice(
+                    "¿Tienes algún trabajo para mí?",
+                    next="encargo",
+                    condition=Condition(forbids_flags=("dorn_encargo_troll",)),
+                ),
+                end("Solo estoy mirando.", "Mira lo que quieras. Lo que se ve no se cobra."),
+            ),
+        ),
+        DialogueNode(
+            "bosque",
+            "Ciervos, jabalíes, algún oso. Y ahora Orcos que arrancan árboles de raíz y Trolls que regeneran lo "
+            "que les cortas. Los ciervos se han ido. Lo que queda no se caza: te caza.",
+            choices=(
+                end("¿Y los espíritus?", "No los cazo. Les dejo el paso. En un bosque se aprende cuándo callar."),
+                end(
+                    "Los Trolls parecen difíciles.",
+                    "Lo son. Pero su piel vale más que la de cualquier animal: se curte y aguanta lo que un cuero "
+                    "cualquiera no.",
+                ),
+                end("Entonces evitaré el Bosque.", "Evitarlo es de sabios. Pero no te veo cara de sabio."),
+            ),
+        ),
+        DialogueNode(
+            "encargo",
+            "Sí, una cosa. Hay un cofre en mi vieja cabaña que solo se abre con piel de Troll: mi padre lo cerró "
+            "así y yo perdí la llave. Tráeme una cuando la tengas. Toma un adelanto para que te equipes, y no "
+            "vuelvas a por más.",
+            effects=(give_gold(20), set_flag("dorn_encargo_troll")),
+            choices=(
+                end(
+                    "Cuenta conmigo.",
+                    "Bien. Y ten cuidado: los Trolls se levantan de heridas que matarían a un hombre.",
+                ),
+                end(
+                    "¿Qué hay en el cofre?",
+                    "Lo que mi padre consideraba digno de guardar. No lo sé. Eso es lo bueno.",
+                ),
+                end(
+                    "No prometo nada.",
+                    "Nadie lo hace. Quédate el adelanto igualmente; me sería más triste pedírtelo de vuelta.",
+                ),
+            ),
+        ),
+    ),
+)
+
+_DORN_CABANA = Conversation(
+    id="dorn_cabana",
+    start="cabana",
+    trigger=Condition(requires_flags=("conocio_a_mirelle",)),
+    nodes=(
+        DialogueNode(
+            "cabana",
+            "¿Has estado en la cabaña quemada del Bosque? Vive allí una mujer, Mirelle. Poníamos trampas juntos "
+            "antes de que ardiera todo. ¿Sigue de una pieza?",
+            choices=(
+                end("Sigue viva, y terca.", "Terca ya era. Me alegra que siga siéndolo."),
+                end(
+                    "Está sola entre los espíritus.",
+                    "Lo sé. Le he dicho mil veces que bajara al pueblo. Nunca escucha.",
+                ),
+                end(
+                    "No me dijo que te conociera.",
+                    "No lo diría. Nos separamos mal. Ya te lo contará, si le da la gana.",
+                ),
+            ),
+        ),
+    ),
+)
+
+_NIA_INTRO = Conversation(
+    id="nia_intro",
+    start="saludo",
+    nodes=(
+        DialogueNode(
+            "saludo",
+            "¡Eh! Tú llevas espada. ¿Vas a los Yermos? Yo soy Nia. Perdí a Pipa, mi muñeca. Los bandidos me la "
+            "quitaron cuando llegamos por el camino, y ahora la tienen en su campamento.",
+            effects=(set_flag("conocio_a_nia"),),
+            choices=(
+                Choice("¿Cómo era tu muñeca?", next="pipa"),
+                Choice("¿No es peligroso hablar con desconocidos?", next="peligro"),
+                end(
+                    "Veré qué puedo hacer.",
+                    "¿De verdad? Prométeme que la buscarás. Es de trapo, con un ojo de botón azul y otro negro.",
+                ),
+            ),
+        ),
+        DialogueNode(
+            "pipa",
+            "Es de trapo y tiene un ojo azul y otro negro, porque el otro se perdió. Mi madre la cosió con un "
+            "trozo de su vestido de boda. Por eso tengo que recuperarla.",
+            choices=(
+                end("Suena importante.", "Lo es. Es lo único que me queda de casa."),
+                end(
+                    "¿Dónde la viste por última vez?",
+                    "En el carro. Un bandido la cogió y se rio. Se fueron hacia el campamento.",
+                ),
+                end("Habrá que rescatarla, entonces.", "¡Sí! No tengo nada que darte, pero te lo agradeceré mucho."),
+            ),
+        ),
+        DialogueNode(
+            "peligro",
+            "Halbrand dice que no me aleje del pueblo. Pero tú no eres un bandido: los bandidos no preguntan. "
+            "Tú preguntas.",
+            choices=(
+                end("Tiene razón, no te alejes.", "Ya lo sé. Por eso te lo pido a ti."),
+                end("Buen ojo para la gente.", "Me lo dice Yerma. Que se me da bien juzgar a las personas."),
+                end(
+                    "Cuídate mucho, Nia.",
+                    "Siempre. Me quedo junto a la fuente. Desde allí se ve la puerta.",
+                ),
+            ),
+        ),
+    ),
+)
+
+_NIA_ESPERA = Conversation(
+    id="nia_espera",
+    start="espera",
+    trigger=Condition(requires_flags=("conocio_a_halbrand",)),
+    nodes=(
+        DialogueNode(
+            "espera",
+            "Halbrand me ha regañado por asomarme al camino. Pero desde la fuente veo quién vuelve. ¿Has visto ya "
+            "el campamento?",
+            choices=(
+                end("Aún no. Pero la buscaré.", "Vale. Yo sigo esperando."),
+                end("Halbrand tiene razón: es peligroso.", "Lo sé. Pero los mayores siempre dicen lo mismo."),
+                end(
+                    "¿Cómo se llama tu madre?",
+                    "Ena. No llegó a Piedrablanca. Prefiero no hablar de eso.",
+                ),
+            ),
+        ),
+    ),
+)
+
 NPCS = (
     NPC(
         id="yerma",
@@ -121,6 +360,39 @@ NPCS = (
             "Siéntate un rato. El fuego no se apaga solo, pero tampoco pide nada a cambio.",
             "Si te duele algo, la Taberna hace milagros por unas pocas monedas.",
             "Cada mañana que amanece sin humo en el horizonte cuenta como una victoria.",
+        ),
+    ),
+    NPC(
+        id="halbrand",
+        name="Halbrand",
+        zone_id="piedrablanca",
+        conversations=(_HALBRAND_INTRO, _HALBRAND_INFORME),
+        idle_lines=(
+            "Doble turno en la puerta. Otra vez.",
+            "Si ves humo hacia los Yermos, avísame antes que a nadie.",
+            "Un pueblo que duerme tranquilo es un pueblo que alguien ha vigilado.",
+        ),
+    ),
+    NPC(
+        id="dorn",
+        name="Dorn",
+        zone_id="piedrablanca",
+        conversations=(_DORN_INTRO, _DORN_CABANA),
+        idle_lines=(
+            "Todo se vende, salvo la paciencia. Esa se acaba.",
+            "Si vuelves con piel de Troll, sabrás dónde encontrarme.",
+            "Un buen cazador escucha más de lo que dispara.",
+        ),
+    ),
+    NPC(
+        id="nia",
+        name="Nia",
+        zone_id="piedrablanca",
+        conversations=(_NIA_INTRO, _NIA_ESPERA),
+        idle_lines=(
+            "Estoy contando las piedras de la fuente. Van cuarenta y tres.",
+            "Pipa siempre sabía cuándo iba a llover.",
+            "Si ves a un bandido, dile que me devuelva mi muñeca. Sin enfadarte.",
         ),
     ),
 )
