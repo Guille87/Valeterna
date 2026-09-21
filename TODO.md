@@ -591,6 +591,21 @@ el cambio a mitigación multiplicativa.
     momento) y todas las respuestas finales de Yerma tienen ya réplica. Para que
     no se repita con el contenido de -b, un test exige `reply` en toda respuesta
     que cierra la conversación (`next=None`).
+  - **Segunda ronda de feedback: poder volver a hablar y ver qué queda**. Antes,
+    al terminar el primer camino toda la conversación desaparecía y Yerma solo
+    soltaba líneas sueltas. Ahora se puede volver a recorrer el árbol: al final
+    de cada camino se guarda la última respuesta elegida
+    (`"<conv>/<nodo>/<índice>"` en `dialogos_vistos`) y `pick` recibe una marca
+    "agotada" por respuesta, que la UI dibuja como ✔ verde a la derecha. Una
+    respuesta está agotada si es final y ya elegida, o si lleva a más respuestas
+    y todas las visibles están agotadas (recursivo, con guarda contra bucles; las
+    respuestas ocultas por condición no cuentan). La conversación solo se da
+    por vista cuando todo el árbol está agotado; entonces vuelven las líneas
+    sueltas. Lo que da algo (oro/objetos) se entrega una sola vez por partida
+    (`_apply_once`, marcador `#efectos`) y la rama de la poción se oculta con
+    `Condition(forbids_flags=("recibio_pocion_yerma",))` en vez de dejarla
+    repetible (si no, el texto "toma, invita la casa" saldría sin regalo).
+    Consecuencia asumida: al volver a hablar Yerma repite el saludo inicial.
   - Tropiezo: al insertar `_talk_flow` con un script de Python, los `
 ` de
     los literales se escribieron como saltos de línea reales y rompieron el
