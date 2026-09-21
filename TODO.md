@@ -553,6 +553,64 @@ el cambio a mitigación multiplicativa.
     forma" a vida completa, y el menú Personaje quedó con 11 opciones (antes
     13) sin Tienda/Herrería.
 
+- [x] **v0.13.0-a: motor de diálogo** (GDD §8.2 — primera sub-fase de v0.13.0,
+  "Diálogo y NPCs"). Motor + un NPC de muestra; el reparto completo es -b.
+  - `world/npc.py`: dataclasses congeladas (`NPC`, `Conversation`,
+    `DialogueNode`, `Choice`, `Condition`, `Effect`) y funciones puras.
+    `play_conversation()` no imprime ni pregunta: recibe tres callbacks
+    (`show`, `pick`, `notify`), así toda la lógica queda testeada al 100% y
+    `ui/exploration.py` solo aporta `print`/`input`.
+  - Decisiones: un nodo sin `choices` es lineal (sigue por `next`); si todas
+    las respuestas de un nodo quedan ocultas por sus condiciones, la
+    conversación termina en vez de colgarse; una conversación única se
+    registra en `mundo["dialogos_vistos"]` **al terminar** (GDD: "una vez
+    jugada entera"), no al empezar; el NPC elige la primera conversación en
+    orden declarado cuyo disparo se cumple y que no sea una única ya vista, y
+    si no hay ninguna suelta una línea de `idle_lines`. Efectos disponibles:
+    activar bandera, dar oro, dar objeto (dict de `Item.to_dict()`, reusando
+    `item_factory`); los de misión esperan a que exista el sistema de misiones.
+  - La regla "≥3 respuestas por nodo de elección" no la impone el dataclass
+    (los tests del motor usan árboles pequeños) sino un test sobre el contenido
+    real (`test_every_real_conversation_is_well_formed`), que además comprueba
+    ids únicos, que todo `next` apunte a un nodo existente y que los ítems de
+    los efectos se puedan reconstruir.
+  - Los NPC se declaran en el módulo de su zona (`NPCS = (...)`) y
+    `world/map.py` los agrega en `NPCS`/`npcs_in_zone()`; un test comprueba que
+    el nombre de cada NPC figure en `Zone.key_npcs`.
+  - Nueva opción "Hablar con..." en el menú de zona (los índices del menú
+    pasan a 5 opciones; actualizado el test de `zone_loop`). Contenido: solo
+    Yerma (tabernera de Piedrablanca; papel inventado, el GDD solo da el
+    nombre): conversación de primer encuentro de 5 nodos que pone la bandera
+    `conocio_a_yerma` (una rama regala una Poción de Salud) y 3 líneas sueltas.
+  - **Ronda de feedback (probando a Yerma)**: (1) la poción llegaba *después* de
+    elegir respuesta, así que el jugador contestaba "gracias / no hacía falta" sin
+    saber que había recibido algo — nuevo `DialogueNode.effects`, que se aplican
+    al mostrar el nodo (el aviso "Recibes X" sale justo bajo el texto del NPC,
+    antes de las respuestas); (2) al despedirse o elegir una respuesta final el
+    NPC se quedaba callado — nuevo `Choice.reply` (lo que contesta el NPC al
+    momento) y todas las respuestas finales de Yerma tienen ya réplica. Para que
+    no se repita con el contenido de -b, un test exige `reply` en toda respuesta
+    que cierra la conversación (`next=None`).
+  - **Segunda ronda de feedback: poder volver a hablar y ver qué queda**. Antes,
+    al terminar el primer camino toda la conversación desaparecía y Yerma solo
+    soltaba líneas sueltas. Ahora se puede volver a recorrer el árbol: al final
+    de cada camino se guarda la última respuesta elegida
+    (`"<conv>/<nodo>/<índice>"` en `dialogos_vistos`) y `pick` recibe una marca
+    "agotada" por respuesta, que la UI dibuja como ✔ verde a la derecha. Una
+    respuesta está agotada si es final y ya elegida, o si lleva a más respuestas
+    y todas las visibles están agotadas (recursivo, con guarda contra bucles; las
+    respuestas ocultas por condición no cuentan). La conversación solo se da
+    por vista cuando todo el árbol está agotado; entonces vuelven las líneas
+    sueltas. Lo que da algo (oro/objetos) se entrega una sola vez por partida
+    (`_apply_once`, marcador `#efectos`) y la rama de la poción se oculta con
+    `Condition(forbids_flags=("recibio_pocion_yerma",))` en vez de dejarla
+    repetible (si no, el texto "toma, invita la casa" saldría sin regalo).
+    Consecuencia asumida: al volver a hablar Yerma repite el saludo inicial.
+  - Tropiezo: al insertar `_talk_flow` con un script de Python, los `
+` de
+    los literales se escribieron como saltos de línea reales y rompieron el
+    fichero; detectado por ruff/pytest antes de commitear.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

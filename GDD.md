@@ -544,7 +544,9 @@ diary/quests join once those systems exist). Tienda/Herrería moved out of
 Personaje and into Piedrablanca's sub-locations in v0.12.0-c, per this
 section's plan below.
 
-### 8.2 Dialogue — branching, with player choices
+### 8.2 Dialogue — branching, with player choices *(engine implemented in v0.13.0-a; content in -b)*
+
+The engine (`world/npc.py`) supports everything below except quest-related effects (no quest system yet): effects available today are set a flag, give gold, give an item. Conditions gate on story flags and player level. The "≥3 choices" rule is enforced by a test over the real content. Only Yerma has conversations so far.
 
 An NPC owns a set of **conversations**. Each conversation has: an id, a trigger
 condition (quest state / story flag / first meeting), a **`repetible`** flag,
@@ -596,8 +598,8 @@ Data-driven like `characters/enemies/` (one file per zone): `world/zone.py`
 `world/data/*.py` (one module per zone). **`Zone`, `world/data/*.py`, the
 `ZONE_ORDER`/`ZONES` registry, and travel/gating (`next_zone()`,
 `is_zone_reachable()`) in `world/map.py` are implemented (v0.12.0-a/b)** —
-`world/npc.py`/`world/quest.py` don't exist yet (no NPCs/services/quests
-until v0.13.0).
+`world/npc.py` exists since v0.13.0-a (engine + Yerma); `world/quest.py`
+doesn't exist yet.
 
 ### 9.3 Other new modules
 
