@@ -1,4 +1,5 @@
 from valeterna.items.potions.healing_potion import HealingPotion
+from valeterna.world.lore import LoreNote
 from valeterna.world.npc import NPC, Choice, Condition, Conversation, DialogueNode, end, give_item, set_flag
 from valeterna.world.zone import Zone
 
@@ -100,6 +101,30 @@ NPCS = (
             "Las tormentas de aquí no avisan. Las promesas de piedra, tampoco.",
             "Si oyes crujir la roca, corre. No pienses.",
             "Catorce nombres. Los recito cada noche para no olvidar ninguno.",
+        ),
+    ),
+)
+
+LORE = (
+    LoreNote(
+        id="nombres_puntal",
+        zone_id="canon_del_trueno",
+        sub_location="Mina derrumbada",
+        title="Nombres en un puntal",
+        text=(
+            "Catorce nombres rascados en un puntal de la mina, en columna, cada uno con letra distinta. Al final "
+            "hay un decimoquinto a medio grabar: solo la primera letra, una K, y el surco de un cuchillo que se "
+            "detuvo a tiempo."
+        ),
+    ),
+    LoreNote(
+        id="cartel_puente",
+        zone_id="canon_del_trueno",
+        sub_location="Puente colgante",
+        title="Cartel del puente",
+        text=(
+            "Clavado en el primer poste: «PASO CERRADO POR ORDEN DE LA CUADRILLA. Quien cruce lo hace por su "
+            "cuenta, y no vuelve por la misma orilla.» Debajo, con carbón: «Ya nadie cruza. Ya nadie llega.»"
         ),
     ),
 )

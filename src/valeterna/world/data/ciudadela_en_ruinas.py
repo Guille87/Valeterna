@@ -1,3 +1,4 @@
+from valeterna.world.lore import LoreNote
 from valeterna.world.npc import NPC, Choice, Condition, Conversation, DialogueNode, end, set_flag
 from valeterna.world.zone import Zone
 
@@ -98,6 +99,31 @@ NPCS = (
             "Guardia hasta el alba. Como siempre.",
             "Aquí abajo cada piedra tiene nombre. Yo me sé casi todos.",
             "No mires arriba, a las vidrieras. Aún miran de vuelta.",
+        ),
+    ),
+)
+
+LORE = (
+    LoreNote(
+        id="placa_catedral",
+        zone_id="ciudadela_en_ruinas",
+        sub_location="Catedral rota",
+        title="Placa bajo el altar",
+        text=(
+            "Bajo el altar caído, una placa dorada: «Por orden del Rey: puertas cerradas hasta que pase el "
+            "fuego.» Alguien ha rayado la palabra «puertas» con la punta de una espada y ha escrito encima: "
+            "«tumbas.»"
+        ),
+    ),
+    LoreNote(
+        id="bando_plaza",
+        zone_id="ciudadela_en_ruinas",
+        sub_location="Plaza",
+        title="Bando quemado",
+        text=(
+            "Un bando medio quemado: «Se ordena a todo ciudadano acudir a la catedral. La Guardia velará por "
+            "vosotros.» Justo delante, en fila, hay pares de zapatos de todas las tallas. Nadie los ha movido "
+            "en meses."
         ),
     ),
 )

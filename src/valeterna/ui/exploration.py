@@ -17,7 +17,16 @@ from valeterna import __version__
 from valeterna.audio.resource_manager import ResourceManager
 from valeterna.combat.battle import initiate_battle
 from valeterna.ui import console
-from valeterna.world.map import ZONES, is_zone_reachable, next_zone, npcs_in_zone
+from valeterna.world.lore import add_note, found_notes
+from valeterna.world.map import (
+    LORE_NOTES,
+    ZONE_ORDER,
+    ZONES,
+    is_zone_reachable,
+    next_zone,
+    note_for_sub_location,
+    npcs_in_zone,
+)
 
 resource_manager = ResourceManager()
 
@@ -194,7 +203,50 @@ def _sublocation_flow(player, zone) -> None:
     if service:
         service(player)
         return
-    console.say(f"Recorres {place}, pero todavía no hay nada que hacer aquí.")
+    note = note_for_sub_location(zone.id, place)
+    if note is None:
+        # print, no console.say: "Cabaña quemada" no es un estado alterado.
+        print(f"Recorres {place}, pero todavía no hay nada que hacer aquí.")
+    elif add_note(player, note):
+        _show_note(note)
+        console.ask("\nPresiona Enter para continuar...")
+    else:
+        print(f"Recorres {place} de nuevo. Ya has leído todo lo que había que leer aquí.")
+
+
+def _show_note(note) -> None:
+    """Muestra una nota de lore (al encontrarla o al releerla en el Diario)."""
+    print(console.colorize(f"\n--- {note.title} ---", console.Fore.YELLOW, bright=True, tint=False))
+    print(note.text)
+
+
+def _diary_flow(player) -> None:
+    """Diario (v0.13.0-c): las notas de lore ya encontradas, agrupadas por zona en el
+    orden del mapa, para releerlas."""
+    while True:
+        notes = found_notes(player, LORE_NOTES)
+        if not notes:
+            console.info("Todavía no has encontrado ninguna nota. Visita los lugares de cada zona.")
+            return
+
+        ordered = [n for zone_id in ZONE_ORDER for n in notes if n.zone_id == zone_id]
+        print(console.colorize(f"\n--- DIARIO ({len(ordered)}/{len(LORE_NOTES)}) ---", console.Fore.CYAN))
+        current_zone = None
+        for i, note in enumerate(ordered, 1):
+            if note.zone_id != current_zone:
+                current_zone = note.zone_id
+                print(console.colorize(f"\n{ZONES[current_zone].name}", console.Fore.MAGENTA))
+            print(f"  {i}. {note.title}")
+        print(f"\n{len(ordered) + 1}. Volver")
+
+        choice = console.ask(f"\nElige una nota (1-{len(ordered) + 1}): ")
+        if not choice.isdigit() or not (1 <= int(choice) <= len(ordered) + 1):
+            console.error("Opción no válida.")
+            continue
+        if int(choice) == len(ordered) + 1:
+            return
+        _show_note(ordered[int(choice) - 1])
+        console.ask("\nPresiona Enter para continuar...")
 
 
 def _talk_flow(player, zone) -> None:
@@ -229,6 +281,9 @@ def _talk_flow(player, zone) -> None:
         pick=_pick_reply,
         notify=console.success,
     )
+    # Pausa tras la última frase del NPC (réplica final o línea suelta), para
+    # poder leerla antes de que el menú de la zona se redibuje encima.
+    console.ask("\nPresiona Enter para continuar...")
 
 
 def _pick_reply(options: list[str], done: list[bool]) -> int:
@@ -302,6 +357,7 @@ def _character_menu(player, unlocked_enemies: list, defeated_enemies: list, is_a
             ("Estadísticas", player.show_stats),
             ("Habilidades", lambda: _skills_flow(player)),
             ("Bestiario", lambda: _bestiary_flow(player, defeated_enemies)),
+            (f"Diario ({len(found_notes(player, LORE_NOTES))}/{len(LORE_NOTES)})", lambda: _diary_flow(player)),
             ("Equipar Arma", lambda: player.inventory.equip_menu(Weapon)),
             ("Equipar Armadura", lambda: _equip_armor_flow(player)),
             ("Opciones", open_options),

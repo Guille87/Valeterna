@@ -50,3 +50,8 @@ def test_stat_line_uses_the_color_for_that_concept():
     assert console.STAT_COLORS["vida"] in console.stat_line("Vida: 10/10", "vida")
     # Un concepto desconocido no revienta, cae a blanco
     assert console.stat_line("Algo: 1", "no_existe")
+
+
+def test_colorize_can_skip_status_tinting():
+    assert Fore.RED in console.colorize("Bando quemado", Fore.YELLOW)
+    assert Fore.RED not in console.colorize("Bando quemado", Fore.YELLOW, tint=False)

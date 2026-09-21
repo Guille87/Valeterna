@@ -92,9 +92,10 @@ para retroceder. Conjunto inicial:
 
 ### Coleccionables de lore
 
-Notas (cartas, páginas de diario, inscripciones) que se encuentran explorando.
-Se leen una vez y quedan en un **Diario** que se relee desde el menú de
-personaje. Trasfondo opcional; da vida al mundo sin bloquear nada.
+Notas (cartas, páginas de diario, inscripciones) que se encuentran visitando
+los sub-lugares de una zona (implementado en v0.13.0-c: una nota por sub-lugar
+sin servicio propio, que se lee en la primera visita). Se leen una vez y quedan
+en un **Diario** que se relee desde el menú de personaje. Trasfondo opcional; da vida al mundo sin bloquear nada.
 
 ---
 
@@ -571,8 +572,8 @@ misión por sub-lugar más allá de estos tres espera a v0.13.0), **Viajar**
 (frontera a la siguiente zona inmediata en cuanto es alcanzable, o viaje
 rápido a cualquier zona ya visitada), **Personaje** (el menú de personaje
 siempre disponible: inventario, estadísticas, equipar, habilidades,
-bestiario, guardar — extraído del antiguo `game_loop`; diario/misiones se
-sumarán cuando existan esos sistemas). Tienda/Herrería salieron de Personaje
+bestiario, diario, guardar — extraído del antiguo `game_loop`; las misiones se
+sumarán cuando exista ese sistema). Tienda/Herrería salieron de Personaje
 y se mudaron a los sub-lugares de Piedrablanca en v0.12.0-c, según el plan de
 esta sección.
 

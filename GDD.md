@@ -87,8 +87,10 @@ advance" — the player has errands, targets and reasons to backtrack. Initial s
 
 ### Lore collectibles
 
-Notes (letters, journal pages, inscriptions) found while exploring. Read once,
-then stored in a **Diario** re-readable from the character menu. Optional
+Notes (letters, journal pages, inscriptions) found by visiting a zone's
+sub-locations (implemented in v0.13.0-c: one note per sub-location that has no service
+of its own, read on the first visit). Then stored in a **Diario** re-readable from the
+character menu. Optional
 world-building; adds life to the world without gating anything.
 
 ---
@@ -539,8 +541,8 @@ Piedrablanca's Refugio, is still a flavour-text stub; NPC/quest turn-in per
 location beyond these three waits on v0.13.0), **Viajar** (frontier to the
 immediate next zone once reachable, or fast-travel to anywhere already
 visited), **Personaje** (the always-available character menu: inventory,
-stats, equip, skills, bestiary, save — extracted from the old `game_loop`;
-diary/quests join once those systems exist). Tienda/Herrería moved out of
+stats, equip, skills, bestiary, diary, save — extracted from the old `game_loop`;
+quests join once that system exists). Tienda/Herrería moved out of
 Personaje and into Piedrablanca's sub-locations in v0.12.0-c, per this
 section's plan below.
 
