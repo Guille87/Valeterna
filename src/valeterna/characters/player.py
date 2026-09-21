@@ -63,12 +63,12 @@ class Player(Character):
         # por el Bestiario.
         self.enemy_kill_counts: dict[str, int] = {}
 
-        # Estado de mundo (GDD §8/§9.4, cimientos de v0.12.0-a): posición
-        # actual, zonas ya visitadas, misiones, banderas de historia, diálogos
-        # vistos, diario y mejor oleada de la Arena. Todavía no lo usa el bucle
-        # de juego (game_loop sigue siendo el menú plano de siempre) — se
-        # persiste ya para no tener que migrar el guardado una segunda vez
-        # cuando llegue el viaje/exploración de verdad.
+        # Estado de mundo (GDD §8/§9.4): posición actual, zonas ya visitadas,
+        # misiones, banderas de historia, diálogos vistos, diario y mejor
+        # oleada de la Arena. zona_actual/zonas_visitadas ya las usa
+        # ui/exploration.py::zone_loop() (v0.12.0-b); el resto (misiones,
+        # banderas, dialogos_vistos, diario, arena_mejor_oleada) sigue sin
+        # usarse, a la espera de misiones/diálogo/Arena.
         self.mundo: dict = {
             "zona_actual": ZONE_ORDER[0],
             "zonas_visitadas": [ZONE_ORDER[0]],

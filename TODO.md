@@ -503,6 +503,55 @@ el cambio a mitigación multiplicativa.
     Goblin con subida de nivel, viaje a la frontera de Los Yermos, entrar a
     "Ir a..." y ver el stub, y recorrer el menú de Personaje incluyendo
     guardar partida) — captura completa sin tracebacks.
+- [x] **v0.12.0-c: servicios de zona** (GDD §7.4/§8.1 — tercera y última
+  sub-fase de v0.12.0, "El mundo, parte 1"). Cierra el hueco que dejó
+  v0.12.0-b: Tienda/Herrería seguían en Personaje, "Ir a..." era puro stub, y
+  Explorar solo daba oro.
+  - **Tienda/Herrería reubicadas**: fuera de `_character_menu`, ahora
+    conectadas a los sub-lugares de Piedrablanca vía un dict nuevo
+    `_ZONE_SERVICES: dict[(zone_id, sub_location_name), Callable[[Player],
+    None]]` que `_sublocation_flow()` consulta antes de caer al stub
+    genérico — `("piedrablanca", "Mercado")` → `_open_shop`,
+    `("piedrablanca", "Herrería")` → `_open_forge`. El resto de las demás
+    zonas (y "Refugio" en Piedrablanca) se queda sin servicio, como stub.
+  - **Posada/Descanso** (`_rest_flow`, en `("piedrablanca", "Taberna")`):
+    cura del todo y limpia `status_effects` a cambio de oro, con confirmación
+    s/n. Coste `_REST_COST_PER_LEVEL (10) × player.level` — número
+    deliberadamente provisional, el GDD ya lo marcaba como pregunta abierta
+    ("curva de coste del descanso") y sigue sin ajustar contra ingresos
+    reales. Si ya se está a vida completa y sin estados, ni siquiera se
+    muestra el coste — se avisa directamente de que no hace falta descansar.
+    Si no hay oro suficiente tras confirmar, se avisa sin cobrar nada.
+  - **Variedad en los hallazgos de Explorar** (`_discovery`): la rama de
+    hallazgo ahora es ella misma una mini-tirada — 40%
+    (`_DISCOVERY_POTION_CHANCE`) una Poción de Salud gratis vía
+    `Inventory.add_item()` (que ya imprime su propio "Obtenido: X"), 60% el
+    oro de siempre (3-10).
+  - **Trampa al testear el dict de servicios**: `_ZONE_SERVICES` se
+    construye una vez al cargar el módulo con referencias directas a
+    `_open_shop`/`_open_forge`/`_rest_flow`, así que parchear
+    `exploration._open_shop` con `monkeypatch.setattr` no lo intercepta (el
+    dict ya guarda el objeto función original, no lo busca por nombre en
+    cada llamada) — los tests tuvieron que usar
+    `monkeypatch.setitem(exploration._ZONE_SERVICES, (...), ...)` en su
+    lugar. Se dejó anotado en el docstring de `_sublocation_flow` para que
+    no se repita el mismo despiste más adelante.
+  - `_sublocation_flow()` pasó a necesitar `player` además de `zone` (antes
+    solo listaba texto); actualizado su único call site en `zone_loop()` y
+    los tests existentes de v0.12.0-b que la llamaban directamente.
+  - Los índices numéricos de `_character_menu` cambiaron al quitar Tienda y
+    Herrería (2 opciones menos) — actualizados los tests que dependían de
+    "Volver a la zona"/"Volver al Menú Principal" por posición fija
+    (11→9, 12→10, 13→11 con Panel de Admin), mismo tipo de despiste que ya
+    había pasado con el reorden del menú de combate en v0.11.0-c.
+  - Explícitamente fuera de alcance: reaparecer en el último pueblo visitado
+    al morir (GDD §7.4 "Muerte") — cambia la gestión de derrota de
+    `combat/battle.py`, no solo código de mundo/exploración, así que se deja
+    para una pasada aparte.
+  - Probado a mano con `main.py` real: Tienda/Herrería abren correctamente
+    desde "Ir a..." en Piedrablanca, la Taberna informa de "ya estás a plena
+    forma" a vida completa, y el menú Personaje quedó con 11 opciones (antes
+    13) sin Tienda/Herrería.
 
 ## Pulido final (casi lo último antes de 1.0)
 
