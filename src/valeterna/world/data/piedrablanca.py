@@ -1,4 +1,5 @@
 from valeterna.items.potions.healing_potion import HealingPotion
+from valeterna.world.lore import LoreNote
 from valeterna.world.npc import (
     NPC,
     Choice,
@@ -393,6 +394,20 @@ NPCS = (
             "Estoy contando las piedras de la fuente. Van cuarenta y tres.",
             "Pipa siempre sabía cuándo iba a llover.",
             "Si ves a un bandido, dile que me devuelva mi muñeca. Sin enfadarte.",
+        ),
+    ),
+)
+
+LORE = (
+    LoreNote(
+        id="tablon_refugio",
+        zone_id="piedrablanca",
+        sub_location="Refugio",
+        title="Tablón del Refugio",
+        text=(
+            "Entre avisos de raciones y turnos de guardia hay un papel arrugado: «Se busca a Ena, viuda de "
+            "Valeterna, que viajaba con una niña de unos ocho años. Quien la haya visto en el camino, que avise "
+            "a Halbrand.» Alguien ha tachado la palabra «busca» y no ha escrito nada encima."
         ),
     ),
 )

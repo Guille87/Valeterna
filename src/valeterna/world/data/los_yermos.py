@@ -1,3 +1,4 @@
+from valeterna.world.lore import LoreNote
 from valeterna.world.npc import NPC, Choice, Condition, Conversation, DialogueNode, end, set_flag
 from valeterna.world.zone import Zone
 
@@ -102,6 +103,31 @@ NPCS = (
             "Perdona, estoy contando huesos. Nunca coinciden con los registros.",
             "Los muertos de estos túmulos no descansan. Solo esperan.",
             "Todo lo que sé cabe en una libreta. Todo lo que temo, en tres.",
+        ),
+    ),
+)
+
+LORE = (
+    LoreNote(
+        id="carta_bandido",
+        zone_id="los_yermos",
+        sub_location="Campamento de bandidos",
+        title="Carta sin enviar",
+        text=(
+            "«Hermana: ya solo nos pagan en comida, y no siempre. El jefe dice que Piedrablanca caerá en "
+            "invierno. Guardo la muñeca de trapo que le quitamos a una niña; no sé por qué no me atrevo a "
+            "tirarla. Si dejas de saber de mí, no me busques.» La carta no lleva firma."
+        ),
+    ),
+    LoreNote(
+        id="hoja_de_cael",
+        zone_id="los_yermos",
+        sub_location="Túmulo",
+        title="Hoja suelta de Cael",
+        text=(
+            "«Noche 41. Los muertos del túmulo norte se levantan a la misma hora a la que la campana de la "
+            "capital tocaba maitines. No puede ser casualidad. ¿Un eco? Si la Brecha guarda el compás de lo que "
+            "destruyó, entonces también recuerda.»"
         ),
     ),
 )

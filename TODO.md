@@ -640,6 +640,40 @@ el cambio a mitigación multiplicativa.
     Yerma era la única NPC / que Los Yermos no tenía a nadie se ajustaron (la
     zona sin NPC es ahora El Corazón de la Brecha).
 
+- [x] **v0.13.0-c: notas de lore y Diario** (GDD §2 "Lore collectibles").
+  Última sub-fase de v0.13.0.
+  - Decisión: las notas salen **solo de sub-lugares** (visita por primera vez →
+    se lee y queda guardada), no de Explorar: es determinista, da sentido a
+    "Ir a..." (que hasta ahora era un stub de una línea) y evita notas que se
+    pierdan o se repitan por azar. Los sub-lugares con servicio (Mercado,
+    Herrería, Taberna) no tienen nota.
+  - `world/lore.py`: `LoreNote` congelada + funciones puras (`add_note`,
+    `has_note`, `found_notes`). El Diario es `mundo["diario"]` (lista de ids en
+    orden de descubrimiento, ya existía en el guardado desde v0.12.0-a: cero
+    migración). `found_notes` ignora ids desconocidos para que renombrar una
+    nota en el futuro no rompa partidas antiguas.
+  - Cada zona declara sus notas en un `LORE` opcional de su módulo
+    (`world/data/*.py`), agregadas en `world/map.py` (`LORE_NOTES`,
+    `note_for_sub_location`). 13 notas: Refugio + 2 por zona de Los Yermos a la
+    Ciudadela; El Corazón de la Brecha no tiene (se diseña al final). Escritas
+    para enlazar con los NPC sin repetirlos (la muñeca de Nia en el campamento,
+    la K a medio grabar de Kort, la ficha del tomo prohibido de Sella...).
+  - UI: "Diario (n/total)" en Personaje, justo tras Bestiario, con las notas
+    agrupadas por zona en el orden del mapa; releer una nota espera un Enter. Los
+    índices de Personaje se desplazan (Volver a la zona 9→10, etc.) y se
+    ajustaron los tests.
+  - Tests nuevos: `tests/test_lore.py` (idempotencia, orden, ids desconocidos,
+    ida y vuelta por guardado, ids únicos, cada nota apunta a un sub-lugar real,
+    cada sub-lugar sin servicio tiene exactamente una nota) + los de flujo en
+    `test_exploration` (primera visita / repetida / sin nota, Diario vacío,
+    agrupación, opción inválida). El test antiguo "Refugio sigue siendo un stub"
+    ya no procedía y se sustituyó.
+  - Tropiezo: al parchear `exploration.py` con un script de Python vía heredoc,
+    los `\n` de los f-strings volvieron a convertirse en saltos de línea reales
+    (mismo error que en v0.13.0-a); arreglado con Edit. Y un test con índice de
+    menú antiguo no falla: se **cuelga** pidiendo entrada, así que conviene
+    lanzar pytest con `timeout`.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

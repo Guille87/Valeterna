@@ -1,3 +1,4 @@
+from valeterna.world.lore import LoreNote
 from valeterna.world.npc import NPC, Choice, Condition, Conversation, DialogueNode, end, set_flag
 from valeterna.world.zone import Zone
 
@@ -102,6 +103,30 @@ NPCS = (
             "Escucha. ¿Lo oyes? Yo ya no distingo el bosque del silencio.",
             "No cortes ramas. A los árboles no les gusta que les recuerden que son madera.",
             "Cada mañana que despierto sin oír susurros, desconfío.",
+        ),
+    ),
+)
+
+LORE = (
+    LoreNote(
+        id="inscripcion_altar",
+        zone_id="bosque_de_los_susurros",
+        sub_location="Claro del altar",
+        title="Inscripción del altar",
+        text=(
+            "Grabada en la piedra, con letra apretada: «Lo que se ata aquí no descansa; lo que lo ata, tampoco. "
+            "Quien rompa la cadena, que sepa antes qué paga.» Debajo, mucho más reciente, alguien ha arañado una "
+            "sola palabra: «Perdón.»"
+        ),
+    ),
+    LoreNote(
+        id="viga_muescas",
+        zone_id="bosque_de_los_susurros",
+        sub_location="Cabaña quemada",
+        title="Muescas en una viga",
+        text=(
+            "Una viga salvada del fuego, con muescas de trampero: una por cada noche que las voces le hablaron. "
+            "Hay cuarenta y siete. La última está grabada tan hondo que el filo llegó a atravesar la madera."
         ),
     ),
 )

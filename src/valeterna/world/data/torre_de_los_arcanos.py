@@ -1,3 +1,4 @@
+from valeterna.world.lore import LoreNote
 from valeterna.world.npc import NPC, Choice, Condition, Conversation, DialogueNode, end, set_flag
 from valeterna.world.zone import Zone
 
@@ -101,6 +102,30 @@ NPCS = (
             "Estoy ordenando lo que queda. El orden es lo último que se pierde.",
             "No leas en voz alta nada de esta biblioteca. Algunas frases contestan.",
             "Cada libro que salvo es un canal que no se abre.",
+        ),
+    ),
+)
+
+LORE = (
+    LoreNote(
+        id="ficha_biblioteca",
+        zone_id="torre_de_los_arcanos",
+        sub_location="Biblioteca",
+        title="Ficha de préstamo",
+        text=(
+            "Una ficha de préstamo con el título raspado: «Rituales de Cierre y Apertura». Prestado a: Consejo "
+            "Arcano. Devuelto: nunca. En el margen, con otra letra: «No está en su estante. Alguien lo sacó "
+            "antes de que yo empezara a catalogar. — S.»"
+        ),
+    ),
+    LoreNote(
+        id="losa_cripta",
+        zone_id="torre_de_los_arcanos",
+        sub_location="Cripta",
+        title="Losa de la cripta",
+        text=(
+            "Sobre la losa: «Aquí yacen los que sirvieron a la Torre. Ninguno lo supo.» Debajo, en tinta fresca: "
+            "«Se levantan por turnos, como en una guardia. Cada noche, uno menos en la lista.»"
         ),
     ),
 )

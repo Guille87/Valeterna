@@ -123,16 +123,92 @@ def test_sublocation_flow_opens_rest_at_piedrablancas_taberna(player, monkeypatc
     assert opened.get("player") is player
 
 
-def test_sublocation_flow_refugio_is_still_a_stub(player, monkeypatch, capsys):
+def _visit(player, monkeypatch, zone_id, place):
     from valeterna.world.map import ZONES
 
-    zone = ZONES["piedrablanca"]
-    refugio_idx = zone.sub_locations.index("Refugio") + 1
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: str(refugio_idx))
-
+    zone = ZONES[zone_id]
+    idx = zone.sub_locations.index(place) + 1
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: str(idx))
     exploration._sublocation_flow(player, zone)
 
+
+def test_first_visit_to_a_sub_location_shows_its_note_and_saves_it(player, monkeypatch, capsys):
+    _visit(player, monkeypatch, "piedrablanca", "Refugio")
+
+    out = capsys.readouterr().out
+    assert "Tablón del Refugio" in out
+    assert "Ena" in out
+    assert player.mundo["diario"] == ["tablon_refugio"]
+
+
+def test_revisiting_a_sub_location_does_not_repeat_the_note(player, monkeypatch, capsys):
+    _visit(player, monkeypatch, "piedrablanca", "Refugio")
+    capsys.readouterr()
+
+    _visit(player, monkeypatch, "piedrablanca", "Refugio")
+
+    out = capsys.readouterr().out
+    assert "Ya has leído" in out
+    assert "Ena" not in out
+    assert player.mundo["diario"] == ["tablon_refugio"]
+
+
+def test_sub_location_without_a_note_is_still_a_stub(player, monkeypatch, capsys):
+    monkeypatch.setattr(exploration, "note_for_sub_location", lambda zone_id, place: None)
+
+    _visit(player, monkeypatch, "los_yermos", "Túmulo")
+
     assert "todavía no hay nada que hacer aquí" in capsys.readouterr().out
+    assert player.mundo["diario"] == []
+
+
+def test_diary_flow_reports_when_empty(player, capsys):
+    exploration._diary_flow(player)
+
+    assert "Todavía no has encontrado ninguna nota" in capsys.readouterr().out
+
+
+def test_diary_flow_lists_found_notes_by_zone_and_rereads_one(player, monkeypatch, capsys):
+    # Orden de descubrimiento distinto al del mapa: el Diario debe ordenar por zona.
+    player.mundo["diario"] = ["hoja_de_cael", "tablon_refugio"]
+    answers = iter(["2", "", "3"])  # 2ª nota (la de Cael), Enter, Volver
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
+
+    exploration._diary_flow(player)
+
+    out = capsys.readouterr().out
+    assert out.index("Tablón del Refugio") < out.index("Hoja suelta de Cael")
+    assert out.index("Piedrablanca") < out.index("Los Yermos")
+    assert "Noche 41" in out  # se ha releído la nota elegida
+
+
+def test_diary_flow_rejects_invalid_choices(player, monkeypatch, capsys):
+    player.mundo["diario"] = ["tablon_refugio"]
+    answers = iter(["x", "9", "2"])  # inválida, fuera de rango, Volver
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
+
+    exploration._diary_flow(player)
+
+    assert capsys.readouterr().out.count("Opción no válida.") == 2
+
+
+def test_diary_flow_ignores_unknown_ids_from_old_saves(player, monkeypatch, capsys):
+    player.mundo["diario"] = ["nota_que_ya_no_existe"]
+
+    exploration._diary_flow(player)
+
+    assert "Todavía no has encontrado ninguna nota" in capsys.readouterr().out
+
+
+def test_character_menu_shows_the_diary_counter(player, monkeypatch, capsys):
+    from valeterna.world.map import LORE_NOTES
+
+    player.mundo["diario"] = ["tablon_refugio"]
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "10")  # Volver a la zona
+
+    exploration._character_menu(player, [], [], is_admin=False)
+
+    assert f"Diario (1/{len(LORE_NOTES)})" in capsys.readouterr().out
 
 
 def test_rest_flow_heals_and_clears_status_for_gold(player, monkeypatch):
@@ -230,7 +306,7 @@ def test_travel_flow_cancel_option_changes_nothing(player, monkeypatch):
 
 
 def test_character_menu_returning_to_the_zone_is_none(player, monkeypatch):
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "9")  # Volver a la zona
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "10")  # Volver a la zona
 
     result = exploration._character_menu(player, [], [], is_admin=False)
 
@@ -238,7 +314,7 @@ def test_character_menu_returning_to_the_zone_is_none(player, monkeypatch):
 
 
 def test_character_menu_returning_to_the_main_menu_signals_it(player, monkeypatch):
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "10")  # Volver al Menú Principal
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "11")  # Volver al Menú Principal
 
     result = exploration._character_menu(player, [], [], is_admin=False)
 
@@ -246,19 +322,19 @@ def test_character_menu_returning_to_the_main_menu_signals_it(player, monkeypatc
 
 
 def test_character_menu_shows_admin_panel_only_for_admins(player, monkeypatch, capsys):
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "10")  # Volver al Menú Principal
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "11")  # Volver al Menú Principal
 
     exploration._character_menu(player, [], [], is_admin=False)
     assert "Panel de Admin" not in capsys.readouterr().out
 
-    # Con Panel de Admin insertado, "Volver al Menú Principal" pasa a "11".
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "11")
+    # Con Panel de Admin insertado, "Volver al Menú Principal" pasa a "12".
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "12")
     exploration._character_menu(player, [], [], is_admin=True)
     assert "Panel de Admin" in capsys.readouterr().out
 
 
 def test_zone_loop_exits_to_main_menu_via_the_character_menu(player, monkeypatch):
-    answers = iter(["5", "10"])  # Personaje -> Volver al Menú Principal
+    answers = iter(["5", "11"])  # Personaje -> Volver al Menú Principal
     monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
 
     exploration.zone_loop(player, unlocked_enemies=[], defeated_enemies=[], is_admin=False)

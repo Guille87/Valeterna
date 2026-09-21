@@ -1,3 +1,4 @@
+from valeterna.world.lore import LoreNote
 from valeterna.world.npc import NPC, Choice, Condition, Conversation, DialogueNode, end, give_gold, set_flag
 from valeterna.world.zone import Zone
 
@@ -99,6 +100,30 @@ NPCS = (
             "El agua sube. Siempre sube. Lo raro es cuando baja.",
             "No mires el fondo mucho rato: el fondo también mira.",
             "Cada noche cuento las luces del pantano. Cada noche hay una más.",
+        ),
+    ),
+)
+
+LORE = (
+    LoreNote(
+        id="relieve_templo",
+        zone_id="cienaga_de_los_ahogados",
+        sub_location="Templo hundido",
+        title="Relieve del templo hundido",
+        text=(
+            "Bajo el agua turbia, un relieve casi borrado: una figura inmensa hundida en la ciénaga y, a su "
+            "alrededor, pequeñas figuras arrodilladas. Ninguna mira a la grande. Todas miran hacia arriba, "
+            "hacia quien lee."
+        ),
+    ),
+    LoreNote(
+        id="cuaderno_embarcadero",
+        zone_id="cienaga_de_los_ahogados",
+        sub_location="Embarcadero podrido",
+        title="Cuaderno del embarcadero",
+        text=(
+            "Una lista de fechas y cifras con letra de barquero: «Subieron: 3. Volvieron: 1». «Subieron: 5. "
+            "Volvieron: 2». Los últimos renglones dicen solo: «Hoy, al volver, conté uno más de los que llevé.»"
         ),
     ),
 )

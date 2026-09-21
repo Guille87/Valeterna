@@ -16,6 +16,7 @@ from valeterna.world.data import (
     piedrablanca,
     torre_de_los_arcanos,
 )
+from valeterna.world.lore import LoreNote
 from valeterna.world.npc import NPC
 from valeterna.world.zone import Zone
 
@@ -62,6 +63,33 @@ NPCS: dict[str, NPC] = {
     )
     for npc in getattr(module, "NPCS", ())
 }
+
+
+# Todas las notas de lore por id (v0.13.0-c); cada módulo de zona aporta las
+# suyas en un `LORE` opcional.
+LORE_NOTES: dict[str, LoreNote] = {
+    note.id: note
+    for module in (
+        piedrablanca,
+        los_yermos,
+        bosque_de_los_susurros,
+        cienaga_de_los_ahogados,
+        canon_del_trueno,
+        torre_de_los_arcanos,
+        ciudadela_en_ruinas,
+        corazon_de_la_brecha,
+    )
+    for note in getattr(module, "LORE", ())
+}
+
+
+def note_for_sub_location(zone_id: str, sub_location: str) -> LoreNote | None:
+    """La nota que se encuentra al visitar `sub_location` de `zone_id`, o
+    `None` si ese sub-lugar no tiene."""
+    for note in LORE_NOTES.values():
+        if note.zone_id == zone_id and note.sub_location == sub_location:
+            return note
+    return None
 
 
 def npcs_in_zone(zone_id: str) -> list[NPC]:
