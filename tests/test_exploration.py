@@ -141,6 +141,27 @@ def test_first_visit_to_a_sub_location_shows_its_note_and_saves_it(player, monke
     assert player.mundo["diario"] == ["tablon_refugio"]
 
 
+def test_first_visit_to_a_sub_location_pauses_after_the_note_but_a_repeat_does_not(player, monkeypatch):
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]
+    idx = str(zone.sub_locations.index("Refugio") + 1)
+    prompts = []
+
+    def ask(prompt="", *a, **k):
+        prompts.append(prompt)
+        return idx if "Elige un lugar" in prompt else ""
+
+    monkeypatch.setattr(exploration.console, "ask", ask)
+
+    exploration._sublocation_flow(player, zone)
+    assert "Presiona Enter para continuar" in prompts[-1]
+
+    prompts.clear()
+    exploration._sublocation_flow(player, zone)
+    assert not any("Presiona Enter" in p for p in prompts)
+
+
 def test_revisiting_a_sub_location_does_not_repeat_the_note(player, monkeypatch, capsys):
     _visit(player, monkeypatch, "piedrablanca", "Refugio")
     capsys.readouterr()
@@ -362,8 +383,8 @@ def test_talk_flow_lists_the_zones_npcs_and_can_go_back(player, monkeypatch, cap
 def test_talk_flow_plays_a_conversation_end_to_end(player, monkeypatch, capsys):
     from valeterna.world.map import ZONES
 
-    # Yerma (1) -> "Solo busco una cama..." (2) -> primera respuesta (1)
-    answers = iter(["1", "2", "1"])
+    # Yerma (1) -> "Solo busco una cama..." (2) -> primera respuesta (1) -> Enter
+    answers = iter(["1", "2", "1", ""])
     monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
 
     exploration._talk_flow(player, ZONES["piedrablanca"])
@@ -372,6 +393,41 @@ def test_talk_flow_plays_a_conversation_end_to_end(player, monkeypatch, capsys):
     assert "yerma_intro/cama/0" in player.mundo["dialogos_vistos"]
     assert "yerma_intro" not in player.mundo["dialogos_vistos"]  # aún quedan ramas por hablar
     assert "Yerma" in capsys.readouterr().out
+
+
+def test_talk_flow_pauses_after_the_npcs_last_line(player, monkeypatch):
+    from valeterna.world.map import ZONES
+
+    prompts = []
+    answers = iter(["1", "2", "1", ""])
+
+    def ask(prompt="", *a, **k):
+        prompts.append(prompt)
+        return next(answers)
+
+    monkeypatch.setattr(exploration.console, "ask", ask)
+
+    exploration._talk_flow(player, ZONES["piedrablanca"])
+
+    assert "Presiona Enter para continuar" in prompts[-1]
+
+
+def test_talk_flow_pauses_after_an_idle_line_too(player, monkeypatch):
+    from valeterna.world.map import ZONES
+
+    player.mundo["dialogos_vistos"].add("yerma_intro")  # ya agotada: solo líneas sueltas
+    prompts = []
+    answers = iter(["1", ""])
+
+    def ask(prompt="", *a, **k):
+        prompts.append(prompt)
+        return next(answers)
+
+    monkeypatch.setattr(exploration.console, "ask", ask)
+
+    exploration._talk_flow(player, ZONES["piedrablanca"])
+
+    assert "Presiona Enter para continuar" in prompts[-1]
 
 
 def test_pick_reply_reprompts_until_valid(monkeypatch):

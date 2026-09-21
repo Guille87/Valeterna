@@ -208,6 +208,7 @@ def _sublocation_flow(player, zone) -> None:
         console.say(f"Recorres {place}, pero todavía no hay nada que hacer aquí.")
     elif add_note(player, note):
         _show_note(note)
+        console.ask("\nPresiona Enter para continuar...")
     else:
         console.say(f"Recorres {place} de nuevo. Ya has leído todo lo que había que leer aquí.")
 
@@ -279,6 +280,9 @@ def _talk_flow(player, zone) -> None:
         pick=_pick_reply,
         notify=console.success,
     )
+    # Pausa tras la última frase del NPC (réplica final o línea suelta), para
+    # poder leerla antes de que el menú de la zona se redibuje encima.
+    console.ask("\nPresiona Enter para continuar...")
 
 
 def _pick_reply(options: list[str], done: list[bool]) -> int:

@@ -668,6 +668,10 @@ el cambio a mitigación multiplicativa.
     `test_exploration` (primera visita / repetida / sin nota, Diario vacío,
     agrupación, opción inválida). El test antiguo "Refugio sigue siendo un stub"
     ya no procedía y se sustituyó.
+  - **Feedback probando**: faltaba una pausa "Presiona Enter para continuar..." tras leer una nota
+    al visitar un sub-lugar (el Diario ya la tenía) y tras la última frase de un NPC, como en otros
+    sitios del juego. Añadidas en `_sublocation_flow` (solo la primera visita, cuando sale la nota) y
+    en `_talk_flow` (tras cada conversación, también tras una línea suelta). Tests nuevos para ambas.
   - Tropiezo: al parchear `exploration.py` con un script de Python vía heredoc,
     los `\n` de los f-strings volvieron a convertirse en saltos de línea reales
     (mismo error que en v0.13.0-a); arreglado con Edit. Y un test con índice de
