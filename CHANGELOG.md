@@ -60,6 +60,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   menu: inventory, shop, forge, stats, skills, bestiary, equip, options,
   save). Picking a specific enemy to fight by name is gone — combat now only
   happens through Explorar's roll.
+- **Zone services: shop/forge relocated + rest + discovery variety** (GDD
+  §7.4/§8.1, v0.12.0-c): Tienda and Herrería moved out of the Personaje menu
+  into Piedrablanca's "Ir a..." — Mercado opens the shop, Herrería the forge.
+  New "Taberna" rest: full heal + clears all status effects for gold (cost
+  scales with level, a provisional number not yet balance-tuned). Explorar's
+  discovery outcome now sometimes gives a free healing potion instead of
+  always gold.
 
 ### Changed
 

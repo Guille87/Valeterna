@@ -63,6 +63,13 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
   tienda, herrería, estadísticas, habilidades, bestiario, equipar, opciones,
   guardar). Elegir un enemigo concreto por nombre para pelear desaparece — el
   combate ahora solo llega a través de la tirada de Explorar.
+- **Servicios de zona: tienda/herrería reubicadas + descanso + variedad en
+  los hallazgos** (GDD §7.4/§8.1, v0.12.0-c): Tienda y Herrería salen del menú
+  Personaje y se mudan a "Ir a..." de Piedrablanca — Mercado abre la tienda,
+  Herrería la herrería. Nueva "Taberna": cura del todo y limpia todos los
+  estados alterados a cambio de oro (el coste escala con el nivel, un número
+  provisional todavía sin ajustar). El hallazgo de Explorar ahora a veces da
+  una poción de salud gratis en vez de siempre oro.
 
 ### Cambiado
 

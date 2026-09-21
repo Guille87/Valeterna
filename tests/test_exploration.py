@@ -1,4 +1,4 @@
-"""Bucle de exploración por zona (GDD §8.1, v0.12.0-b). `ui/exploration.py`
+"""Bucle de exploración por zona (GDD §8.1, v0.12.0-b/c). `ui/exploration.py`
 está `omit`ido de la métrica de cobertura (igual que `ui/menus.py`, ver
 pyproject.toml) por ser casi todo `input()`/`print()` encadenados, pero sigue
 mereciendo tests — mismo criterio que `tests/test_menus.py`."""
@@ -60,25 +60,139 @@ def test_explore_falls_back_to_any_unlocked_enemy_outside_the_zone_roster(player
     assert calls
 
 
-def test_sublocation_flow_with_places(monkeypatch, capsys):
+def test_sublocation_flow_with_places(player, monkeypatch, capsys):
     from valeterna.world.map import ZONES
 
     zone = ZONES["los_yermos"]
     monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: str(len(zone.sub_locations) + 1))  # Volver
 
-    exploration._sublocation_flow(zone)
+    exploration._sublocation_flow(player, zone)
 
     out = capsys.readouterr().out
     for place in zone.sub_locations:
         assert place in out
 
 
-def test_sublocation_flow_without_places_reports_nothing(capsys):
+def test_sublocation_flow_without_places_reports_nothing(player, capsys):
     from valeterna.world.zone import Zone
 
-    exploration._sublocation_flow(Zone(id="vacia", name="Vacía", theme=""))
+    exploration._sublocation_flow(player, Zone(id="vacia", name="Vacía", theme=""))
 
     assert "No hay ningún sub-lugar" in capsys.readouterr().out
+
+
+def test_sublocation_flow_opens_the_shop_at_piedrablancas_mercado(player, monkeypatch):
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]
+    mercado_idx = zone.sub_locations.index("Mercado") + 1
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: str(mercado_idx))
+    opened = {}
+    monkeypatch.setitem(exploration._ZONE_SERVICES, ("piedrablanca", "Mercado"), lambda p: opened.update(player=p))
+
+    exploration._sublocation_flow(player, zone)
+
+    assert opened.get("player") is player
+
+
+def test_sublocation_flow_opens_the_forge_at_piedrablancas_herreria(player, monkeypatch):
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]
+    herreria_idx = zone.sub_locations.index("Herrería") + 1
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: str(herreria_idx))
+    opened = {}
+    monkeypatch.setitem(exploration._ZONE_SERVICES, ("piedrablanca", "Herrería"), lambda p: opened.update(player=p))
+
+    exploration._sublocation_flow(player, zone)
+
+    assert opened.get("player") is player
+
+
+def test_sublocation_flow_opens_rest_at_piedrablancas_taberna(player, monkeypatch):
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]
+    taberna_idx = zone.sub_locations.index("Taberna") + 1
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: str(taberna_idx))
+    opened = {}
+    monkeypatch.setitem(exploration._ZONE_SERVICES, ("piedrablanca", "Taberna"), lambda p: opened.update(player=p))
+
+    exploration._sublocation_flow(player, zone)
+
+    assert opened.get("player") is player
+
+
+def test_sublocation_flow_refugio_is_still_a_stub(player, monkeypatch, capsys):
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]
+    refugio_idx = zone.sub_locations.index("Refugio") + 1
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: str(refugio_idx))
+
+    exploration._sublocation_flow(player, zone)
+
+    assert "todavía no hay nada que hacer aquí" in capsys.readouterr().out
+
+
+def test_rest_flow_heals_and_clears_status_for_gold(player, monkeypatch):
+    player.stats.health = 1
+    player.apply_status("veneno", 3)
+    player.level = 2
+    player.inventory.gold = 100
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "s")
+
+    exploration._rest_flow(player)
+
+    assert player.stats.health == player.stats.max_health
+    assert player.status_effects == []
+    assert player.inventory.gold == 100 - (exploration._REST_COST_PER_LEVEL * 2)
+
+
+def test_rest_flow_declines_without_confirmation(player, monkeypatch):
+    player.stats.health = 1
+    gold_before = player.inventory.gold
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "n")
+
+    exploration._rest_flow(player)
+
+    assert player.stats.health == 1
+    assert player.inventory.gold == gold_before
+
+
+def test_rest_flow_refuses_without_enough_gold(player, monkeypatch, capsys):
+    player.stats.health = 1
+    player.inventory.gold = 0
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "s")
+
+    exploration._rest_flow(player)
+
+    assert player.stats.health == 1
+    assert "No tienes oro suficiente" in capsys.readouterr().out
+
+
+def test_rest_flow_reports_nothing_needed_when_already_at_full_health(player, capsys):
+    exploration._rest_flow(player)
+
+    assert "Ya estás a plena forma" in capsys.readouterr().out
+
+
+def test_discovery_rolls_a_potion(player, monkeypatch):
+    monkeypatch.setattr("valeterna.ui.exploration.random.random", lambda: 0.0)  # < _DISCOVERY_POTION_CHANCE
+
+    exploration._discovery(player)
+
+    assert player.inventory.quantities.get("Poción de Salud") == 1
+
+
+def test_discovery_rolls_gold(player, monkeypatch):
+    gold_before = player.inventory.gold
+    monkeypatch.setattr("valeterna.ui.exploration.random.random", lambda: 0.99)
+    monkeypatch.setattr("valeterna.ui.exploration.random.randint", lambda a, b: 5)
+
+    exploration._discovery(player)
+
+    assert player.inventory.gold == gold_before + 5
 
 
 def test_travel_flow_fast_travels_to_a_visited_zone(player, monkeypatch):
@@ -116,7 +230,7 @@ def test_travel_flow_cancel_option_changes_nothing(player, monkeypatch):
 
 
 def test_character_menu_returning_to_the_zone_is_none(player, monkeypatch):
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "11")  # Volver a la zona
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "9")  # Volver a la zona
 
     result = exploration._character_menu(player, [], [], is_admin=False)
 
@@ -124,7 +238,7 @@ def test_character_menu_returning_to_the_zone_is_none(player, monkeypatch):
 
 
 def test_character_menu_returning_to_the_main_menu_signals_it(player, monkeypatch):
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "12")  # Volver al Menú Principal
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "10")  # Volver al Menú Principal
 
     result = exploration._character_menu(player, [], [], is_admin=False)
 
@@ -132,19 +246,19 @@ def test_character_menu_returning_to_the_main_menu_signals_it(player, monkeypatc
 
 
 def test_character_menu_shows_admin_panel_only_for_admins(player, monkeypatch, capsys):
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "12")  # Volver al Menú Principal
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "10")  # Volver al Menú Principal
 
     exploration._character_menu(player, [], [], is_admin=False)
     assert "Panel de Admin" not in capsys.readouterr().out
 
-    # Con Panel de Admin insertado, "Volver al Menú Principal" pasa a "13".
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "13")
+    # Con Panel de Admin insertado, "Volver al Menú Principal" pasa a "11".
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "11")
     exploration._character_menu(player, [], [], is_admin=True)
     assert "Panel de Admin" in capsys.readouterr().out
 
 
 def test_zone_loop_exits_to_main_menu_via_the_character_menu(player, monkeypatch):
-    answers = iter(["4", "12"])  # Personaje -> Volver al Menú Principal
+    answers = iter(["4", "10"])  # Personaje -> Volver al Menú Principal
     monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
 
     exploration.zone_loop(player, unlocked_enemies=[], defeated_enemies=[], is_admin=False)

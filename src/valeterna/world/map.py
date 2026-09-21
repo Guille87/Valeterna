@@ -1,9 +1,9 @@
 """Grafo de zonas y ayudas de progreso (GDD §3, §9.2).
 
-Fundamento de datos para v0.12.0: todavía no hay bucle de exploración ni menú
-de viaje (`game_loop` sigue siendo el menú plano de siempre) — esto solo
-existe para poder persistir `Player.mundo` (v0.12.0-a) sin tener que migrar el
-guardado una segunda vez cuando llegue el viaje de verdad.
+`next_zone()`/`is_zone_reachable()` alimentan el viaje real de
+`ui/exploration.py::_travel_flow()` (v0.12.0-b); `default_zone_for_progress()`
+solo la usa la migración de guardado v1 -> v2 (`persistence/save_load.py`,
+v0.12.0-a).
 """
 
 from valeterna.world.data import (
