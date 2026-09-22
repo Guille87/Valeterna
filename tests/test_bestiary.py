@@ -40,7 +40,7 @@ def test_three_kills_add_combat_stats_and_the_signature(capsys):
     out = _sheet(Goblin(), 3, capsys)
 
     assert "Armadura" in out and "Velocidad" in out and "Prob. Crítico" in out
-    assert f"Habilidad: {Goblin.SIGNATURE}" in out
+    assert f"Habilidad {Goblin.SIGNATURE}" in out
     assert "Derrótalo 5 veces" in out
     assert "Resiste:" not in out and "Botín posible" not in out
 
@@ -143,3 +143,10 @@ def test_every_enemys_full_sheet_renders_without_errors(name, capsys):
     print_bestiary_entry(_get_enemy_instance(name), kill_count=10)
 
     assert name in capsys.readouterr().out
+
+
+def test_three_kills_show_crit_damage_as_a_percentage(capsys):
+    goblin = Goblin()
+    out = _sheet(goblin, 3, capsys)
+    assert f"Daño Crítico: {goblin.stats.crit_damage * 100:.0f}%" in out
+    assert "x1." not in out

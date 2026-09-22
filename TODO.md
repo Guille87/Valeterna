@@ -712,6 +712,18 @@ el cambio a mitigación multiplicativa.
     `drop_table()` exacta para el Goblin, `random.random` restaurado, coherencia
     con `drop_item()` de los 14, ficha completa y renderizable para cada enemigo).
     Ajustado el test antiguo de debilidades (ahora exige 5 derrotas).
+  - **Ronda de feedback**: (1) el Daño Crítico se mostraba como multiplicador
+    (`x1.60`) en vez de porcentaje como la Prob. Crítico — cambiado a `160%` en
+    las tres pantallas que lo muestran (Bestiario, información de batalla del
+    jugador y del enemigo, y `Player.show_stats()`; `Stats.__str__()`, que no
+    se imprime en pantalla, se dejó igual); (2) la descripción del Goblin
+    mencionaba una condición interna ("si ya lo has derrotado antes") que el
+    jugador no puede comprobar y no aporta nada — se quitó, la habilidad ya
+    dice que emboscada; (3) "Habilidad: Emboscada: ..." quedaba con dos dos
+    puntos seguidos — la línea ahora es "Habilidad {SIGNATURE}" sin los dos
+    puntos propios, ya que cada `SIGNATURE` empieza por su propio nombre y
+    los dos puntos. El Goblin y el Huargo sin debilidades/resistencias/
+    inmunidades a las 5 derrotas es correcto (ninguno tiene ninguna todavía).
 
 ## Pulido final (casi lo último antes de 1.0)
 

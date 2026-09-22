@@ -12,7 +12,7 @@ class Goblin(Enemy):
     DESCRIPTION = (
         "Carroñero de piel verde y colmillos amarillos. Aprende de las palizas: cuando ya lo has vencido, te acecha."
     )
-    SIGNATURE = "Emboscada: si ya lo has derrotado antes, puede atacarte por sorpresa antes de empezar el combate."
+    SIGNATURE = "Emboscada: puede atacarte por sorpresa antes de empezar el combate."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
 

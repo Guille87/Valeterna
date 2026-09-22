@@ -27,7 +27,7 @@ def print_player_enemy_info(player, enemy, defeated_enemies: list) -> None:
     _p(f"Armadura: {player.get_total_armor()} | Resistencia Mágica: {player.get_total_magic_resist()}", "armadura")
     _p(
         f"Prob. Crítico: {player.get_total_crit_chance() * 100:.0f}% | "
-        f"Daño Crítico: x{player.get_total_crit_damage():.2f}",
+        f"Daño Crítico: {player.get_total_crit_damage() * 100:.0f}%",
         "critico",
     )
     _p(f"Velocidad: {player.get_total_speed()}", "velocidad")
@@ -54,7 +54,7 @@ def print_player_enemy_info(player, enemy, defeated_enemies: list) -> None:
     _p(f"Armadura: {ev(enemy.stats.armor)} | Resistencia Mágica: {ev(enemy.stats.magic_resist)}", "armadura")
     _p(
         f"Prob. Crítico: {f'{enemy.stats.crit_chance * 100:.0f}%' if revealed else _HIDDEN} | "
-        f"Daño Crítico: {f'x{enemy.stats.crit_damage:.2f}' if revealed else _HIDDEN}",
+        f"Daño Crítico: {f'{enemy.stats.crit_damage * 100:.0f}%' if revealed else _HIDDEN}",
         "critico",
     )
     _p(f"Velocidad: {ev(enemy.stats.speed)}", "velocidad")
@@ -107,7 +107,7 @@ def print_bestiary_entry(enemy, kill_count: int = 0) -> None:
         _p(f"Velocidad: {enemy.stats.speed}", "velocidad")
         _p(f"Precisión: {enemy.stats.precision} | Evasión: {enemy.stats.evasion}", "precision")
         _p(
-            f"Prob. Crítico: {enemy.stats.crit_chance * 100:.0f}% | Daño Crítico: x{enemy.stats.crit_damage:.2f}",
+            f"Prob. Crítico: {enemy.stats.crit_chance * 100:.0f}% | Daño Crítico: {enemy.stats.crit_damage * 100:.0f}%",
             "critico",
         )
         _p(
@@ -118,7 +118,7 @@ def print_bestiary_entry(enemy, kill_count: int = 0) -> None:
         if enemy.stats.regen:
             _p(f"Regeneración: {enemy.stats.regen} HP/turno", "regen")
         if cls.SIGNATURE:
-            print(f"  Habilidad: {cls.SIGNATURE}")
+            print(f"  Habilidad {cls.SIGNATURE}")
 
     if kill_count >= BESTIARY_AFFINITY:
         if cls.WEAKNESSES:
