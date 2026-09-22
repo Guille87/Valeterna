@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **Los Yermos fleshed out to 10 enemies** (GDD §4.6, v0.14.0-c): 6 new enemies — Rata Gigante, Goblin Montaraz, Chamán Goblin (elite), Salteador, Ogro del Yermo (elite) and El Carnicero, the zone's guardian, whose defeat now opens the Bosque de los Susurros. Each was sized against the power-budget tool's target curve (v0.14.0-b) before being written; the full derivation and how a "power score" like this works in general is explained in `docs/design/presupuesto_de_poder.md`. Two mechanics were revised after feedback during design: a ranged enemy's shot dodges exactly like any other attack (no special evasion treatment — a projectile should be easier to dodge than a melee hit, not harder), and gold theft is capped and infrequent so it never leaves the player at zero or feels relentless.
+
 - **Real elemental affinities for all 14 enemies** (GDD §5, v0.11.0-a): every
   enemy now declares actual weaknesses, resistances, and immunities instead of
   the old single-element ×2.0 legacy dict (now removed entirely). See

@@ -20,10 +20,16 @@ if TYPE_CHECKING:
 # van insertando en el hueco que les corresponde según su potencia relativa a
 # los que ya existían, no necesariamente al final de la cadena.
 ENEMY_PROGRESSION = {
-    "Goblin": "Huargo",
-    "Huargo": "Esqueleto",
+    "Goblin": "Rata Gigante",
+    "Rata Gigante": "Goblin Montaraz",
+    "Goblin Montaraz": "Huargo",
+    "Huargo": "Chamán Goblin",
+    "Chamán Goblin": "Esqueleto",
     "Esqueleto": "Bandido",
-    "Bandido": "Orco",
+    "Bandido": "Salteador",
+    "Salteador": "Ogro del Yermo",
+    "Ogro del Yermo": "El Carnicero",
+    "El Carnicero": "Orco",  # guardián de Los Yermos: abre el Bosque
     "Orco": "Espíritu Vengativo",
     "Espíritu Vengativo": "Troll",
     "Troll": "Gárgola",

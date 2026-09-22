@@ -1,4 +1,4 @@
-"""Afinidades elementales reales de los 14 enemigos actuales (GDD §5, v0.11.0-a).
+"""Afinidades elementales reales de los 20 enemigos actuales (GDD §5/§4.6, v0.11.0-a/v0.14.0-c).
 
 Cada caso fija la tabla de diseño acordada: débilidades/resistencias/inmunidades
 por enemigo, y la regla "inmune al elemento -> también inmune al estado de ese
@@ -11,16 +11,21 @@ import pytest
 
 from valeterna.characters.enemies.angel_caido import AngelCaido
 from valeterna.characters.enemies.bandido import Bandido
+from valeterna.characters.enemies.chaman_goblin import ChamanGoblin
 from valeterna.characters.enemies.demonio import Demonio
 from valeterna.characters.enemies.dragon import Dragon
+from valeterna.characters.enemies.el_carnicero import ElCarnicero
 from valeterna.characters.enemies.espiritu_vengativo import EspirituVengativo
 from valeterna.characters.enemies.gargola import Gargola
 from valeterna.characters.enemies.goblin import Goblin
+from valeterna.characters.enemies.goblin_montaraz import GoblinMontaraz
 from valeterna.characters.enemies.golem import GolemDePiedra
 from valeterna.characters.enemies.huargo import Huargo
 from valeterna.characters.enemies.mage import Mago
 from valeterna.characters.enemies.nigromante import Nigromante
+from valeterna.characters.enemies.ogro_del_yermo import OgroDelYermo
 from valeterna.characters.enemies.orc import Orc
+from valeterna.characters.enemies.rata_gigante import RataGigante
 from valeterna.characters.enemies.skeleton import Skeleton
 from valeterna.characters.enemies.troll import Troll
 
@@ -125,3 +130,36 @@ def test_dragon_is_immune_to_fire_element_and_burn_status():
     assert dragon.affinity_for({"fuego"}) == 0.0
     assert dragon.is_immune_to_status("quemado") is True
     assert dragon.apply_status("quemado", 3) is False
+
+
+# --- Los Yermos a 10 (v0.14.0-c, GDD §4.6) ------------------------------------
+
+
+def test_rata_gigante_and_goblin_montaraz_are_weak_to_fire_and_nothing_else():
+    for cls in (RataGigante, GoblinMontaraz):
+        enemy = cls()
+        assert enemy.affinity_for({"fuego"}) == 1.5
+        assert not enemy.RESISTANCES
+        assert not enemy.IMMUNE_ELEMENTS
+        assert not enemy.IMMUNE_STATUSES
+
+
+def test_chaman_goblin_is_weak_to_holy_and_resists_its_own_element():
+    chaman = ChamanGoblin()
+    assert chaman.affinity_for({"sagrado"}) == 1.5
+    assert chaman.affinity_for({"oscuridad"}) == 0.5  # resiste, no inmune (como el Mago con arcano)
+    assert not chaman.IMMUNE_ELEMENTS
+
+
+def test_ogro_del_yermo_is_weak_to_fire_and_cannot_be_paralysed():
+    ogro = OgroDelYermo()
+    assert ogro.affinity_for({"fuego"}) == 1.5
+    assert ogro.is_immune_to_status("paralizado") is True
+    assert ogro.apply_status("paralizado", 3) is False
+
+
+def test_el_carnicero_is_weak_to_holy_and_resists_poison():
+    carnicero = ElCarnicero()
+    assert carnicero.affinity_for({"sagrado"}) == 1.5
+    assert carnicero.affinity_for({"veneno"}) == 0.5
+    assert not carnicero.IMMUNE_ELEMENTS

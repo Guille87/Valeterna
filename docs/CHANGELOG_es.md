@@ -11,6 +11,8 @@ y este proyecto sigue el [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Añadido
 
+- **Los Yermos rellenado a 10 enemigos** (GDD §4.6, v0.14.0-c): 6 enemigos nuevos — Rata Gigante, Goblin Montaraz, Chamán Goblin (élite), Salteador, Ogro del Yermo (élite) y El Carnicero, el guardián de la zona, cuya derrota abre ahora el Bosque de los Susurros. Cada uno se dimensionó contra la curva objetivo de la herramienta de presupuesto de poder (v0.14.0-b) antes de escribir su código; la derivación completa, y cómo funciona en general un "poder" como este, está explicada en `docs/design/presupuesto_de_poder.md`. Dos mecánicas se revisaron tras el feedback durante el diseño: el disparo de un enemigo a distancia se esquiva exactamente igual que cualquier otro ataque (sin trato especial a la evasión — un proyectil debería ser más fácil de esquivar que un golpe cuerpo a cuerpo, no más difícil), y el robo de oro está acotado y es poco frecuente, para que nunca deje al jugador a cero ni se sienta constante.
+
 - **Afinidades elementales reales para los 14 enemigos** (GDD §5, v0.11.0-a):
   cada enemigo declara ya debilidades, resistencias e inmunidades de verdad en
   vez del antiguo dict de un solo elemento a ×2.0 (eliminado por completo).

@@ -266,10 +266,16 @@ def test_dragon_fire_breath_does_not_always_apply_burn(player, monkeypatch):
 
 
 def test_enemy_progression_includes_new_enemies_in_expected_order():
-    assert ENEMY_PROGRESSION["Goblin"] == "Huargo"
-    assert ENEMY_PROGRESSION["Huargo"] == "Esqueleto"
+    assert ENEMY_PROGRESSION["Goblin"] == "Rata Gigante"
+    assert ENEMY_PROGRESSION["Rata Gigante"] == "Goblin Montaraz"
+    assert ENEMY_PROGRESSION["Goblin Montaraz"] == "Huargo"
+    assert ENEMY_PROGRESSION["Huargo"] == "Chamán Goblin"
+    assert ENEMY_PROGRESSION["Chamán Goblin"] == "Esqueleto"
     assert ENEMY_PROGRESSION["Esqueleto"] == "Bandido"
-    assert ENEMY_PROGRESSION["Bandido"] == "Orco"
+    assert ENEMY_PROGRESSION["Bandido"] == "Salteador"
+    assert ENEMY_PROGRESSION["Salteador"] == "Ogro del Yermo"
+    assert ENEMY_PROGRESSION["Ogro del Yermo"] == "El Carnicero"
+    assert ENEMY_PROGRESSION["El Carnicero"] == "Orco"
     assert ENEMY_PROGRESSION["Orco"] == "Espíritu Vengativo"
     assert ENEMY_PROGRESSION["Espíritu Vengativo"] == "Troll"
     assert ENEMY_PROGRESSION["Troll"] == "Gárgola"

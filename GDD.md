@@ -205,22 +205,38 @@ ally. New: ranged attack (partly ignores evasion), gold theft, stun (skip a
 turn), stacking armour shred, life drain, enrage under a threshold, `consagrar`
 (marks the player for bonus damage), curse that blocks healing.
 
-### 4.6 Sample zone — Los Yermos (10)
+### 4.6 Sample zone — Los Yermos (10) *(implemented in v0.14.0-c)*
 
 Demonstrates the template; the other six zones are follow-up design work.
 
 | Tier | Rank | Name | Archetype | Signature | Deals | Weak to | Resists | Immune to |
 |------|------|------|-----------|-----------|-------|---------|---------|-----------|
-| 1 | standard | Rata Gigante | skirmisher | quick bite, minor poison chance | veneno | fuego | — | — |
+| 1 | standard | Rata Gigante | skirmisher | quick bite, minor poison chance | — | fuego | — | — |
 | 2 | standard | Goblin | bruiser | ambush after first defeat | físico | — | — | — |
-| 3 | standard | Goblin Montaraz | ranged | arrows (partly ignore evasion) | físico | fuego | — | — |
+| 3 | standard | Goblin Montaraz | ranged | ranged shot, minor bleed chance | físico | fuego | — | — |
 | 4 | standard | Huargo | skirmisher | pack bite (extra hit) | físico | — | — | — |
-| 5 | **elite** | Chamán Goblin | support | heals an ally / self, minor curse | oscuridad | sagrado | oscuridad | — |
+| 5 | **elite** | Chamán Goblin | support | self-heal, minor curse | oscuridad | sagrado | oscuridad | — |
 | 6 | standard | Esqueleto | tank | revives once | físico | sagrado | veneno | veneno, sangrado |
 | 7 | **elite** | Bandido | ambusher | disarm | físico | veneno | — | — |
 | 8 | standard | Salteador | skirmisher | double quick strike, steals gold | físico | — | — | — |
 | 9 | **elite** | Ogro del Yermo | bruiser | crushing blow that stuns | físico | fuego | — | paralizado |
 | 10 | **guardian** | El Carnicero | bruiser/tank | enrage below 40 % HP, applies sangrado | físico | sagrado | veneno | — |
+
+Two changes from the original design pass, both from user feedback: **Goblin
+Montaraz** no longer partially ignores evasion — dodging a projectile is, if
+anything, *easier* than dodging a melee hit, so giving ranged attacks a
+mechanical edge over evasion was backwards; it now rolls the same
+`resolve_hit()` as every other attack and its signature moved to a bleed
+chance instead. **Steal gold (Salteador)** is deliberately capped and
+infrequent (a ~25%-of-turns alternate action, not an add-on to every hit, and
+never takes more than the player is carrying) so it reads as a nuisance, not
+a punishment — see `characters/power_budget.py`'s neighbour module
+`characters/enemies/salteador.py` for the exact numbers. **Unlock order**:
+Goblin stays the game's literal first encounter (the whole early XP curve is
+calibrated around it) even though its design tier (2) is now below Rata
+Gigante's (1) — Rata Gigante unlocks second instead. See
+`docs/design/presupuesto_de_poder.md` for how each enemy's stats were sized
+against the power-budget curve (§4.4) before writing its code.
 
 ---
 

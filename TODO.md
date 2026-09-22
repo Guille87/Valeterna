@@ -800,6 +800,78 @@ el cambio a mitigación multiplicativa.
     fijados explícitamente para que un cambio futuro en la fórmula o en un
     enemigo obligue a revisar este test, no a que falle en silencio).
 
+- [x] **v0.14.0-c: Los Yermos a 10 enemigos** (GDD §4.6). Tercera sub-fase de
+  v0.14.0 (el resto: -d Bosque a 10, -e habilidades de clase de nivel medio).
+  - Nuevo documento explicativo `docs/design/presupuesto_de_poder.md`: qué es
+    el "Poder" que enseñan juegos como Raid Shadow Legends o Hustle Castle, de
+    dónde sale, y cómo se calculó exactamente el de Valeterna paso a paso
+    (regresión log-lineal contra los 14 enemigos existentes) — a petición
+    expresa del usuario, que quería entenderlo a fondo y tenerlo siempre a
+    mano, no solo en el docstring técnico de `power_budget.py`.
+  - **6 enemigos nuevos**, cada uno dimensionado antes de escribir su código
+    contra `target_score(zona=Los Yermos, tier)`: Rata Gigante (tier 1,
+    objetivo 3 150, real 3 214, +2%), Goblin Montaraz (tier 3, objetivo 4 922,
+    real 5 166, +5%), Chamán Goblin (tier 5 élite, objetivo 7 690, real 6 990,
+    -9%), Salteador (tier 8, objetivo 15 020, real 14 832, -1%), Ogro del
+    Yermo (tier 9 élite, objetivo 18 775, real 18 266, -3%), El Carnicero
+    (tier 10 guardián, objetivo 23 469, real 23 452, -0%) — todos dentro del
+    ±10% que pide el GDD, mucho más ajustados que la cadena original (que se
+    calibró antes de que existiera la herramienta).
+  - **Orden de desbloqueo**: el Goblin sigue siendo el primer enemigo del
+    juego (la curva de XP del nivel 1→2 está calibrada específicamente
+    alrededor de su primera victoria) aunque su tier de diseño (2) quede por
+    debajo del de la Rata Gigante (1) — se desbloquea justo detrás de él en
+    vez de delante. Cadena completa: Goblin → Rata Gigante → Goblin Montaraz →
+    Huargo → Chamán Goblin → Esqueleto → Bandido → Salteador → Ogro del
+    Yermo → El Carnicero (guardián, abre el Bosque) → Orco (sin cambios desde
+    aquí).
+  - **Ronda de feedback sobre el diseño (antes de escribir código)**:
+    - *Goblin Montaraz*: el diseño original ("las flechas ignoran parte de la
+      evasión") lo señaló el usuario como poco realista — esquivar un
+      proyectil a distancia es, si acaso, más fácil que esquivar un golpe
+      cuerpo a cuerpo, no más difícil. Se descartó y se sustituyó por una
+      probabilidad de sangrado al acertar, con la misma tirada de acierto que
+      cualquier otro ataque del juego (nada de trato especial a la evasión).
+    - *Salteador*: el robo de oro se diseñó desde el principio con topes
+      pedidos por el usuario — nunca dejar al jugador a cero, y que no sea
+      "todo el rato". Es una acción alternativa (~25% de sus turnos, no un
+      añadido a cada golpe) y el importe robado está acotado
+      (`min(oro_del_jugador, random(3, 8))`), con mensaje distinto si no lleva
+      nada encima.
+  - **Mecánicas nuevas, todas reutilizando patrones ya existentes salvo el
+    robo de oro**: veneno/sangrado al acertar (Rata Gigante, Goblin Montaraz —
+    mismo patrón que el Dardo de Veneno del Mago), autocuración + maldición
+    (Chamán Goblin — mezcla de la cura del Ángel Caído y la maldición del
+    Espíritu Vengativo), golpe extra (Salteador — mismo patrón que el
+    mordisco de manada del Huargo) + robo de oro (nuevo), golpe aplastante
+    con aturdimiento (Ogro del Yermo — variante del terremoto del Gólem con
+    tirada de acierto), furia de un solo sentido + sangrado (El Carnicero —
+    variante de la furia cíclica del Orco, pero permanente una vez activada
+    en vez de alternar).
+  - **Botín**: cada uno suelta poción + material propio; Rata Gigante, Goblin
+    Montaraz, Chamán Goblin y Salteador también arma (daño 5/6/8/10,
+    manteniendo la progresión ya documentada — Goblin 4, Huargo 7... — sin
+    romperla); Ogro del Yermo y El Carnicero no sueltan arma, solo armadura
+    (tanques, no ofensivos). Piezas de armadura nuevas en huecos ya usados por
+    Los Yermos (botas, hombreras, amuleto, cinturon, casco, guantes, perneras,
+    peto), con valores que respetan la progresión no decreciente por hueco de
+    `test_armor_progression.py` a lo largo de toda la cadena de 20 (verificado
+    a mano contra los valores reales de los 14 antes de escribir el código, y
+    confirmado después con el test). **No se añaden recetas de forja nuevas**
+    en esta sub-fase para no ampliar más el alcance — los 6 materiales quedan
+    listos para cuando toque.
+  - Wiring: `combat/battle.py::ENEMY_PROGRESSION` (cadena), `ui/menus.py`
+    (`ALL_ENEMY_NAMES`, `_get_enemy_instance`, imports), `characters/enemies/
+    __init__.py`, `world/data/los_yermos.py::ZONE.enemies` (10 nombres).
+  - Tests: `tests/test_los_yermos_10.py` (nueva, 17 tests — una mecánica por
+    enemigo, llamando a los métodos internos directamente en vez de encadenar
+    tiradas de `perform_turn()` completo, como ya hace `test_new_enemies.py`),
+    afinidades de los 6 en `test_enemy_affinities.py`, `test_armor_progression.py`
+    y `test_new_enemies.py` actualizados con la cadena de 20. Un combate
+    simulado completo contra El Carnicero de principio a fin (victoria,
+    desbloqueo del Orco, furia activada al cruzar el 40%) para comprobarlo en
+    el juego real, no solo con tests.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena
