@@ -254,6 +254,9 @@ def _run_one_battle(
     # (para que un enemigo más rápido nunca pueda interrumpir una huida). El
     # mensaje anterior solo comparaba velocidades y podía anunciar al enemigo
     # aunque el jugador fuese a actuar primero de todos modos (playtest fix).
+    # No se muestran los números de velocidad: antes del primer combate contra
+    # un enemigo esa cifra es información que el Bestiario todavía redacta
+    # como "???" (feedback del usuario) — el mensaje solo dice quién empieza.
     if start_auto != "turbo":
         pv, ev = player.get_total_speed(), enemy.stats.speed
         ticks_jugador = -(-ATB_THRESHOLD // max(1, pv))  # división entera hacia arriba
@@ -261,7 +264,7 @@ def _run_one_battle(
         primero = player.name if ticks_jugador <= ticks_enemigo else enemy.name
         print(
             console.colorize(
-                f"⚡ {primero} tiene la iniciativa (velocidad {pv} vs {ev}).",
+                f"⚡ {primero} tiene la iniciativa.",
                 console.Fore.LIGHTBLACK_EX,
                 bright=True,
             )

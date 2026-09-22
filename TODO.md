@@ -922,15 +922,58 @@ el cambio a mitigación multiplicativa.
     si el máximo resulta demasiado fuerte tras más playtest y hay que
     suavizarlo.
   - **Deliberadamente solo para el jugador**: los enemigos siguen tirando su
-    dado normal en sus propios críticos (no hay ningún enemigo con
-    "habilidades" en el sentido del sistema de `skill_params`, eso es
-    exclusivo del jugador). Tocar el crítico de los enemigos habría obligado a
-    recalibrar el roster de 20 recién ajustado contra la curva de poder — se
-    deja fuera a propósito.
+    dado normal en sus propios críticos, decisión revisada poco después (ver
+    la siguiente entrada).
   - Tests: `tests/test_battle.py` — el mensaje de iniciativa en el caso de
     empate real (10 vs 11), y tres tests de daño con un `randint` mockeado
     deliberadamente bajo para demostrar que una habilidad y un crítico lo
     ignoran (usan el máximo) mientras un ataque normal lo sigue respetando.
+
+- [x] **Segunda ronda: crítico de enemigos igual que el del jugador, y quitar
+  las velocidades del mensaje de iniciativa.** El usuario confirmó que sí
+  quiere pagar el coste de descuadrar el tuneado de la curva de poder con tal
+  de que el crítico se sienta igual de fiable jugando o siendo golpeado.
+  - `Enemy.get_max_attack_damage()` (`enemy_base.py`): mismo patrón que
+    `get_attack_damage()` (incluida la mitad de daño por `quemado`/
+    `combustión`), pero con `self.stats.max_atk` fijo en vez de tirar el
+    dado. Es la base compartida que usan todos los golpes críticos del
+    roster.
+  - Cambiado el orden de cálculo en **10 sitios**: el `Enemy.perform_turn()`
+    por defecto (usado por la mayoría del roster salvo cuando entra en juego
+    un ataque especial propio), la furia del Orco, y los ataques propios de
+    Ángel Caído, Chamán Goblin, Demonio, Dragón, El Carnicero, Goblin
+    Montaraz, Nigromante, Rata Gigante y los 4 hechizos del Mago (ahí el
+    máximo solo sustituye la tirada base `atk_base`; el bonus propio del
+    hechizo, p. ej. `random.randint(15, 25)` de la Bola de Fuego, se deja
+    aleatorio). Ahora todos calculan `is_crit` **antes** de decidir la base de
+    daño (`get_max_attack_damage()` si critea, `get_attack_damage()` si no),
+    en vez de tirar el dado y multiplicar después.
+  - **No se ha tocado nada que hoy no criteaba**: la embestida de la Gárgola,
+    el terremoto del Gólem, el golpe aplastante del Ogro del Yermo y el
+    segundo golpe del Salteador son "golpes especiales" con un multiplicador
+    fijo propio y sin tirada de crítico separada — se han dejado exactamente
+    igual, no se les ha añadido una posibilidad de critear que no tenían.
+  - **No se ha recalibrado ningún enemigo.** El daño medio de un enemigo sube
+    algo (sus críticos ahora pegan más fuerte de forma consistente en vez de
+    a veces flojo/a veces fuerte), lo cual descuadra ligeramente el informe de
+    `tests/test_power_budget.py` respecto a cuando se calculó — asumido a
+    propósito, no se ha vuelto a ajustar ninguna stat. Si en un futuro
+    playtest algún enemigo se siente demasiado fuerte, revisar primero si es
+    por esto antes de tocar otra cosa.
+  - **Mensaje de iniciativa sin números**: "⚡ {nombre} tiene la iniciativa."
+    a secas, sin "(velocidad X vs Y)". Motivo doble: simplicidad pedida por
+    el usuario, y que antes de derrotar a un enemigo por primera vez su
+    velocidad es un dato que el Bestiario todavía redacta como `???` — el
+    mensaje anterior lo enseñaba igualmente antes de tiempo.
+  - Tests: `tests/test_battle.py::test_enemy_default_perform_turn_applies_crit_multiplier`
+    reescrito con la misma técnica (`randint` mockeado bajo) para demostrar
+    que el crítico por defecto usa el máximo. Ajustados tres tests que
+    dejaban de tener sentido con el nuevo daño de crítico (`test_battle.py`,
+    `test_enemy_attacks.py`, `test_new_enemies.py`): dos morían antes de
+    tiempo porque el crítico, ahora más fuerte, dejaba al jugador de prueba a
+    0 HP a mitad del test (se les subió la vida o se les resetea entre
+    pasos), y uno ajustaba el valor esperado del crítico del Goblin al nuevo
+    cálculo basado en `max_atk` en vez del `randint` mockeado.
 
 ## Pulido final (casi lo último antes de 1.0)
 

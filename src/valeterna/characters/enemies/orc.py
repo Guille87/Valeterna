@@ -52,9 +52,10 @@ class Orc(Enemy):
                 )
                 return
 
-            # 1. Obtenemos el daño aleatorio del Orco (con posibilidad de crítico)
-            base_damage = self.get_attack_damage()
+            # 1. Obtenemos el daño del Orco (con posibilidad de crítico; en
+            # crítico usa siempre el extremo alto del rango, no otra tirada)
             is_crit = random.random() < self.stats.crit_chance
+            base_damage = self.get_max_attack_damage() if is_crit else self.get_attack_damage()
             if is_crit:
                 base_damage = int(base_damage * self.stats.crit_damage)
 

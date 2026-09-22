@@ -836,8 +836,12 @@ def test_enemy_default_perform_turn_deals_no_damage_on_a_miss(player, monkeypatc
 
 
 def test_enemy_default_perform_turn_applies_crit_multiplier(player, monkeypatch):
+    """v0.14.0-c (feedback del usuario): igual que el jugador, un crítico
+    enemigo ya no multiplica otra tirada — usa siempre `max_atk`. Se mockea
+    `randint` a un valor bajo (1) precisamente para demostrar que el crítico
+    lo ignora."""
     monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta y critea
-    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
+    monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 1)
     player.stats.armor = 0
 
     goblin = Goblin()
@@ -845,7 +849,7 @@ def test_enemy_default_perform_turn_applies_crit_multiplier(player, monkeypatch)
     goblin.perform_turn(player)
     dealt = before - player.stats.health
 
-    assert dealt == int(10 * goblin.stats.crit_damage)  # 10 base * 1.6 (crítico del Goblin)
+    assert dealt == int(goblin.stats.max_atk * goblin.stats.crit_damage)  # max_atk * 1.6, no 1 * 1.6
 
 
 def test_attempt_flee_is_always_successful_when_player_is_at_least_as_fast(player):

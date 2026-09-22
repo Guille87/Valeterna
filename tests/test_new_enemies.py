@@ -99,6 +99,9 @@ def test_gargola_charges_every_third_turn(player, monkeypatch):
     monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta y critea
     monkeypatch.setattr("valeterna.characters.enemies.enemy_base.random.randint", lambda a, b: 10)
     player.stats.armor = 0
+    player.stats.max_health = player.stats.health = (
+        10_000  # los críticos con max_atk no deben dejarlo K.O. antes de tiempo
+    )
 
     gargola = Gargola()
     before = player.stats.health
@@ -110,9 +113,11 @@ def test_gargola_charges_every_third_turn(player, monkeypatch):
     gargola.perform_turn(player)  # turno 3: embestida
     charge_damage = before - player.stats.health
 
-    # Cada ataque normal critea (10 * crit_damage); la embestida multiplica x1.8 sin crítico propio.
+    # Cada ataque normal critea (v0.14.0-c: max_atk * crit_damage, no la tirada
+    # mockeada); la embestida multiplica x1.8 sin crítico propio, así que sí
+    # respeta la tirada mockeada (10).
     assert charge_damage == int(10 * 1.8)
-    assert normal_damage == 2 * int(10 * gargola.stats.crit_damage)
+    assert normal_damage == 2 * int(gargola.stats.max_atk * gargola.stats.crit_damage)
 
 
 def test_golem_earthquake_ignores_evasion(player, monkeypatch):

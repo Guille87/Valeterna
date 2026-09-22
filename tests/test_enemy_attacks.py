@@ -79,6 +79,7 @@ def test_demonio_claw_and_summon_deal_damage(player, hit):
     demonio._claw_attack(player)
     assert player.stats.health < before
 
+    player.stats.health = player.stats.max_health  # el zarpazo crítico (v0.14.0-c: siempre max_atk) puede dejarlo a 0
     before = player.stats.health
     demonio._summon_lesser_demon(player)
     assert player.stats.health < before
