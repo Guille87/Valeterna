@@ -141,6 +141,17 @@ class Enemy:
             dmg //= 2
         return dmg
 
+    def get_max_attack_damage(self) -> int:
+        """Extremo alto del rango, sin tirar el dado — la base de un golpe
+        crítico (v0.14.0-c, mismo cambio que ya se hizo para el jugador:
+        multiplicar `crit_damage` sobre una tirada aleatoria podía dar un
+        crítico más flojo que un golpe normal con suerte). Respeta la misma
+        penalización de `quemado`/`combustión` que `get_attack_damage()`."""
+        dmg = self.stats.max_atk
+        if any(e["name"] in ("quemado", "combustion") for e in self.status_effects):
+            dmg //= 2
+        return dmg
+
     # --- CURACIÓN (para los enemigos que se curan: Troll, Mago, Ángel Caído) ---
 
     def heal(self, amount: int) -> int:
@@ -279,9 +290,8 @@ class Enemy:
             )
             return
 
-        damage = self.get_attack_damage()
-
         is_crit = random.random() < self.stats.crit_chance
+        damage = self.get_max_attack_damage() if is_crit else self.get_attack_damage()
         if is_crit:
             damage = int(damage * self.stats.crit_damage)
 

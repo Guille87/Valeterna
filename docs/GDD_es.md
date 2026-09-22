@@ -218,22 +218,40 @@ aturdir (pierde un turno), desgaste de armadura acumulable, drenaje de vida,
 frenesí bajo umbral, `consagrar` (marca al jugador para daño extra), maldición
 que bloquea la curación.
 
-### 4.6 Zona de ejemplo — Los Yermos (10)
+### 4.6 Zona de ejemplo — Los Yermos (10) *(implementado en v0.14.0-c)*
 
 Demuestra la plantilla; las otras seis zonas son trabajo de diseño posterior.
 
 | Tier | Rango | Nombre | Arquetipo | Distintivo | Inflige | Débil a | Resiste | Inmune a |
 |------|-------|--------|-----------|------------|---------|---------|---------|----------|
-| 1 | estándar | Rata Gigante | hostigador | mordisco rápido, prob. veneno leve | veneno | fuego | — | — |
+| 1 | estándar | Rata Gigante | hostigador | mordisco rápido, prob. veneno leve | — | fuego | — | — |
 | 2 | estándar | Goblin | bruto | emboscada tras la 1ª derrota | físico | — | — | — |
-| 3 | estándar | Goblin Montaraz | a distancia | flechas (ignoran parte de la evasión) | físico | fuego | — | — |
+| 3 | estándar | Goblin Montaraz | a distancia | disparo a distancia, prob. sangrado leve | físico | fuego | — | — |
 | 4 | estándar | Huargo | hostigador | mordisco de manada (golpe extra) | físico | — | — | — |
-| 5 | **élite** | Chamán Goblin | apoyo | cura a un aliado / se cura, maldición leve | oscuridad | sagrado | oscuridad | — |
+| 5 | **élite** | Chamán Goblin | apoyo | se cura, maldición leve | oscuridad | sagrado | oscuridad | — |
 | 6 | estándar | Esqueleto | tanque | revive una vez | físico | sagrado | veneno | veneno, sangrado |
 | 7 | **élite** | Bandido | emboscador | desarme | físico | veneno | — | — |
 | 8 | estándar | Salteador | hostigador | golpe rápido doble, roba oro | físico | — | — | — |
 | 9 | **élite** | Ogro del Yermo | bruto | golpe demoledor que aturde | físico | fuego | — | paralizado |
 | 10 | **guardián** | El Carnicero | bruto/tanque | frenesí bajo 40 % vida, aplica sangrado | físico | sagrado | veneno | — |
+
+Dos cambios sobre el diseño original, los dos por feedback del usuario:
+**Goblin Montaraz** ya no ignora parte de la evasión — esquivar un proyectil
+es, si acaso, más fácil que esquivar un golpe cuerpo a cuerpo, así que dar
+ventaja mecánica a un ataque a distancia frente a la evasión iba al revés; su
+ataque tira el mismo `resolve_hit()` que cualquier otro y su distintivo pasó
+a una probabilidad de sangrado. **El robo de oro (Salteador)** es a propósito
+limitado y poco frecuente (una acción alternativa en ~25% de sus turnos, no
+un añadido a cada golpe, y nunca roba más de lo que el jugador lleva encima)
+para que se sienta como una molestia, no como un castigo — los números
+exactos están en `characters/enemies/salteador.py`. **Orden de desbloqueo**:
+el Goblin sigue siendo el primer encuentro literal del juego (toda la curva
+de XP inicial está calibrada alrededor de él) aunque su tier de diseño (2)
+quede ahora por debajo del de la Rata Gigante (1) — la Rata Gigante se
+desbloquea la segunda en su lugar. Ver
+`docs/design/presupuesto_de_poder.md` para cómo se calculó el tamaño de cada
+enemigo contra la curva de presupuesto de poder (§4.4) antes de escribir su
+código.
 
 ---
 

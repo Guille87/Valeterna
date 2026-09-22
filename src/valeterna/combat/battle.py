@@ -20,10 +20,16 @@ if TYPE_CHECKING:
 # van insertando en el hueco que les corresponde según su potencia relativa a
 # los que ya existían, no necesariamente al final de la cadena.
 ENEMY_PROGRESSION = {
-    "Goblin": "Huargo",
-    "Huargo": "Esqueleto",
+    "Goblin": "Rata Gigante",
+    "Rata Gigante": "Goblin Montaraz",
+    "Goblin Montaraz": "Huargo",
+    "Huargo": "Chamán Goblin",
+    "Chamán Goblin": "Esqueleto",
     "Esqueleto": "Bandido",
-    "Bandido": "Orco",
+    "Bandido": "Salteador",
+    "Salteador": "Ogro del Yermo",
+    "Ogro del Yermo": "El Carnicero",
+    "El Carnicero": "Orco",  # guardián de Los Yermos: abre el Bosque
     "Orco": "Espíritu Vengativo",
     "Espíritu Vengativo": "Troll",
     "Troll": "Gárgola",
@@ -241,14 +247,24 @@ def _run_one_battle(
     if not start_auto:
         _prompt_battle_element(player)
 
-    # Quién tiene la iniciativa (más velocidad = llega antes al umbral ATB; en
-    # empate va el jugador). Solo informativo — la emboscada es aparte.
+    # Quién tiene la iniciativa: no es "quién tiene más velocidad" sin más,
+    # sino quién llega antes al umbral ATB en la carrera real de gauges de
+    # más abajo — con velocidades parecidas ambos pueden cruzar el umbral en
+    # el mismo "tick", y ahí el turno del jugador se resuelve siempre primero
+    # (para que un enemigo más rápido nunca pueda interrumpir una huida). El
+    # mensaje anterior solo comparaba velocidades y podía anunciar al enemigo
+    # aunque el jugador fuese a actuar primero de todos modos (playtest fix).
+    # No se muestran los números de velocidad: antes del primer combate contra
+    # un enemigo esa cifra es información que el Bestiario todavía redacta
+    # como "???" (feedback del usuario) — el mensaje solo dice quién empieza.
     if start_auto != "turbo":
         pv, ev = player.get_total_speed(), enemy.stats.speed
-        primero = player.name if pv >= ev else enemy.name
+        ticks_jugador = -(-ATB_THRESHOLD // max(1, pv))  # división entera hacia arriba
+        ticks_enemigo = -(-ATB_THRESHOLD // max(1, ev))
+        primero = player.name if ticks_jugador <= ticks_enemigo else enemy.name
         print(
             console.colorize(
-                f"⚡ {primero} tiene la iniciativa (velocidad {pv} vs {ev}).",
+                f"⚡ {primero} tiene la iniciativa.",
                 console.Fore.LIGHTBLACK_EX,
                 bright=True,
             )
@@ -700,7 +716,34 @@ def _execute_turn(
             print_status(defender, attacker, defeated_enemies)
         return None
 
-    damage = attacker.get_attack_damage()
+    # Golpe crítico: el jugador suma el bonus de su equipo, los enemigos usan su stat base.
+    # Se calcula ANTES del daño base (ver más abajo: una habilidad o un crítico
+    # ya no ruedan el dado normal, así que hace falta saber si toca antes de
+    # decidir qué base de daño usar).
+    attacker_crit_chance = (
+        attacker.get_total_crit_chance() if isinstance(attacker, Player) else attacker.stats.crit_chance
+    )
+    attacker_crit_damage = (
+        attacker.get_total_crit_damage() if isinstance(attacker, Player) else attacker.stats.crit_damage
+    )
+    is_crit = p.get("force_crit", False) or random.random() < attacker_crit_chance
+
+    # Daño base (v0.14.0-c, feedback del usuario): un ataque normal sigue
+    # tirando el dado entre `min_atk` y `max_atk` de siempre, pero una
+    # habilidad de daño (cualquier llamada con `skill_params`, ya que las
+    # habilidades de utilidad como Escudo de Maná vuelven antes de llegar
+    # aquí) o un golpe crítico usan siempre el extremo alto del rango en vez
+    # de otra tirada — así el jugador tiene la garantía de que una habilidad,
+    # o la suerte de un crítico, nunca van a pegar más flojo que un golpe
+    # normal con suerte. El multiplicador propio de la habilidad
+    # (`damage_mult`) y el del crítico (`crit_damage`) se siguen aplicando
+    # encima, igual que antes. Solo afecta al jugador: los enemigos conservan
+    # su tirada aleatoria de siempre (cambiarla recalibraría todo el roster).
+    is_skill_attack = bool(p)
+    if isinstance(attacker, Player) and (is_skill_attack or is_crit):
+        _, damage = attacker.get_magic_attack_range() if attacker.is_magical_attacker() else attacker.get_attack_range()
+    else:
+        damage = attacker.get_attack_damage()
     if p.get("damage_mult"):
         damage = int(damage * p["damage_mult"])
 
@@ -722,14 +765,6 @@ def _execute_turn(
 
         element = ARCANIST_DEFAULT_ELEMENT
 
-    # Golpe crítico: el jugador suma el bonus de su equipo, los enemigos usan su stat base
-    attacker_crit_chance = (
-        attacker.get_total_crit_chance() if isinstance(attacker, Player) else attacker.stats.crit_chance
-    )
-    attacker_crit_damage = (
-        attacker.get_total_crit_damage() if isinstance(attacker, Player) else attacker.stats.crit_damage
-    )
-    is_crit = p.get("force_crit", False) or random.random() < attacker_crit_chance
     if is_crit:
         damage = int(damage * attacker_crit_damage)
 

@@ -2,16 +2,22 @@ import random
 
 from valeterna.characters.enemies.angel_caido import AngelCaido
 from valeterna.characters.enemies.bandido import Bandido
+from valeterna.characters.enemies.chaman_goblin import ChamanGoblin
 from valeterna.characters.enemies.demonio import Demonio
 from valeterna.characters.enemies.dragon import Dragon
+from valeterna.characters.enemies.el_carnicero import ElCarnicero
 from valeterna.characters.enemies.espiritu_vengativo import EspirituVengativo
 from valeterna.characters.enemies.gargola import Gargola
 from valeterna.characters.enemies.goblin import Goblin
+from valeterna.characters.enemies.goblin_montaraz import GoblinMontaraz
 from valeterna.characters.enemies.golem import GolemDePiedra
 from valeterna.characters.enemies.huargo import Huargo
 from valeterna.characters.enemies.mage import Mago
 from valeterna.characters.enemies.nigromante import Nigromante
+from valeterna.characters.enemies.ogro_del_yermo import OgroDelYermo
 from valeterna.characters.enemies.orc import Orc
+from valeterna.characters.enemies.rata_gigante import RataGigante
+from valeterna.characters.enemies.salteador import Salteador
 from valeterna.characters.enemies.skeleton import Skeleton
 from valeterna.characters.enemies.troll import Troll
 from valeterna.crafting.forge import Forge
@@ -21,19 +27,25 @@ from valeterna.items.equipment import Armor
 # de cada uno (1-indexado) para poder comprobar la progresión por hueco.
 CHAIN = [
     (1, Goblin),
-    (2, Huargo),
-    (3, Skeleton),
-    (4, Bandido),
-    (5, Orc),
-    (6, EspirituVengativo),
-    (7, Troll),
-    (8, Gargola),
-    (9, GolemDePiedra),
-    (10, Mago),
-    (11, Nigromante),
-    (12, AngelCaido),
-    (13, Demonio),
-    (14, Dragon),
+    (2, RataGigante),
+    (3, GoblinMontaraz),
+    (4, Huargo),
+    (5, ChamanGoblin),
+    (6, Skeleton),
+    (7, Bandido),
+    (8, Salteador),
+    (9, OgroDelYermo),
+    (10, ElCarnicero),
+    (11, Orc),
+    (12, EspirituVengativo),
+    (13, Troll),
+    (14, Gargola),
+    (15, GolemDePiedra),
+    (16, Mago),
+    (17, Nigromante),
+    (18, AngelCaido),
+    (19, Demonio),
+    (20, Dragon),
 ]
 
 # El stat "base" garantizado en todo objeto de ese hueco (ver la conversación

@@ -94,9 +94,9 @@ class Mago(Enemy):
             print(f"{console.colorize(player.name, console.Fore.GREEN)} esquiva las llamas.")
             return
 
-        atk_base = random.randint(self.stats.min_atk, self.stats.max_atk)
-        dmg = atk_base + random.randint(15, 25)
         is_crit = random.random() < self.stats.crit_chance
+        atk_base = self.stats.max_atk if is_crit else random.randint(self.stats.min_atk, self.stats.max_atk)
+        dmg = atk_base + random.randint(15, 25)
         if is_crit:
             dmg = int(dmg * self.stats.crit_damage)
 
@@ -129,9 +129,9 @@ class Mago(Enemy):
             print(f"{console.colorize(player.name, console.Fore.GREEN)} esquiva el rayo.")
             return
 
-        atk_base = random.randint(self.stats.min_atk, self.stats.max_atk)
-        dmg = atk_base + random.randint(10, 30)
         is_crit = random.random() < self.stats.crit_chance
+        atk_base = self.stats.max_atk if is_crit else random.randint(self.stats.min_atk, self.stats.max_atk)
+        dmg = atk_base + random.randint(10, 30)
         if is_crit:
             dmg = int(dmg * self.stats.crit_damage)
 
@@ -157,9 +157,9 @@ class Mago(Enemy):
             print(f"{console.colorize(player.name, console.Fore.GREEN)} esquiva el dardo.")
             return
 
-        atk_base = random.randint(self.stats.min_atk, self.stats.max_atk)
-        dmg = atk_base + random.randint(5, 10)
         is_crit = random.random() < self.stats.crit_chance
+        atk_base = self.stats.max_atk if is_crit else random.randint(self.stats.min_atk, self.stats.max_atk)
+        dmg = atk_base + random.randint(5, 10)
         if is_crit:
             dmg = int(dmg * self.stats.crit_damage)
 
@@ -190,9 +190,9 @@ class Mago(Enemy):
             print(f"{console.colorize(player.name, console.Fore.GREEN)} esquiva la ventisca.")
             return
 
-        atk_base = random.randint(self.stats.min_atk, self.stats.max_atk)
-        dmg = atk_base + random.randint(5, 15)
         is_crit = random.random() < self.stats.crit_chance
+        atk_base = self.stats.max_atk if is_crit else random.randint(self.stats.min_atk, self.stats.max_atk)
+        dmg = atk_base + random.randint(5, 15)
         if is_crit:
             dmg = int(dmg * self.stats.crit_damage)
 

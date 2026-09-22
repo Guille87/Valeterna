@@ -60,8 +60,8 @@ class Demonio(Enemy):
             )
             return
 
-        damage = self.get_attack_damage()
         is_crit = random.random() < self.stats.crit_chance
+        damage = self.get_max_attack_damage() if is_crit else self.get_attack_damage()
         if is_crit:
             damage = int(damage * self.stats.crit_damage)
 

@@ -25,7 +25,7 @@ def test_piedrablanca_is_the_hub_with_no_enemies():
 
 
 def test_every_backbone_enemy_belongs_to_exactly_one_zone():
-    backbone_enemies = set(ENEMY_PROGRESSION)  # las 14 claves = los 14 enemigos actuales
+    backbone_enemies = set(ENEMY_PROGRESSION)  # las 20 claves = los 20 enemigos actuales
     assigned = set()
     for zone in ZONES.values():
         assert assigned.isdisjoint(zone.enemies)  # ninguno repetido en dos zonas

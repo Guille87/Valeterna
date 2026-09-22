@@ -800,6 +800,181 @@ el cambio a mitigación multiplicativa.
     fijados explícitamente para que un cambio futuro en la fórmula o en un
     enemigo obligue a revisar este test, no a que falle en silencio).
 
+- [x] **v0.14.0-c: Los Yermos a 10 enemigos** (GDD §4.6). Tercera sub-fase de
+  v0.14.0 (el resto: -d Bosque a 10, -e habilidades de clase de nivel medio).
+  - Nuevo documento explicativo `docs/design/presupuesto_de_poder.md`: qué es
+    el "Poder" que enseñan juegos como Raid Shadow Legends o Hustle Castle, de
+    dónde sale, y cómo se calculó exactamente el de Valeterna paso a paso
+    (regresión log-lineal contra los 14 enemigos existentes) — a petición
+    expresa del usuario, que quería entenderlo a fondo y tenerlo siempre a
+    mano, no solo en el docstring técnico de `power_budget.py`.
+  - **6 enemigos nuevos**, cada uno dimensionado antes de escribir su código
+    contra `target_score(zona=Los Yermos, tier)`: Rata Gigante (tier 1,
+    objetivo 3 150, real 3 214, +2%), Goblin Montaraz (tier 3, objetivo 4 922,
+    real 5 166, +5%), Chamán Goblin (tier 5 élite, objetivo 7 690, real 6 990,
+    -9%), Salteador (tier 8, objetivo 15 020, real 14 832, -1%), Ogro del
+    Yermo (tier 9 élite, objetivo 18 775, real 18 266, -3%), El Carnicero
+    (tier 10 guardián, objetivo 23 469, real 23 452, -0%) — todos dentro del
+    ±10% que pide el GDD, mucho más ajustados que la cadena original (que se
+    calibró antes de que existiera la herramienta).
+  - **Orden de desbloqueo**: el Goblin sigue siendo el primer enemigo del
+    juego (la curva de XP del nivel 1→2 está calibrada específicamente
+    alrededor de su primera victoria) aunque su tier de diseño (2) quede por
+    debajo del de la Rata Gigante (1) — se desbloquea justo detrás de él en
+    vez de delante. Cadena completa: Goblin → Rata Gigante → Goblin Montaraz →
+    Huargo → Chamán Goblin → Esqueleto → Bandido → Salteador → Ogro del
+    Yermo → El Carnicero (guardián, abre el Bosque) → Orco (sin cambios desde
+    aquí).
+  - **Ronda de feedback sobre el diseño (antes de escribir código)**:
+    - *Goblin Montaraz*: el diseño original ("las flechas ignoran parte de la
+      evasión") lo señaló el usuario como poco realista — esquivar un
+      proyectil a distancia es, si acaso, más fácil que esquivar un golpe
+      cuerpo a cuerpo, no más difícil. Se descartó y se sustituyó por una
+      probabilidad de sangrado al acertar, con la misma tirada de acierto que
+      cualquier otro ataque del juego (nada de trato especial a la evasión).
+    - *Salteador*: el robo de oro se diseñó desde el principio con topes
+      pedidos por el usuario — nunca dejar al jugador a cero, y que no sea
+      "todo el rato". Es una acción alternativa (~25% de sus turnos, no un
+      añadido a cada golpe) y el importe robado está acotado
+      (`min(oro_del_jugador, random(3, 8))`), con mensaje distinto si no lleva
+      nada encima.
+  - **Mecánicas nuevas, todas reutilizando patrones ya existentes salvo el
+    robo de oro**: veneno/sangrado al acertar (Rata Gigante, Goblin Montaraz —
+    mismo patrón que el Dardo de Veneno del Mago), autocuración + maldición
+    (Chamán Goblin — mezcla de la cura del Ángel Caído y la maldición del
+    Espíritu Vengativo), golpe extra (Salteador — mismo patrón que el
+    mordisco de manada del Huargo) + robo de oro (nuevo), golpe aplastante
+    con aturdimiento (Ogro del Yermo — variante del terremoto del Gólem con
+    tirada de acierto), furia de un solo sentido + sangrado (El Carnicero —
+    variante de la furia cíclica del Orco, pero permanente una vez activada
+    en vez de alternar).
+  - **Botín**: cada uno suelta poción + material propio; Rata Gigante, Goblin
+    Montaraz, Chamán Goblin y Salteador también arma (daño 5/6/8/10,
+    manteniendo la progresión ya documentada — Goblin 4, Huargo 7... — sin
+    romperla); Ogro del Yermo y El Carnicero no sueltan arma, solo armadura
+    (tanques, no ofensivos). Piezas de armadura nuevas en huecos ya usados por
+    Los Yermos (botas, hombreras, amuleto, cinturon, casco, guantes, perneras,
+    peto), con valores que respetan la progresión no decreciente por hueco de
+    `test_armor_progression.py` a lo largo de toda la cadena de 20 (verificado
+    a mano contra los valores reales de los 14 antes de escribir el código, y
+    confirmado después con el test). **No se añaden recetas de forja nuevas**
+    en esta sub-fase para no ampliar más el alcance — los 6 materiales quedan
+    listos para cuando toque.
+  - Wiring: `combat/battle.py::ENEMY_PROGRESSION` (cadena), `ui/menus.py`
+    (`ALL_ENEMY_NAMES`, `_get_enemy_instance`, imports), `characters/enemies/
+    __init__.py`, `world/data/los_yermos.py::ZONE.enemies` (10 nombres).
+  - Tests: `tests/test_los_yermos_10.py` (nueva, 17 tests — una mecánica por
+    enemigo, llamando a los métodos internos directamente en vez de encadenar
+    tiradas de `perform_turn()` completo, como ya hace `test_new_enemies.py`),
+    afinidades de los 6 en `test_enemy_affinities.py`, `test_armor_progression.py`
+    y `test_new_enemies.py` actualizados con la cadena de 20. Un combate
+    simulado completo contra El Carnicero de principio a fin (victoria,
+    desbloqueo del Orco, furia activada al cruzar el 40%) para comprobarlo en
+    el juego real, no solo con tests.
+
+- [x] **Playtest tras v0.14.0-c: iniciativa engañosa y varianza de daño entre
+  ataque normal / habilidad / crítico** (a petición del usuario, jugando una
+  partida nueva contra el Goblin). Dos arreglos, sin tocar el roster de
+  enemigos.
+  - **Mensaje de iniciativa incorrecto con velocidades parecidas**: el
+    mensaje "⚡ X tiene la iniciativa" solo comparaba velocidad en crudo
+    (`pv >= ev`), pero el turno real lo decide una carrera de barras ATB por
+    ticks, y con velocidades parecidas (el caso real del usuario: jugador 10,
+    Goblin 11) los dos cruzan el umbral en el **mismo tick** — y ahí el turno
+    del jugador se resuelve siempre primero por regla ya existente (para que
+    un enemigo más rápido nunca interrumpa una huida). El mensaje no tenía en
+    cuenta esa regla, así que podía anunciar al enemigo y aun así empezar el
+    jugador. Arreglado calculando `ticks = ceil(100 / velocidad)` para cada
+    lado y anunciando al jugador siempre que `ticks_jugador <= ticks_enemigo`
+    — la misma condición que decide el turno real, no una aproximación.
+  - **Una habilidad o un crítico podían pegar menos que un ataque normal con
+    suerte.** Causa real (comprobada leyendo el código, no a ojo): tanto el
+    multiplicador de una habilidad (`damage_mult`, p. ej. 1.4 de Golpe Firme)
+    como el del crítico (`crit_damage`) se aplicaban sobre la **misma** tirada
+    aleatoria `random(min_atk, max_atk)` de un ataque normal — con un rango
+    proporcionalmente ancho (el máximo casi dobla al mínimo a nivel bajo), una
+    tirada alta sin ningún bonus podía superar a una tirada baja con el +40%
+    o el crítico encima.
+  - **Solución elegida, de las 4 que se plantearon**: ni estrechar el rango de
+    daño de todo el juego (recalibraría los 20 enemigos), ni sumar dos dados
+    más pequeños (cambio de motor demasiado amplio para esto), ni dejarlo
+    como estaba. La opción 2 — que una habilidad de daño no multiplique la
+    tirada, sino una base fija — se quedó, pero **afinada por el propio
+    usuario**: en vez del "+6 fijo" que propuse yo (que se descuadraría según
+    suben `min_atk`/`max_atk` con nivel/equipo, al ser un número inventado sin
+    relación con esas stats), la base pasa a ser **siempre el extremo alto del
+    rango de ataque** (`get_attack_range()[1]` / `get_magic_attack_range()[1]`
+    para el Arcanista) tanto para una habilidad de daño como para un crítico —
+    con el multiplicador propio de cada uno (`damage_mult`, `crit_damage`)
+    aplicado encima igual que antes. Al ser un porcentaje de las stats reales
+    del jugador (no un número absoluto), escala solo por sí mismo según sube
+    el ataque máximo, sin descuadrarse.
+  - El usuario propuso una segunda idea a modo de alternativa por si "siempre
+    el máximo" resultaba demasiado fuerte: promediar dos veces (`(min+max)/2`,
+    y luego el promedio de eso con `max`) — que él mismo describió como "un
+    75% de poder". Comprobado algebraicamente: `((min+max)/2 + max)/2 =
+    min·0.25 + max·0.75`, exactamente el percentil 75 del rango, aunque
+    llegó a ese número por partida doble en vez de calcularlo directo. Se
+    descartó a favor de "siempre el máximo" por ser más simple de explicar y
+    de implementar (sin una constante de percentil que justificar) y porque
+    encaja mejor con el objetivo declarado ("que una habilidad se sienta
+    fuerte de verdad, garantizado") — la idea del 75% queda anotada aquí por
+    si el máximo resulta demasiado fuerte tras más playtest y hay que
+    suavizarlo.
+  - **Deliberadamente solo para el jugador**: los enemigos siguen tirando su
+    dado normal en sus propios críticos, decisión revisada poco después (ver
+    la siguiente entrada).
+  - Tests: `tests/test_battle.py` — el mensaje de iniciativa en el caso de
+    empate real (10 vs 11), y tres tests de daño con un `randint` mockeado
+    deliberadamente bajo para demostrar que una habilidad y un crítico lo
+    ignoran (usan el máximo) mientras un ataque normal lo sigue respetando.
+
+- [x] **Segunda ronda: crítico de enemigos igual que el del jugador, y quitar
+  las velocidades del mensaje de iniciativa.** El usuario confirmó que sí
+  quiere pagar el coste de descuadrar el tuneado de la curva de poder con tal
+  de que el crítico se sienta igual de fiable jugando o siendo golpeado.
+  - `Enemy.get_max_attack_damage()` (`enemy_base.py`): mismo patrón que
+    `get_attack_damage()` (incluida la mitad de daño por `quemado`/
+    `combustión`), pero con `self.stats.max_atk` fijo en vez de tirar el
+    dado. Es la base compartida que usan todos los golpes críticos del
+    roster.
+  - Cambiado el orden de cálculo en **10 sitios**: el `Enemy.perform_turn()`
+    por defecto (usado por la mayoría del roster salvo cuando entra en juego
+    un ataque especial propio), la furia del Orco, y los ataques propios de
+    Ángel Caído, Chamán Goblin, Demonio, Dragón, El Carnicero, Goblin
+    Montaraz, Nigromante, Rata Gigante y los 4 hechizos del Mago (ahí el
+    máximo solo sustituye la tirada base `atk_base`; el bonus propio del
+    hechizo, p. ej. `random.randint(15, 25)` de la Bola de Fuego, se deja
+    aleatorio). Ahora todos calculan `is_crit` **antes** de decidir la base de
+    daño (`get_max_attack_damage()` si critea, `get_attack_damage()` si no),
+    en vez de tirar el dado y multiplicar después.
+  - **No se ha tocado nada que hoy no criteaba**: la embestida de la Gárgola,
+    el terremoto del Gólem, el golpe aplastante del Ogro del Yermo y el
+    segundo golpe del Salteador son "golpes especiales" con un multiplicador
+    fijo propio y sin tirada de crítico separada — se han dejado exactamente
+    igual, no se les ha añadido una posibilidad de critear que no tenían.
+  - **No se ha recalibrado ningún enemigo.** El daño medio de un enemigo sube
+    algo (sus críticos ahora pegan más fuerte de forma consistente en vez de
+    a veces flojo/a veces fuerte), lo cual descuadra ligeramente el informe de
+    `tests/test_power_budget.py` respecto a cuando se calculó — asumido a
+    propósito, no se ha vuelto a ajustar ninguna stat. Si en un futuro
+    playtest algún enemigo se siente demasiado fuerte, revisar primero si es
+    por esto antes de tocar otra cosa.
+  - **Mensaje de iniciativa sin números**: "⚡ {nombre} tiene la iniciativa."
+    a secas, sin "(velocidad X vs Y)". Motivo doble: simplicidad pedida por
+    el usuario, y que antes de derrotar a un enemigo por primera vez su
+    velocidad es un dato que el Bestiario todavía redacta como `???` — el
+    mensaje anterior lo enseñaba igualmente antes de tiempo.
+  - Tests: `tests/test_battle.py::test_enemy_default_perform_turn_applies_crit_multiplier`
+    reescrito con la misma técnica (`randint` mockeado bajo) para demostrar
+    que el crítico por defecto usa el máximo. Ajustados tres tests que
+    dejaban de tener sentido con el nuevo daño de crítico (`test_battle.py`,
+    `test_enemy_attacks.py`, `test_new_enemies.py`): dos morían antes de
+    tiempo porque el crítico, ahora más fuerte, dejaba al jugador de prueba a
+    0 HP a mitad del test (se les subió la vida o se les resetea entre
+    pasos), y uno ajustaba el valor esperado del crítico del Goblin al nuevo
+    cálculo basado en `max_atk` en vez del `randint` mockeado.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena
