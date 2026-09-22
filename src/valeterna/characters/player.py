@@ -635,7 +635,7 @@ class Player(Character):
         print(
             console.stat_line(
                 f"Prob. Crítico: {self.get_total_crit_chance() * 100:.0f}% | "
-                f"Daño Crítico: {self.get_total_crit_damage() * 100:.0f}%",
+                f"Daño Crítico: +{(self.get_total_crit_damage() - 1) * 100:.0f}%",
                 "critico",
             )
         )

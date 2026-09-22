@@ -713,10 +713,17 @@ el cambio a mitigación multiplicativa.
     con `drop_item()` de los 14, ficha completa y renderizable para cada enemigo).
     Ajustado el test antiguo de debilidades (ahora exige 5 derrotas).
   - **Ronda de feedback**: (1) el Daño Crítico se mostraba como multiplicador
-    (`x1.60`) en vez de porcentaje como la Prob. Crítico — cambiado a `160%` en
-    las tres pantallas que lo muestran (Bestiario, información de batalla del
-    jugador y del enemigo, y `Player.show_stats()`; `Stats.__str__()`, que no
-    se imprime en pantalla, se dejó igual); (2) la descripción del Goblin
+    (`x1.60`) en vez de porcentaje como la Prob. Crítico — primer intento:
+    `crit_damage * 100` → `160%`. El usuario señaló que eso confunde: `crit_damage`
+    es un multiplicador total (daño × 1.6 al criticar), así que "160%" se lee
+    como "160% más de daño" (sería x2.6), cuando en realidad es +60% (como en
+    Raid Shadow Legends, donde el % mostrado es el bonus sobre el golpe normal,
+    no el total) — coincide además con cómo `items/equipment.py` ya mostraba el
+    bonus de crítico de una armadura (`+{crit_damage * 100:.0f}%`, ahí sí un
+    delta, no un total). Corregido a `+{(crit_damage - 1) * 100:.0f}%` en las
+    tres pantallas (Bestiario, información de batalla del jugador y del
+    enemigo, `Player.show_stats()`; `Stats.__str__()`, que no se imprime en
+    pantalla, se dejó igual); (2) la descripción del Goblin
     mencionaba una condición interna ("si ya lo has derrotado antes") que el
     jugador no puede comprobar y no aporta nada — se quitó, la habilidad ya
     dice que emboscada; (3) "Habilidad: Emboscada: ..." quedaba con dos dos

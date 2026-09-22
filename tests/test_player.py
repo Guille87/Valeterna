@@ -340,8 +340,11 @@ def test_on_turn_end_removes_expired_stat_buffs(player):
 
 
 def test_show_stats_prints_crit_damage_as_a_percentage(player, capsys):
+    """El daño crítico es un multiplicador (x1.6 = +60% de daño respecto al
+    golpe normal), así que se muestra como bonus (+60%), no como total (160%)."""
     player.stats.crit_damage = 1.6
     player.show_stats()
     out = capsys.readouterr().out
-    assert "Daño Crítico: 160%" in out
+    assert "Daño Crítico: +60%" in out
     assert "x1." not in out
+    assert "160%" not in out

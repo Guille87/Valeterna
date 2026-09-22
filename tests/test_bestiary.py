@@ -145,8 +145,8 @@ def test_every_enemys_full_sheet_renders_without_errors(name, capsys):
     assert name in capsys.readouterr().out
 
 
-def test_three_kills_show_crit_damage_as_a_percentage(capsys):
+def test_three_kills_show_crit_damage_as_a_bonus_percentage(capsys):
     goblin = Goblin()
     out = _sheet(goblin, 3, capsys)
-    assert f"Daño Crítico: {goblin.stats.crit_damage * 100:.0f}%" in out
+    assert f"Daño Crítico: +{(goblin.stats.crit_damage - 1) * 100:.0f}%" in out
     assert "x1." not in out
