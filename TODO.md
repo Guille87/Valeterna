@@ -683,6 +683,36 @@ el cambio a mitigación multiplicativa.
     menú antiguo no falla: se **cuelga** pidiendo entrada, así que conviene
     lanzar pytest con `timeout`.
 
+- [x] **v0.14.0-a: bestiario progresivo** (GDD §7.2). Primera sub-fase de v0.14.0
+  ("Bestiario y enemigos I"; el resto: -b herramienta de presupuesto de poder,
+  -c Los Yermos a 10 enemigos + guardián que abre zona, -d Bosque a 10, -e
+  habilidades de clase de nivel medio).
+  - Escalones por `enemy_kill_counts`: 1 = básicos + descripción + elementos que
+    inflige; 3 = resto de stats + habilidad; 5 = afinidades + estados que
+    inflige / inmunidades a estados; 10 = tabla de botín. Precisión / evasión /
+    penetración / regeneración no tenían escalón en el GDD: van con el de 3.
+  - Datos por enemigo como atributos de clase de `Enemy` (`DESCRIPTION`,
+    `SIGNATURE`, `ELEMENTS_DEALT`, `INFLICTS`), rellenados en los 14. Las
+    descripciones enlazan con el lore ya escrito (el Bandido como mercenario sin
+    paga, la Gárgola "puesta ahí por alguien", el Nigromante que "guía" a los
+    muertos...). Se añadieron al catálogo i18n los nombres de estado `desarmado`,
+    `confusion` y `maldicion`.
+  - **Decisión: la tabla de botín se deduce, no se duplica.** El plan hablaba de
+    un `DROPS` declarado más un test que lo vigilara; pero los 14 `drop_item()`
+    siguen exactamente el patrón `if random.random() <= p: items.append(...)`, así
+    que `Enemy.drop_table()` ejecuta el `drop_item()` real con un
+    `random.random()` sustituido por un `float` cuyo `<=` siempre acierta y anota
+    el umbral, y empareja objetos y umbrales con `zip(strict=True)`. No hay
+    segunda copia que se desincronice; si un enemigo futuro rompe el patrón, el
+    `strict` revienta y `test_drop_table_stays_consistent_with_drop_item_for_the_whole_roster`
+    lo delata. Coste: depende de ese patrón (documentado en el docstring).
+  - Cambio de comportamiento: antes una sola derrota enseñaba la ficha entera;
+    ahora enseña solo el primer escalón y el resto va apareciendo.
+  - Tests: `tests/test_bestiary.py` (cada escalón, la línea de lore sin teñir,
+    `drop_table()` exacta para el Goblin, `random.random` restaurado, coherencia
+    con `drop_item()` de los 14, ficha completa y renderizable para cada enemigo).
+    Ajustado el test antiguo de debilidades (ahora exige 5 derrotas).
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

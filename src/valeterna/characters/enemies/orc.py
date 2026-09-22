@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class Orc(Enemy):
+    DESCRIPTION = "Bruto de piel curtida que arranca árboles de raíz cuando se enfurece."
+    SIGNATURE = "Furia cíclica: 3 turnos de calma y 3 de furia; enfurecido, sus golpes hacen el doble de daño."
+    ELEMENTS_DEALT = frozenset()
+    INFLICTS = frozenset()
+
     # Piel gruesa curtida: el veneno le cuesta más hacer mella.
     RESISTANCES = frozenset({"veneno"})
 

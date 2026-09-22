@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class Huargo(Enemy):
+    DESCRIPTION = "Lobo enorme de ojos ambarinos que caza en manada por los Yermos."
+    SIGNATURE = "Mordisco de manada: a veces otro lobo se suma al ataque con un mordisco extra."
+    ELEMENTS_DEALT = frozenset()
+    INFLICTS = frozenset()
+
     def __init__(self):
         # Lobo salvaje: rápido y evasivo, pero frágil (poca vida y armadura).
         super().__init__(

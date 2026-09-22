@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class Nigromante(Enemy):
+    DESCRIPTION = "Mago oscuro que guía a los muertos de la Necrópolis en vez de temerles."
+    SIGNATURE = "Invocación: de vez en cuando alza un esqueleto que te ataca al instante."
+    ELEMENTS_DEALT = frozenset({"oscuridad"})
+    INFLICTS = frozenset()
+
     # Nigromante clásico: lo sagrado es su némesis; la oscuridad es su propio
     # dominio, tanto que ni el estado que inflige puede afectarle.
     WEAKNESSES = frozenset({"sagrado"})

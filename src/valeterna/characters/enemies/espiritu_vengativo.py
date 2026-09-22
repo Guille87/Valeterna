@@ -9,6 +9,13 @@ from valeterna.ui import console
 
 
 class EspirituVengativo(Enemy):
+    DESCRIPTION = (
+        "Alma sin descanso que vaga entre los árboles; sus proyectiles espectrales ignoran parte de tu armadura."
+    )
+    SIGNATURE = "Maldición: a veces te maldice y reduce tu armadura durante 3 turnos."
+    ELEMENTS_DEALT = frozenset()
+    INFLICTS = frozenset({"maldicion"})
+
     # Incorpóreo y sin sangre: el veneno no tiene nada que corromper, y sin
     # cuerpo físico tampoco puede sangrar. Sigue siendo un espectro atado al
     # mundo, así que lo sagrado lo hiere de verdad.

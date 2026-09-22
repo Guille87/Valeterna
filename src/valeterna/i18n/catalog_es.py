@@ -17,6 +17,10 @@ CATALOG: dict[str, str] = {
     "status.sangrado": "sangrado",
     "status.aturdido": "aturdimiento",
     "status.combustion": "combustión",
+    # Debilitaciones que solo aplican enemigos (ficha del Bestiario)
+    "status.desarmado": "desarme",
+    "status.confusion": "confusión",
+    "status.maldicion": "maldición",
     # --- Participios para "X ha sido {verbo}" al aplicar un estado ---
     "status.verb.quemado": "quemado",
     "status.verb.veneno": "envenenado",

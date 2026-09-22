@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class Troll(Enemy):
+    DESCRIPTION = "Criatura de la que hasta el bosque huye: lo que le cortas, se le vuelve a formar."
+    SIGNATURE = "Regeneración: recupera vida al final de cada turno."
+    ELEMENTS_DEALT = frozenset()
+    INFLICTS = frozenset()
+
     # El fuego es lo único que impide que se regenere de verdad.
     WEAKNESSES = frozenset({"fuego"})
 

@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class Skeleton(Enemy):
+    DESCRIPTION = "Restos de un guerrero que la Brecha no ha dejado descansar."
+    SIGNATURE = "Reanimación: la primera vez que cae, se reensambla con la mitad de su vida."
+    ELEMENTS_DEALT = frozenset()
+    INFLICTS = frozenset()
+
     # No-muerto: lo sagrado le hace mella, y sin sangre ni órganos el veneno le
     # afecta poco y no puede envenenarle ni hacerle sangrar en absoluto.
     WEAKNESSES = frozenset({"sagrado"})

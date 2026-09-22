@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class GolemDePiedra(Enemy):
+    DESCRIPTION = "Coloso de roca nacido de la mina derrumbada. Nadie lo maneja; nadie sabe cómo pararlo."
+    SIGNATURE = "Terremoto: de vez en cuando golpea el suelo y su ataque es imposible de esquivar."
+    ELEMENTS_DEALT = frozenset()
+    INFLICTS = frozenset()
+
     # Mole de roca: el rayo se disipa en la tierra sin hacer nada (inmune, y por
     # tanto tampoco puede quedar paralizado), pero el hielo se cuela por las
     # grietas y las revienta al expandirse (débil).

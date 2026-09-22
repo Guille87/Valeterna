@@ -1,3 +1,5 @@
+from valeterna import i18n
+from valeterna.items.factory import item_kind_label
 from valeterna.ui import console
 
 _HIDDEN = "???"
@@ -68,41 +70,78 @@ def print_player_enemy_info(player, enemy, defeated_enemies: list) -> None:
     print("\n" + "=" * 60)
 
 
+# Escalones del Bestiario (GDD §7.2): con cuántas derrotas se revela cada bloque.
+BESTIARY_BASIC = 1  # vida, ataque, oro, descripción, elementos que inflige
+BESTIARY_COMBAT = 3  # resto de estadísticas y habilidad característica
+BESTIARY_AFFINITY = 5  # afinidades elementales y estados
+BESTIARY_DROPS = 10  # tabla de drops completa
+
+
+def _elements(names) -> str:
+    # Cada elemento en su propio color (fuego rojo, veneno verde, rayo
+    # amarillo, hielo azul...).
+    return ", ".join(console.colorize(e.capitalize(), console.element_color(e), bright=True) for e in sorted(names))
+
+
+def _statuses(names) -> str:
+    return ", ".join(console.tint_status(i18n.t(f"status.{n}")) for n in sorted(names))
+
+
 def print_bestiary_entry(enemy, kill_count: int = 0) -> None:
-    """Muestra la ficha completa de un enemigo (llamar solo si ya ha sido derrotado)."""
+    """Ficha de un enemigo ya derrotado, que se va completando según las veces que
+    lo has derrotado (GDD §7.2): 1 → datos básicos, 3 → estadísticas de combate y
+    habilidad, 5 → afinidades y estados, 10 → tabla de drops."""
+    cls = type(enemy)
     print(f"\n{console.colorize(f'--- {enemy.name} ---', console.Fore.RED, bright=True)}")
     _p(f"Veces derrotado: {kill_count}", "kills")
+    if cls.DESCRIPTION:
+        print(f"  {console.colorize(cls.DESCRIPTION, console.Fore.WHITE, tint=False)}")
     _p(f"Vida máxima: {enemy.stats.max_health}", "vida")
     _p(f"Ataque: {enemy.stats.min_atk}-{enemy.stats.max_atk}", "ataque")
-    _p(f"Armadura: {enemy.stats.armor} | Resistencia Mágica: {enemy.stats.magic_resist}", "armadura")
-    _p(f"Velocidad: {enemy.stats.speed}", "velocidad")
-    _p(f"Precisión: {enemy.stats.precision} | Evasión: {enemy.stats.evasion}", "precision")
-    _p(
-        f"Prob. Crítico: {enemy.stats.crit_chance * 100:.0f}% | Daño Crítico: x{enemy.stats.crit_damage:.2f}",
-        "critico",
-    )
-    _p(
-        f"Penetración de Armadura: {enemy.stats.armor_penetration} | "
-        f"Penetración Mágica: {enemy.stats.magic_penetration}",
-        "penetracion",
-    )
-    if enemy.stats.regen:
-        _p(f"Regeneración: {enemy.stats.regen} HP/turno", "regen")
-
-    def _elements(names) -> str:
-        # Cada elemento en su propio color (fuego rojo, veneno verde, rayo
-        # amarillo, hielo azul...).
-        return ", ".join(console.colorize(e.capitalize(), console.element_color(e), bright=True) for e in sorted(names))
-
-    cls = type(enemy)
-    if getattr(cls, "WEAKNESSES", ()):
-        print(f"  Débil a: {_elements(cls.WEAKNESSES)}")
-    if getattr(cls, "RESISTANCES", ()):
-        print(f"  Resiste: {_elements(cls.RESISTANCES)}")
-    if getattr(cls, "IMMUNE_ELEMENTS", ()):
-        print(f"  Inmune a: {_elements(cls.IMMUNE_ELEMENTS)}")
-
+    if cls.ELEMENTS_DEALT:
+        print(f"  Sus ataques infligen: {_elements(cls.ELEMENTS_DEALT)}")
     _p(f"Oro al derrotarlo: {enemy.gold_min}-{enemy.gold_max}", "oro")
+
+    if kill_count >= BESTIARY_COMBAT:
+        _p(f"Armadura: {enemy.stats.armor} | Resistencia Mágica: {enemy.stats.magic_resist}", "armadura")
+        _p(f"Velocidad: {enemy.stats.speed}", "velocidad")
+        _p(f"Precisión: {enemy.stats.precision} | Evasión: {enemy.stats.evasion}", "precision")
+        _p(
+            f"Prob. Crítico: {enemy.stats.crit_chance * 100:.0f}% | Daño Crítico: x{enemy.stats.crit_damage:.2f}",
+            "critico",
+        )
+        _p(
+            f"Penetración de Armadura: {enemy.stats.armor_penetration} | "
+            f"Penetración Mágica: {enemy.stats.magic_penetration}",
+            "penetracion",
+        )
+        if enemy.stats.regen:
+            _p(f"Regeneración: {enemy.stats.regen} HP/turno", "regen")
+        if cls.SIGNATURE:
+            print(f"  Habilidad: {cls.SIGNATURE}")
+
+    if kill_count >= BESTIARY_AFFINITY:
+        if cls.WEAKNESSES:
+            print(f"  Débil a: {_elements(cls.WEAKNESSES)}")
+        if cls.RESISTANCES:
+            print(f"  Resiste: {_elements(cls.RESISTANCES)}")
+        if cls.IMMUNE_ELEMENTS:
+            print(f"  Inmune a: {_elements(cls.IMMUNE_ELEMENTS)}")
+        if cls.INFLICTS:
+            print(f"  Puede infligirte: {_statuses(cls.INFLICTS)}")
+        if cls.IMMUNE_STATUSES:
+            print(f"  Inmune a los estados: {_statuses(cls.IMMUNE_STATUSES)}")
+
+    if kill_count >= BESTIARY_DROPS:
+        print("  Botín posible:")
+        for item, chance in enemy.drop_table():
+            print(f"    - {item.name} ({item_kind_label(item)}): {chance * 100:.0f}%")
+
+    next_tier = next((t for t in (BESTIARY_COMBAT, BESTIARY_AFFINITY, BESTIARY_DROPS) if kill_count < t), None)
+    if next_tier is not None:
+        print(
+            f"  {console.colorize(f'(Derrótalo {next_tier} veces para descubrir más.)', console.Fore.BLACK, bright=True)}"
+        )
     print("=" * 60)
 
 
