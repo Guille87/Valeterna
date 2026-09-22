@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class Mago(Enemy):
+    DESCRIPTION = "Hechicero de la Torre que aprendió a usar la Brecha y ya no sabe dejar de hacerlo."
+    SIGNATURE = "Hechizos tácticos: elige el que aún no sufras (veneno, rayo, ventisca) o lanza bolas de fuego, y se cura si está muy herido."
+    ELEMENTS_DEALT = frozenset({"fuego", "rayo", "veneno", "hielo"})
+    INFLICTS = frozenset({"quemado", "paralizado", "veneno", "congelado"})
+
     # Domina lo arcano, así que se protege bien de ello; su fragilidad es
     # física (ya reflejada en su armadura, la más baja de su tramo).
     RESISTANCES = frozenset({"arcano"})

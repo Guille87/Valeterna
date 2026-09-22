@@ -683,6 +683,55 @@ el cambio a mitigación multiplicativa.
     menú antiguo no falla: se **cuelga** pidiendo entrada, así que conviene
     lanzar pytest con `timeout`.
 
+- [x] **v0.14.0-a: bestiario progresivo** (GDD §7.2). Primera sub-fase de v0.14.0
+  ("Bestiario y enemigos I"; el resto: -b herramienta de presupuesto de poder,
+  -c Los Yermos a 10 enemigos + guardián que abre zona, -d Bosque a 10, -e
+  habilidades de clase de nivel medio).
+  - Escalones por `enemy_kill_counts`: 1 = básicos + descripción + elementos que
+    inflige; 3 = resto de stats + habilidad; 5 = afinidades + estados que
+    inflige / inmunidades a estados; 10 = tabla de botín. Precisión / evasión /
+    penetración / regeneración no tenían escalón en el GDD: van con el de 3.
+  - Datos por enemigo como atributos de clase de `Enemy` (`DESCRIPTION`,
+    `SIGNATURE`, `ELEMENTS_DEALT`, `INFLICTS`), rellenados en los 14. Las
+    descripciones enlazan con el lore ya escrito (el Bandido como mercenario sin
+    paga, la Gárgola "puesta ahí por alguien", el Nigromante que "guía" a los
+    muertos...). Se añadieron al catálogo i18n los nombres de estado `desarmado`,
+    `confusion` y `maldicion`.
+  - **Decisión: la tabla de botín se deduce, no se duplica.** El plan hablaba de
+    un `DROPS` declarado más un test que lo vigilara; pero los 14 `drop_item()`
+    siguen exactamente el patrón `if random.random() <= p: items.append(...)`, así
+    que `Enemy.drop_table()` ejecuta el `drop_item()` real con un
+    `random.random()` sustituido por un `float` cuyo `<=` siempre acierta y anota
+    el umbral, y empareja objetos y umbrales con `zip(strict=True)`. No hay
+    segunda copia que se desincronice; si un enemigo futuro rompe el patrón, el
+    `strict` revienta y `test_drop_table_stays_consistent_with_drop_item_for_the_whole_roster`
+    lo delata. Coste: depende de ese patrón (documentado en el docstring).
+  - Cambio de comportamiento: antes una sola derrota enseñaba la ficha entera;
+    ahora enseña solo el primer escalón y el resto va apareciendo.
+  - Tests: `tests/test_bestiary.py` (cada escalón, la línea de lore sin teñir,
+    `drop_table()` exacta para el Goblin, `random.random` restaurado, coherencia
+    con `drop_item()` de los 14, ficha completa y renderizable para cada enemigo).
+    Ajustado el test antiguo de debilidades (ahora exige 5 derrotas).
+  - **Ronda de feedback**: (1) el Daño Crítico se mostraba como multiplicador
+    (`x1.60`) en vez de porcentaje como la Prob. Crítico — primer intento:
+    `crit_damage * 100` → `160%`. El usuario señaló que eso confunde: `crit_damage`
+    es un multiplicador total (daño × 1.6 al criticar), así que "160%" se lee
+    como "160% más de daño" (sería x2.6), cuando en realidad es +60% (como en
+    Raid Shadow Legends, donde el % mostrado es el bonus sobre el golpe normal,
+    no el total) — coincide además con cómo `items/equipment.py` ya mostraba el
+    bonus de crítico de una armadura (`+{crit_damage * 100:.0f}%`, ahí sí un
+    delta, no un total). Corregido a `+{(crit_damage - 1) * 100:.0f}%` en las
+    tres pantallas (Bestiario, información de batalla del jugador y del
+    enemigo, `Player.show_stats()`; `Stats.__str__()`, que no se imprime en
+    pantalla, se dejó igual); (2) la descripción del Goblin
+    mencionaba una condición interna ("si ya lo has derrotado antes") que el
+    jugador no puede comprobar y no aporta nada — se quitó, la habilidad ya
+    dice que emboscada; (3) "Habilidad: Emboscada: ..." quedaba con dos dos
+    puntos seguidos — la línea ahora es "Habilidad {SIGNATURE}" sin los dos
+    puntos propios, ya que cada `SIGNATURE` empieza por su propio nombre y
+    los dos puntos. El Goblin y el Huargo sin debilidades/resistencias/
+    inmunidades a las 5 derrotas es correcto (ninguno tiene ninguna todavía).
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

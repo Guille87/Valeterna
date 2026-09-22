@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class Dragon(Enemy):
+    DESCRIPTION = "El origen de la ruina de Valeterna. Ha vuelto, y sigue ardiendo."
+    SIGNATURE = "Aliento de fuego: de vez en cuando incendia el suelo bajo tus pies y puede dejarte quemado."
+    ELEMENTS_DEALT = frozenset({"fuego"})
+    INFLICTS = frozenset({"quemado"})
+
     # El Dragón de Ceniza es una criatura de fuego: inmune a las llamas (y a
     # que lo quemen), pero el hielo es justo lo que su naturaleza no soporta.
     WEAKNESSES = frozenset({"hielo"})

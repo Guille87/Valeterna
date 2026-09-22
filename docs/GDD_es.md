@@ -516,7 +516,7 @@ Según `enemy_kill_counts`, cada umbral añade cosas a la ficha:
   puede congelar/envenenar/…).
 - **10** → tabla de drops completa (primera vez que se muestra).
 
-Con 0 kills: no aparece (como hoy). La implementación llega en v0.14.0.
+Con 0 kills: no aparece (como hoy). *Implementado en v0.14.0-a* (precisión, evasión, penetración y regeneración van con el escalón de 3 derrotas; la tabla de botín se deduce del `drop_item()` real de cada enemigo en vez de declararla dos veces).
 
 ### 7.3 Escalado del botín y drop-scaling
 

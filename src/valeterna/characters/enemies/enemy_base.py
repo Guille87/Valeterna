@@ -1,4 +1,5 @@
 import random
+from unittest import mock
 
 from valeterna import i18n
 from valeterna.characters.stats import Stats, apply_mitigation, resolve_hit
@@ -26,6 +27,13 @@ class Enemy:
     RESISTANCES: frozenset = frozenset()
     IMMUNE_ELEMENTS: frozenset = frozenset()
     IMMUNE_STATUSES: frozenset = frozenset()
+
+    # --- Ficha del Bestiario (GDD §7.2, v0.14.0-a). Las subclases las declaran; se van
+    # revelando por número de derrotas (ver `ui/formatting.py::print_bestiary_entry`).
+    DESCRIPTION: str = ""  # una línea de ambientación
+    SIGNATURE: str = ""  # su mecánica característica, en una frase
+    ELEMENTS_DEALT: frozenset = frozenset()  # elementos de sus ataques
+    INFLICTS: frozenset = frozenset()  # estados que puede aplicar al jugador
 
     def __init__(self, name: str, stats: Stats, gold_min: int, gold_max: int):
         self.name = name
@@ -288,3 +296,25 @@ class Enemy:
     def drop_item(self) -> list:
         """Por defecto no sueltan nada, las subclases lo implementan."""
         return []
+
+    def drop_table(self) -> list[tuple]:
+        """`[(objeto, probabilidad), ...]` de lo que puede soltar (Bestiario, GDD §7.2).
+
+        Se deduce del propio `drop_item()` en vez de duplicar las probabilidades a mano
+        (que acabarían desincronizándose): se ejecuta con un `random.random()` que
+        siempre "acierta" y apunta contra qué umbral se le compara. Exige el patrón
+        `if random.random() <= p: items.append(...)` — un objeto por tirada; si un
+        enemigo lo rompe, `zip(strict=True)` falla y el test de todo el roster lo delata.
+        """
+        thresholds: list[float] = []
+
+        class _Probe(float):
+            def __le__(self, other):
+                thresholds.append(float(other))
+                return True
+
+            __lt__ = __le__
+
+        with mock.patch.object(random, "random", lambda: _Probe(0.0)):
+            items = self.drop_item()
+        return list(zip(items, thresholds, strict=True))

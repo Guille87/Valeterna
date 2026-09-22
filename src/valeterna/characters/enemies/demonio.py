@@ -9,6 +9,13 @@ from valeterna.ui import console
 
 
 class Demonio(Enemy):
+    DESCRIPTION = "Criatura de las grietas de fuego que trepa desde la Brecha. Solo teme a lo que lo manda."
+    SIGNATURE = (
+        "Grieta infernal: puede invocar a un demonio menor o confundirte, reduciendo tu evasión durante 3 turnos."
+    )
+    ELEMENTS_DEALT = frozenset({"fuego"})
+    INFLICTS = frozenset({"confusion"})
+
     # Demonio clásico: lo sagrado lo hiere de verdad; la oscuridad es su
     # elemento natal, pero (a diferencia del Nigromante) no domina del todo.
     WEAKNESSES = frozenset({"sagrado"})

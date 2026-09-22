@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class Gargola(Enemy):
+    DESCRIPTION = "Centinela de piedra que vigila los pasos del cañón. Alguien la puso ahí; nadie recuerda quién."
+    SIGNATURE = "Embestida: cada 3 turnos carga con todo su peso y golpea un 80 % más fuerte."
+    ELEMENTS_DEALT = frozenset()
+    INFLICTS = frozenset()
+
     # Constructo de piedra animado por magia: sin sangre que envenenar, pero lo
     # arcano resquebraja el hechizo que la mantiene en pie.
     WEAKNESSES = frozenset({"arcano"})

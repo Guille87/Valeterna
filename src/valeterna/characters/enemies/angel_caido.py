@@ -9,6 +9,13 @@ from valeterna.ui import console
 
 
 class AngelCaido(Enemy):
+    DESCRIPTION = "Luz corrupta de alas ennegrecidas; sirve a lo que ahora gobierna la Ciudadela."
+    SIGNATURE = (
+        "Juicio Divino: de vez en cuando lanza un golpe sagrado un 60 % más fuerte, y se cura cuando está malherido."
+    )
+    ELEMENTS_DEALT = frozenset({"sagrado"})
+    INFLICTS = frozenset()
+
     # Conserva su naturaleza sagrada pese a la caída, pero esa misma caída —su
     # corrupción— es la grieta que la oscuridad explota.
     WEAKNESSES = frozenset({"oscuridad"})

@@ -46,6 +46,11 @@ def test_print_player_enemy_info_pairs_related_stats_on_one_line(player, capsys)
     assert "Precisión:" in out and "| Evasión:" in out
     # El daño crítico del jugador y el crítico del enemigo ahora se muestran.
     assert out.count("Daño Crítico:") == 2
+    # Como bonus (+50%: x1.5 es "50% más daño"), no como total (150%) ni
+    # como multiplicador (x1.50).
+    assert "x1." not in out
+    assert f"Daño Crítico: +{(player.get_total_crit_damage() - 1) * 100:.0f}%" in out
+    assert f"Daño Crítico: +{(enemy.stats.crit_damage - 1) * 100:.0f}%" in out
 
 
 def test_print_player_enemy_info_shows_magic_attack_for_arcanist(capsys):
@@ -68,7 +73,7 @@ def test_print_bestiary_entry_includes_kill_count_and_gold(capsys):
 
 
 def test_print_bestiary_entry_shows_elemental_weakness(capsys):
-    print_bestiary_entry(Troll(), kill_count=1)
+    print_bestiary_entry(Troll(), kill_count=5)
     out = capsys.readouterr().out
     assert "Débil a" in out
     assert "Fuego" in out

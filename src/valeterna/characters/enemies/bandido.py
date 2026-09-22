@@ -9,6 +9,11 @@ from valeterna.ui import console
 
 
 class Bandido(Enemy):
+    DESCRIPTION = "Antiguo mercenario del reino al que nadie volvió a pagar; ahora vive de lo que arrebata."
+    SIGNATURE = "Emboscada y desarme: ataca desde las sombras y puede anular el bonus de tu arma durante 2 turnos."
+    ELEMENTS_DEALT = frozenset()
+    INFLICTS = frozenset({"desarmado"})
+
     # Humano de carne y hueso: el veneno le afecta igual que a cualquier persona.
     WEAKNESSES = frozenset({"veneno"})
 

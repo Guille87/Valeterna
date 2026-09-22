@@ -489,7 +489,7 @@ Keyed on `enemy_kill_counts`, each threshold adding to the sheet:
   frozen/poisoned/… with).
 - **10** → full drop table (first time it is ever shown).
 
-Below 1 kill: not listed (as today). Implementation lands in v0.14.0.
+Below 1 kill: not listed (as today). *Implemented in v0.14.0-a* (weapon-independent stats such as precision, evasion, penetration and regen ride with the 3-kill tier; the drop table is derived from each enemy's real `drop_item()` rather than declared twice).
 
 ### 7.3 Loot scaling & drop-scaling
 

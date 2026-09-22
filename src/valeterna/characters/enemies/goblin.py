@@ -9,6 +9,13 @@ from valeterna.ui import console
 
 
 class Goblin(Enemy):
+    DESCRIPTION = (
+        "Carroñero de piel verde y colmillos amarillos. Aprende de las palizas: cuando ya lo has vencido, te acecha."
+    )
+    SIGNATURE = "Emboscada: puede atacarte por sorpresa antes de empezar el combate."
+    ELEMENTS_DEALT = frozenset()
+    INFLICTS = frozenset()
+
     def __init__(self):
         # health, max_health, min_atk, max_atk, defense
         super().__init__(
