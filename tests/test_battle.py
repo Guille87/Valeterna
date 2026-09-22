@@ -71,6 +71,25 @@ def test_battle_announces_who_has_the_initiative(player, weak_enemy, monkeypatch
     assert "tiene la iniciativa" in capsys.readouterr().out
 
 
+def test_initiative_message_matches_who_actually_acts_first_on_a_near_tie(player, weak_enemy, monkeypatch, capsys):
+    """v0.14.0-c (feedback del usuario): con velocidades parecidas (10 vs 11)
+    los dos cruzan el umbral ATB en el mismo tick, y ahí el turno del jugador
+    se resuelve siempre primero — el mensaje debe anunciar al jugador, no solo
+    comparar quién tiene más velocidad en crudo (que habría dicho el enemigo)."""
+    from valeterna.combat.battle import initiate_battle
+
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: "1")
+    player.stats.speed = 10
+    weak_enemy.stats.speed = 11  # "más rápido" en crudo, pero cruza el umbral en el mismo tick
+
+    initiate_battle(player, weak_enemy, ["Goblin"], ["Goblin"])
+
+    out = capsys.readouterr().out
+    assert f"{player.name} tiene la iniciativa" in out
+    assert f"{weak_enemy.name} tiene la iniciativa" not in out
+
+
 def test_enemy_turn_pauses_at_the_end_to_read_the_result(player, monkeypatch):
     from valeterna.characters.enemies.goblin import Goblin
 
@@ -570,6 +589,77 @@ def test_execute_turn_applies_crit_multiplier(player, monkeypatch):
     dealt = before - goblin.stats.health
 
     assert dealt == int(10 * player.stats.crit_damage)  # 10 base * 1.5 (multiplicador base)
+
+
+def test_execute_turn_crit_uses_max_attack_not_the_dice_roll(player, monkeypatch):
+    """v0.14.0-c (feedback del usuario): un crítico ya no multiplica la tirada
+    normal — usa siempre el extremo alto del rango, para que nunca pueda salir
+    más flojo que un golpe normal con suerte. Se fuerza `randint` a un valor
+    bajo (1) precisamente para demostrar que el crítico lo ignora."""
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 1)  # la tirada normal, ignorada
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.0)  # siempre crítico
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # siempre acierta
+
+    player.equipped_armor["guantes"] = Armor("Guantes", "desc", 1, slot="guantes", crit_chance=1.0)
+    player.stats.armor = 0
+    player.stats.min_atk, player.stats.max_atk = 5, 10
+
+    goblin = Goblin()
+    goblin.stats.armor = 0
+    goblin.stats.health = goblin.stats.max_health = 1000
+
+    before = goblin.stats.health
+    _execute_turn(player, goblin, defeated_enemies=[])
+    dealt = before - goblin.stats.health
+
+    assert dealt == int(10 * player.stats.crit_damage)  # max_atk(10) * 1.5, no min(1) * 1.5
+
+
+def test_execute_turn_skill_damage_uses_max_attack_not_the_dice_roll(player, monkeypatch):
+    """Misma idea para una habilidad de daño (Golpe Firme): usa siempre el
+    extremo alto del rango, con su propio multiplicador encima."""
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 1)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.99)  # sin crítico
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # acierto garantizado igualmente
+
+    player.stats.armor = 0
+    player.stats.crit_chance = 0.0
+    player.stats.min_atk, player.stats.max_atk = 5, 10
+
+    goblin = Goblin()
+    goblin.stats.armor = 0
+    goblin.stats.health = goblin.stats.max_health = 1000
+
+    before = goblin.stats.health
+    _execute_turn(player, goblin, defeated_enemies=[], skill_params={"guaranteed_hit": True, "damage_mult": 1.4})
+    dealt = before - goblin.stats.health
+
+    assert dealt == int(10 * 1.4)  # max_atk(10) * 1.4, no min(1) * 1.4
+
+
+def test_execute_turn_normal_attack_still_rolls_the_dice(player, monkeypatch):
+    """Un ataque normal (sin habilidad ni crítico) no se ha tocado: sigue
+    tirando el dado de siempre, incluso si el resultado es el mínimo."""
+    monkeypatch.setattr("valeterna.characters.player.random.randint", lambda a, b: 1)
+    monkeypatch.setattr("valeterna.combat.battle.random.choice", lambda seq: "hit")
+    monkeypatch.setattr("valeterna.combat.battle.random.random", lambda: 0.99)  # sin crítico
+    monkeypatch.setattr("valeterna.characters.stats.random.random", lambda: 0.0)  # acierto garantizado
+
+    player.stats.armor = 0
+    player.stats.crit_chance = 0.0
+    player.stats.min_atk, player.stats.max_atk = 5, 10
+
+    goblin = Goblin()
+    goblin.stats.armor = 0
+    goblin.stats.health = goblin.stats.max_health = 1000
+
+    before = goblin.stats.health
+    _execute_turn(player, goblin, defeated_enemies=[])
+    dealt = before - goblin.stats.health
+
+    assert dealt == 1  # la tirada mockeada, no el máximo
 
 
 def test_execute_turn_uses_attacker_armor_penetration(player, monkeypatch):

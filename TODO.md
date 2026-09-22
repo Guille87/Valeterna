@@ -872,6 +872,66 @@ el cambio a mitigación multiplicativa.
     desbloqueo del Orco, furia activada al cruzar el 40%) para comprobarlo en
     el juego real, no solo con tests.
 
+- [x] **Playtest tras v0.14.0-c: iniciativa engañosa y varianza de daño entre
+  ataque normal / habilidad / crítico** (a petición del usuario, jugando una
+  partida nueva contra el Goblin). Dos arreglos, sin tocar el roster de
+  enemigos.
+  - **Mensaje de iniciativa incorrecto con velocidades parecidas**: el
+    mensaje "⚡ X tiene la iniciativa" solo comparaba velocidad en crudo
+    (`pv >= ev`), pero el turno real lo decide una carrera de barras ATB por
+    ticks, y con velocidades parecidas (el caso real del usuario: jugador 10,
+    Goblin 11) los dos cruzan el umbral en el **mismo tick** — y ahí el turno
+    del jugador se resuelve siempre primero por regla ya existente (para que
+    un enemigo más rápido nunca interrumpa una huida). El mensaje no tenía en
+    cuenta esa regla, así que podía anunciar al enemigo y aun así empezar el
+    jugador. Arreglado calculando `ticks = ceil(100 / velocidad)` para cada
+    lado y anunciando al jugador siempre que `ticks_jugador <= ticks_enemigo`
+    — la misma condición que decide el turno real, no una aproximación.
+  - **Una habilidad o un crítico podían pegar menos que un ataque normal con
+    suerte.** Causa real (comprobada leyendo el código, no a ojo): tanto el
+    multiplicador de una habilidad (`damage_mult`, p. ej. 1.4 de Golpe Firme)
+    como el del crítico (`crit_damage`) se aplicaban sobre la **misma** tirada
+    aleatoria `random(min_atk, max_atk)` de un ataque normal — con un rango
+    proporcionalmente ancho (el máximo casi dobla al mínimo a nivel bajo), una
+    tirada alta sin ningún bonus podía superar a una tirada baja con el +40%
+    o el crítico encima.
+  - **Solución elegida, de las 4 que se plantearon**: ni estrechar el rango de
+    daño de todo el juego (recalibraría los 20 enemigos), ni sumar dos dados
+    más pequeños (cambio de motor demasiado amplio para esto), ni dejarlo
+    como estaba. La opción 2 — que una habilidad de daño no multiplique la
+    tirada, sino una base fija — se quedó, pero **afinada por el propio
+    usuario**: en vez del "+6 fijo" que propuse yo (que se descuadraría según
+    suben `min_atk`/`max_atk` con nivel/equipo, al ser un número inventado sin
+    relación con esas stats), la base pasa a ser **siempre el extremo alto del
+    rango de ataque** (`get_attack_range()[1]` / `get_magic_attack_range()[1]`
+    para el Arcanista) tanto para una habilidad de daño como para un crítico —
+    con el multiplicador propio de cada uno (`damage_mult`, `crit_damage`)
+    aplicado encima igual que antes. Al ser un porcentaje de las stats reales
+    del jugador (no un número absoluto), escala solo por sí mismo según sube
+    el ataque máximo, sin descuadrarse.
+  - El usuario propuso una segunda idea a modo de alternativa por si "siempre
+    el máximo" resultaba demasiado fuerte: promediar dos veces (`(min+max)/2`,
+    y luego el promedio de eso con `max`) — que él mismo describió como "un
+    75% de poder". Comprobado algebraicamente: `((min+max)/2 + max)/2 =
+    min·0.25 + max·0.75`, exactamente el percentil 75 del rango, aunque
+    llegó a ese número por partida doble en vez de calcularlo directo. Se
+    descartó a favor de "siempre el máximo" por ser más simple de explicar y
+    de implementar (sin una constante de percentil que justificar) y porque
+    encaja mejor con el objetivo declarado ("que una habilidad se sienta
+    fuerte de verdad, garantizado") — la idea del 75% queda anotada aquí por
+    si el máximo resulta demasiado fuerte tras más playtest y hay que
+    suavizarlo.
+  - **Deliberadamente solo para el jugador**: los enemigos siguen tirando su
+    dado normal en sus propios críticos (no hay ningún enemigo con
+    "habilidades" en el sentido del sistema de `skill_params`, eso es
+    exclusivo del jugador). Tocar el crítico de los enemigos habría obligado a
+    recalibrar el roster de 20 recién ajustado contra la curva de poder — se
+    deja fuera a propósito.
+  - Tests: `tests/test_battle.py` — el mensaje de iniciativa en el caso de
+    empate real (10 vs 11), y tres tests de daño con un `randint` mockeado
+    deliberadamente bajo para demostrar que una habilidad y un crítico lo
+    ignoran (usan el máximo) mientras un ataque normal lo sigue respetando.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena
