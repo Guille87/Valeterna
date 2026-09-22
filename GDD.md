@@ -195,7 +195,7 @@ a target curve `objetivo(zona N, tier T) = base · f(N) · g(T)`; design each
 enemy within ±10 % of its target, then playtest-verify guardians and a sample
 of each tier the way the chain is verified today. The player's expected level at
 each zone falls out of this pass too (it is deliberately **not** fixed yet —
-see §6.2). Formula and constants live in `TODO.md`.
+see §6.2). *Implemented in v0.14.0-b as `characters/power_budget.py`* — formula, constants and their derivation live in its module docstring; the full report on the current 14 enemies lives in `TODO.md`.
 
 ### 4.5 Signature abilities (menu of mechanics to draw from)
 

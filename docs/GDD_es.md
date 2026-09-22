@@ -204,8 +204,10 @@ Se define un score normalizado y una curva objetivo `objetivo(zona N, tier T) =
 base · f(N) · g(T)`; se diseña cada enemigo dentro de ±10 % de su objetivo, y se
 verifica con playtest los guardianes y una muestra de cada tier, igual que hoy.
 El nivel esperado del jugador en cada zona sale también de esta pasada (a
-propósito **no** está fijado todavía — ver §6.2). Fórmula y constantes en
-`TODO.md`.
+propósito **no** está fijado todavía — ver §6.2). *Implementado en v0.14.0-b
+como `characters/power_budget.py`* — la fórmula, las constantes y su
+derivación viven en el docstring del módulo; el informe completo de los 14
+enemigos actuales vive en `TODO.md`.
 
 ### 4.5 Habilidades distintivas (menú de mecánicas del que tirar)
 

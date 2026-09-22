@@ -732,6 +732,74 @@ el cambio a mitigación multiplicativa.
     los dos puntos. El Goblin y el Huargo sin debilidades/resistencias/
     inmunidades a las 5 derrotas es correcto (ninguno tiene ninguna todavía).
 
+- [x] **v0.14.0-b: herramienta de presupuesto de poder** (GDD §4.4). Segunda
+  sub-fase de v0.14.0. No es una pantalla del juego: es una herramienta de
+  diseño para cuando se escriba el roster de una zona (-c en adelante), para
+  saber a ojo si un enemigo nuevo está bien tuneado antes de escribir su
+  código, en vez de descubrirlo solo tras cientos de combates simulados.
+  - **Fórmula** (`characters/power_budget.py::power_score`): `vida_máxima ×
+    velocidad × daño_neto`, con `daño_neto = daño_medio × (1 + crit_chance ×
+    (crit_damage - 1))`. Decisión (confirmada con el usuario): **no** resta la
+    mitigación de un jugador de referencia — no hay un jugador "típico" fijo
+    (varía por clase/nivel/equipo), así que restar algo aquí sería más
+    especulativo que no restar nada; que encaje de verdad contra un jugador
+    real lo confirma el playtest posterior, tal como pide el GDD.
+  - **Limitación conocida y documentada**: la fórmula solo ve
+    `min_atk`/`max_atk` — no ve mecánicas que dan amenaza sin subir esas stats
+    (autocuración, reanimación, control). El Esqueleto (revive una vez a mitad
+    de vida) y el Mago (cura + controla, con ataque base deliberadamente bajo)
+    son los dos casos conocidos del roster actual.
+  - **Curva objetivo**: `objetivo(zona, tier) = BASE · ZONE_GROWTH^zona ·
+    TIER_GROWTH^(tier-1)` (zona = índice en `ZONE_ORDER`, tier 1-10 dentro de la
+    zona) — geométrica en ambos ejes. Constantes ajustadas por regresión
+    log-lineal contra datos reales, luego redondeadas: `ZONE_GROWTH=2.1`
+    (contra el poder medio de las 6 zonas ya pobladas: cada zona ronda el doble
+    de poder que la anterior) y `TIER_GROWTH=1.25` (contra la única zona con
+    tiers ya fijados por el GDD, Los Yermos §4.6: Goblin=2, Huargo=4,
+    Esqueleto=6, Bandido=7 — cada tier sube ~25% sobre el anterior). Las demás
+    zonas no tienen tiers de diseño todavía, así que no se les inventa ninguno
+    aquí — eso lo decide la sub-fase que rellene esa zona (-c para Los Yermos,
+    ya resuelto; -d para el Bosque). `zone_score_range(zona)` da el rango
+    `[objetivo(zona,1), objetivo(zona,10)]`, útil para comprobar cualquier
+    enemigo de una zona sin necesidad de saber su tier exacto.
+  - **No es retroactivo**: los 14 enemigos actuales se calibraron por playtest
+    antes de que existiera esta herramienta y no se retocan para encajar en
+    ella ahora (sería un rebalanceo aparte, ya anotado como pendiente).
+    Informe completo (`tests/test_power_budget.py` fija qué casos están fuera
+    y documenta por qué):
+
+    ```
+    Enemigo              Zona                     N    Poder  Rango zona [T1,T10]  Tier  Objetivo   Desv.
+    Goblin               Los Yermos               1    4 532  [   3 150,  23 469]    2      3 938    +15%
+    Huargo               Los Yermos               1    6 156  [   3 150,  23 469]    4      6 152     +0%
+    Esqueleto            Los Yermos               1    6 150  [   3 150,  23 469]    6      9 613    -36%
+    Bandido              Los Yermos               1   17 299  [   3 150,  23 469]    7     12 016    +44%
+    Orco                 Bosque de los Susurros   2   25 042  [   6 615,  49 286]     ?          —  en rango
+    Espíritu Vengativo   Bosque de los Susurros   2   82 938  [   6 615,  49 286]     ?          —    FUERA
+    Troll                Bosque de los Susurros   2   38 062  [   6 615,  49 286]     ?          —  en rango
+    Gárgola              Cañón del Trueno         4  120 350  [  29 172, 217 349]     ?          —  en rango
+    Gólem de Piedra      Cañón del Trueno         4  266 976  [  29 172, 217 349]     ?          —    FUERA
+    Mago                 Torre de los Arcanos     5   80 400  [  61 262, 456 434]     ?          —  en rango
+    Nigromante           Torre de los Arcanos     5  431 944  [  61 262, 456 434]     ?          —  en rango
+    Ángel Caído           Ciudadela en Ruinas      6  393 461  [ 128 649, 958 511]     ?          —  en rango
+    Demonio               Ciudadela en Ruinas      6  812 965  [ 128 649, 958 511]     ?          —  en rango
+    Dragón                El Corazón de la Brecha  7 1051 596  [ 270 163,2012 873]     ?          —  en rango
+    ```
+    Solo Huargo cae dentro del ±10% de su objetivo exacto. Goblin (+15%) y
+    Bandido (+44%, éste también emboscada + desarme) se quedan algo altos;
+    Esqueleto (-36%) queda bajo por la reanimación, como se esperaba. De las
+    otras zonas, dos enemigos caen fuera del rango [tier1, tier10] de su zona —
+    hallazgos honestos, no errores del formato: **Espíritu Vengativo** es más
+    rápido y letal de lo que "toca" para estar entre los primeros enemigos de
+    su zona (velocidad 17, el más rápido de los 14 salvo el tramo final), y
+    **Gólem de Piedra** es, con diferencia, el más resistente de todo el roster
+    hasta ahora (armadura 20, la más alta). Ninguno se retoca en esta sub-fase.
+  - Tests: `tests/test_power_budget.py` (la fórmula, que la curva crece dentro
+    de una zona y entre zonas del mismo tier, `zone_score_range`, `deviation`,
+    y el informe completo de los 14 con los casos fuera de rango/tolerancia
+    fijados explícitamente para que un cambio futuro en la fórmula o en un
+    enemigo obligue a revisar este test, no a que falle en silencio).
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena
