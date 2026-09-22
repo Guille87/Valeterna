@@ -189,9 +189,9 @@ Every enemy is designed against this template (kept as a living table in
 ### 4.4 Power budget
 
 70 enemies cannot be tuned by eye. Each enemy gets a **power score**; from the
-ATB math (`TODO.md`), effective threat scales with `hp × speed × daño_neto`
+ATB math (`TODO.md`), effective threat scales with `hp × speed × net damage`
 (net damage = mean damage − effective mitigation). Define a normalised score and
-a target curve `objetivo(zona N, tier T) = base · f(N) · g(T)`; design each
+a target curve `target(zone N, tier T) = base · f(N) · g(T)`; design each
 enemy within ±10 % of its target, then playtest-verify guardians and a sample
 of each tier the way the chain is verified today. The player's expected level at
 each zone falls out of this pass too (it is deliberately **not** fixed yet —
