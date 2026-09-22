@@ -975,6 +975,44 @@ el cambio a mitigación multiplicativa.
     pasos), y uno ajustaba el valor esperado del crítico del Goblin al nuevo
     cálculo basado en `max_atk` en vez del `randint` mockeado.
 
+- [x] **"Cazar..." para elegir enemigo, y Explorar pesado hacia el progreso**
+  (GDD §8.1, feedback del usuario tras la v0.14.0-c). Motivo: con Los Yermos
+  ya a 10 enemigos, un jugador que había llegado hasta el tier 9 podía, en
+  la siguiente tirada de Explorar, volver a caer contra el Goblin del tier 1
+  — de las tres opciones que se plantearon (A: solo pesar Explorar, B: solo
+  añadir "Cazar", C: las dos), el usuario eligió la C.
+  - `_zone_candidates(zone, unlocked_enemies)`: extraído de `_explore` (antes
+    hacía el filtro inline), ahora compartido con `_hunt_flow`. Devuelve los
+    enemigos desbloqueados de la zona en el orden de `Zone.enemies` (de tier
+    1 a 10, el mismo orden que ya asume el ajuste de `power_budget.py`); si
+    la zona no tiene roster propio (Piedrablanca, Ciénaga), cae al orden de
+    `unlocked_enemies`.
+  - `_weighted_enemy_choice(candidates)`: `random.choices(candidates,
+    weights=range(1, len(candidates)+1))` — el enemigo más avanzado de la
+    zona tiene N veces más probabilidad que el primero (N = nº de
+    candidatos), sin llegar a excluir del todo a los primeros. Sustituye al
+    `random.choice()` uniforme de antes en `_explore`.
+  - **"Cazar..."** (`_hunt_flow`), nueva opción 2 del menú de zona (el menú
+    pasa de 5 a 6 opciones: Explorar, Cazar..., Ir a..., Hablar con...,
+    Viajar, Personaje — todo lo que iba después se desplaza un índice, igual
+    que pasó con el Diario en v0.13.0-c). Lista los mismos
+    `_zone_candidates`, con un ✔ verde en los ya derrotados (que en la
+    práctica son todos menos el más nuevo, el "frontera" que todavía no has
+    vencido — un enemigo solo se desbloquea al derrotar al anterior de la
+    cadena). Elegir uno va directo a `initiate_battle(...)`, sin la tirada
+    de oro/poción de Explorar (ese incentivo se queda solo en Explorar, a
+    propósito, para no volver "Cazar" estrictamente mejor en todos los
+    casos) — pensado para farmear un enemigo concreto (botín, oro, nivel) o
+    para no depender del azar cuando lo que quieres es ir a por el guardián.
+  - Tests: `tests/test_exploration.py` — `_zone_candidates` (orden de tier y
+    su fallback), `_weighted_enemy_choice` (pesos crecientes, sin comprobar
+    el azar real para no hacer un test inestable), listado de `_hunt_flow`
+    con checks, elegir un enemigo concreto, volver sin pelear, sin
+    candidatos, y que `zone_loop` despacha bien la opción 2. Los dos tests
+    viejos de `_explore` que mockeaban `random.choice` (ya sin uso real, la
+    tirada pasó a `random.choices`) se actualizaron para mockear la función
+    que de verdad se llama ahora.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena
