@@ -6,7 +6,18 @@ ZONE = Zone(
     id="torre_de_los_arcanos",
     name="Torre de los Arcanos / Necrópolis",
     theme="Torre de magos + cementerio",
-    enemies=("Mago", "Nigromante"),
+    enemies=(
+        "Mago",
+        "Nigromante",
+        "Tomo Viviente",
+        "Guardián Osario",
+        "Custodio Arcano",
+        "Espectro de la Guardia",
+        "Bibliotecario Errante",
+        "Carroñero de Cripta",
+        "Guardián del Tomo Prohibido",
+        "El Archivista",
+    ),  # v0.15.0-b: roster completo (GDD §4)
     sub_locations=("Biblioteca", "Cripta"),
     key_npcs=("Sella",),
 )

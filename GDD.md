@@ -127,7 +127,7 @@ migration and `is_zone_reachable()`'s live check.
 | **Bosque de los Susurros** | Haunted forest | *(10, complete — §4.7)* | Claro del altar, Cabaña quemada | Mirelle |
 | **Ciénaga de los Ahogados** | Drowned marsh | *(10, complete — §4.8)* | Templo hundido, Embarcadero podrido | Oren |
 | **Cañón del Trueno** | Mountain pass, stone | *(10, complete — §4.9)* | Mina derrumbada, Puente colgante | Kort |
-| **Torre de los Arcanos / Necrópolis** | Mage tower + graveyard | Mago, Nigromante | Biblioteca, Cripta | Sella |
+| **Torre de los Arcanos / Necrópolis** | Mage tower + graveyard | *(10, complete — §4.10)* | Biblioteca, Cripta | Sella |
 | **Ciudadela en Ruinas** | The razed capital, infernal ground | Ángel Caído, Demonio | Catedral rota, Plaza | Aldric |
 | **El Corazón de la Brecha** | The origin — designed last | *(§4)* | — | — |
 
@@ -349,6 +349,46 @@ rather than something this sub-phase tried to paper over — see
 `characters/enemies/minero_poseido.py` and the neighbouring files for the
 exact numbers, and `tests/test_power_budget.py`'s `_KNOWN_OUT_OF_RANGE` for
 the full reasoning.
+
+### 4.10 Torre de los Arcanos / Necrópolis (10) *(implemented in v0.15.0-b)*
+
+Mago and Nigromante (tiers 1-2, pre-existing) predate this template; the 8
+new enemies (tiers 3-10) follow it, tied directly into Sella's pre-existing
+dialogue and lore notes: the arcane council that tried to channel the
+Breach, a forbidden tome ("Rituales de Cierre y Apertura") missing from the
+Biblioteca before she started cataloging, and the dead in the Cripta who
+"rise in shifts, one fewer on the list every night."
+
+| Tier | Rank | Name | Archetype | Signature | Deals | Weak to | Resists | Immune to |
+|------|------|------|-----------|-----------|-------|---------|---------|-----------|
+| 1 | standard | Mago | control/support | 4 elemental spells, self-heal | fuego/rayo/hielo/arcano | — | arcano | — |
+| 2 | standard | Nigromante | control | summons a lesser undead ally | oscuridad | sagrado | — | oscuridad |
+| 3 | standard | Tomo Viviente | skirmisher | on-hit bleed chance (page cuts) | físico | fuego | — | — |
+| 4 | standard | Guardián Osario | bruiser | periodic second bone strike | físico | sagrado | — | — |
+| 5 | **elite** | Custodio Arcano | control | self-heal, arcane bolt | arcano | hielo | — | veneno |
+| 6 | standard | Espectro de la Guardia | ambusher | ambushes after first defeat | físico | sagrado | — | — |
+| 7 | **elite** | Bibliotecario Errante | control | confusion special attack, arcane bolt | arcano | sagrado | arcano | — |
+| 8 | standard | Carroñero de Cripta | bruiser | life drain: heals for a share of the damage it deals, every hit | físico | sagrado | veneno | — |
+| 9 | **elite** | Guardián del Tomo Prohibido | tank | unavoidable seal-wave strike | físico | sagrado | — | paralizado |
+| 10 | **guardian** | El Archivista | bruiser/support | self-heal below 40 % HP, curses on hit via an arcane bolt | arcano | sagrado | arcano | — |
+
+**Same progressive-difficulty approach, and no reinforcement needed this
+time — but the same kind of pre-existing broken transition recurs one link
+further on**: Nigromante's real power already had a huge gap above Mago's
+(the same documented blind-spot case as §4.9), so the 8 new tiers had ample
+room to climb from Nigromante's real power upward without touching any
+existing enemy. However, Nigromante's real power already linked directly to
+Ángel Caído's (the Ciudadela's first enemy, itself lower — another
+pre-existing inversion among the original 14, not touched here either), so
+the new tiers climb progressively from Nigromante without trying to land
+below Ángel Caído, same reasoning as the Mago/Gólem case. All 8 are
+therefore expected exceptions in `tests/test_power_budget.py`'s
+`_KNOWN_OUT_OF_RANGE`, alongside the Cañón's. One design note: `fractura
+mágica` (the `arcano` element's status) was considered for a couple of
+these enemies but dropped — it only has an effect on the `Enemy` side today
+(halves an enemy's own self-heal) and does nothing to the `Player`, so
+inflicting it on the player would be flavor-only; already-functional
+statuses (`sangrado`, `maldicion`) were used instead.
 
 ---
 
@@ -778,7 +818,7 @@ is a living document and any of this can change.
 | **v0.12.0** | The world, part 1 | zones + map + exploration loop · inn / rest (cost scales with level) · frontier travel + fast-travel · save migration v2 · shop / forge relocated · random encounters + discoveries |
 | **v0.13.0** | Dialogue & NPCs | branching dialogue with player choices · one-time vs repeatable conversations · NPCs for Piedrablanca + the 6 existing regions · lore notes + Diario |
 | **v0.14.0** | Bestiary & enemies I | progressive bestiary · power-budget tool (sets the level curve) · Los Yermos + Bosque + Ciénaga fleshed to ~10 each (elites 4-9-ish + guardian 10) · mid-progression class skills tied to those enemies |
-| **v0.15.0** | Enemies II | Cañón (done, §4.9) + Torre/Necrópolis to ~10 · loot scaling (uniques + rolled commons) · cross-zone drop-scaling · more class skills |
+| **v0.15.0** | Enemies II | Cañón (done, §4.9) + Torre/Necrópolis (done, §4.10) to ~10 · loot scaling (uniques + rolled commons) · cross-zone drop-scaling · more class skills |
 | **v0.16.0** | Enemies III | Ciudadela to ~10 · high-milestone class skills · side quests for those regions |
 | **v0.17.0** | Main story | quest system · "La Brecha" questline (7 acts) wired to the existing NPCs / guardians · progression by story instead of picking an enemy |
 | **v0.18.0** | The Arena | escalating-wave mode · Arena rewards (titles + some set pieces + a hard-to-get unique) |

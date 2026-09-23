@@ -1457,6 +1457,58 @@ el cambio a mitigación multiplicativa.
     al Espíritu Vengativo — corregido en el propio enemigo, no con una
     excepción).
 
+- [x] **v0.15.0-b: Torre de los Arcanos/Necrópolis rellenada a 10 enemigos**
+  (GDD §3/§4.10). 8 enemigos nuevos sobre el Mago y el Nigromante ya
+  existentes: Tomo Viviente (tier 3, sangrado con el corte de página),
+  Guardián Osario (tier 4, segundo golpe de hueso periódico), Custodio
+  Arcano (tier 5, élite — autocuración + dardo arcano, inmune a veneno),
+  Espectro de la Guardia (tier 6, emboscada tras la primera derrota, ligado
+  a la nota de lore "se levantan por turnos"), Bibliotecario Errante
+  (tier 7, élite — confusión + dardo arcano), Carroñero de Cripta (tier 8,
+  vida robada), Guardián del Tomo Prohibido (tier 9, élite — onda de sello
+  inesquivable) y El Archivista (tier 10, **guardián**, abre la Ciudadela
+  en Ruinas — autocuración bajo 40% vida + maldición al golpear con un
+  dardo arcano). Todo ligado a los diálogos y notas de lore de Sella ya
+  existentes: el consejo arcano que canalizaba la Brecha, el tomo prohibido
+  "Rituales de Cierre y Apertura" desaparecido de la Biblioteca antes de
+  que ella empezara a catalogar — El Archivista es quien se lo llevó — y
+  los muertos de la Cripta que se levantan por turnos.
+  - **Esta vez no hizo falta reforzar ningún enemigo existente** (a
+    diferencia del Cañón): el poder real de Nigromante (~431.944) ya tenía
+    un hueco enorme por encima del de Mago (~80.400, el mismo punto ciego
+    documentado), así que hubo margen de sobra para insertar los 8 tiers
+    nuevos justo después de Nigromante sin tocar nada.
+  - **El mismo problema de fondo reaparece un enlace más adelante**: el
+    poder real de Nigromante ya enlazaba directo con el de Ángel Caído
+    (primer enemigo de la Ciudadela en Ruinas, ~393.461 — más bajo que el
+    del propio Nigromante) desde antes de esta sub-fase — otra inversión
+    preexistente entre los 14 originales, del mismo tipo que la del Mago.
+    No se tocó a Ángel Caído. Se dimensionaron los 8 tiers nuevos para
+    superar progresivamente el poder real de Nigromante (~467.728 →
+    ~800.056), sin intentar quedar por debajo de Ángel Caído — esa
+    transición sigue rota y documentada, igual que ya lo estaba.
+  - **Nota de diseño evitada a tiempo**: se consideró usar `fractura_magica`
+    (el estado del elemento arcano) como mecánica distintiva de un par de
+    estos enemigos, pero se comprobó que solo tiene efecto implementado en
+    el lado del `Enemy` (`Enemy.heal()` la reduce a la mitad) y ninguno en
+    el `Player` — igual que pasaba con `marchito` al diseñar la Ciénaga.
+    Se usaron en su lugar `sangrado` (Tomo Viviente) y `maldicion`
+    (El Archivista), ambos con efecto real ya probado en el jugador.
+  - Cadena de desbloqueo: `Nigromante → Tomo Viviente → Guardián Osario →
+    Custodio Arcano → Espectro de la Guardia → Bibliotecario Errante →
+    Carroñero de Cripta → Guardián del Tomo Prohibido → El Archivista →
+    Ángel Caído` (el resto de la cadena, sin cambios).
+  - El Archivista es el quinto enemigo marcado `ENCOUNTER_KIND="guardian"`
+    (tras El Carnicero, El Enraizado, El Anegado y El Decimoquinto), con su
+    propia frase de encuentro y provocaciones.
+  - Tests: `tests/test_torre_10.py` (mecánicas de los 8 enemigos nuevos +
+    progresión de poder estrictamente creciente incluyendo a Nigromante),
+    `tests/test_new_enemies.py` (cadena de desbloqueo actualizada),
+    `tests/test_power_budget.py` (excepciones documentadas),
+    `tests/test_armor_progression.py` (los 8 enemigos añadidos a `CHAIN`
+    sin necesitar nuevas excepciones — los rangos por hueco se calcularon
+    a mano antes de escribir cada `drop_item()`).
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena
