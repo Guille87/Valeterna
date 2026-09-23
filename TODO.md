@@ -1277,6 +1277,57 @@ el cambio a mitigación multiplicativa.
     contra los 8 enemigos de la cadena hasta El Enraizado (victoria en
     todos, desbloqueo correcto de Gárgola al final).
 
+- [x] **Poder del jugador en Estadísticas, solo en DEBUG** (feedback del
+  usuario). Faltaba en "Personaje → Estadísticas" — solo se veía en la ficha
+  previa a un combate. `Player.show_stats()` ahora imprime la misma línea
+  "[DEBUG] Poder: X" (usando `get_attack_range()`/`get_magic_attack_range()`
+  y los `get_total_*()` de siempre, con equipo incluido), bajo el mismo
+  `is_debug()` de `config/debug.py`.
+- [x] **Rata Gigante ahora es más poderosa que el Goblin** (feedback del
+  usuario, playtest real): el diseño original de v0.14.0-c le dio a la Rata
+  Gigante el tier 1 (más flojo) y al Goblin el tier 2, con el razonamiento
+  de que el Goblin debía seguir siendo el primer encuentro del juego aunque
+  su tier de diseño fuese más alto — pero eso significaba que el segundo
+  enemigo que el jugador se encuentra de verdad (Rata Gigante, justo después
+  de vencer al Goblin) era más débil que el primero, lo contrario de lo que
+  se siente jugando. Subida de HP28→34, ataque 6-10→8-13, velocidad 14→15
+  (armadura sin cambios): su poder real pasa de ~3.214 a ~5.489, ya por
+  encima del Goblin (~4.532).
+- [ ] **Pendiente de discutir con más profundidad: el poder del jugador crece
+  demasiado rápido con nivel + equipo, frente al de los enemigos** (feedback
+  del usuario, playtest real, v0.14.0-e). Datos concretos que dio el
+  usuario: personaje recién creado, poder ~8.062; nivel 2, ~15.480 (+92% en
+  un solo nivel); tras 19 combates en Auto-Batalla Turbo contra el Goblin
+  (subiendo casi al nivel 4) y con una única Espada Goblin equipada (+4 de
+  daño, un drop bastante común, 10% de probabilidad), poder ~30.326 — con
+  eso, según el propio usuario, "básicamente me podría pasar prácticamente
+  todo Los Yermos", y en la práctica se lo pasó en una prueba rápida.
+  - El usuario planteó dos vías (no excluyentes): frenar cuánto poder gana
+    el jugador por nivel/equipo, o subir el poder de los enemigos en
+    función del nivel/equipo esperado del jugador en cada punto de la
+    cadena — y preguntó si abordarlo ya o dejarlo anotado para después de
+    terminar de rellenar el roster de las zonas que faltan (Ciénaga, Cañón,
+    Torre/Necrópolis, Ciudadela, Corazón de la Brecha).
+  - Decisión: **anotado para más adelante**, no abordado en esta sesión —
+    es un rebalanceo transversal (afecta la curva de subida de nivel, el
+    daño de las armas que sueltan los enemigos, y probablemente las stats
+    de varios de los 27 enemigos ya implementados), y hacerlo a medias
+    ahora, con la mitad del roster todavía sin diseñar, arriesga tener que
+    repetirlo cuando existan datos de la cadena completa. Encaja con el
+    rebalanceo de los 14 originales que ya estaba pendiente (ver más
+    arriba, "junto con el rebalanceo completo de la cadena de 14 enemigos")
+    — se puede hacer todo en la misma pasada.
+  - Sospechas para cuando se aborde, a falta de medir con datos reales: (1)
+    el multiplicador de daño crítico de las armas parece generoso para lo
+    pronto que se consiguen (un dropeo del Goblin al 10% de probabilidad ya
+    da +4 de daño, un salto grande sobre el 8-12 base); (2) los saltos de
+    nivel tempranos (`Player._required_xp_for_level`, el "damping" de
+    niveles 2-9) puede que compriman demasiado rápido la curva de XP contra
+    lo rápido que sube el poder real; (3) el propio Auto-Batalla Turbo hace
+    trivial acumular decenas de combates sin fricción, así que cualquier
+    curva de crecimiento se nota antes y con más fuerza que en juego manual
+    — merece la pena medir ambos modos por separado.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

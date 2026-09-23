@@ -363,3 +363,36 @@ def test_show_stats_lists_what_each_equipped_item_grants(player, capsys):
 
     out = re.sub(r"\x1b\[[0-9;]*m", "", capsys.readouterr().out)
     assert "Casco: Yelmo de Prueba (Armadura: 2 | Vida: +15)" in out
+
+
+def test_show_stats_hides_power_without_debug(player, monkeypatch, capsys):
+    monkeypatch.setattr("valeterna.characters.player.is_debug", lambda: False)
+
+    player.show_stats()
+
+    assert "[DEBUG] Poder:" not in capsys.readouterr().out
+
+
+def test_show_stats_shows_power_in_debug(player, monkeypatch, capsys):
+    """Feedback del usuario: el poder (power_score()) también en Estadísticas,
+    no solo en la ficha previa al combate — solo en modo DEBUG."""
+    from types import SimpleNamespace
+
+    from valeterna.characters.power_budget import power_score
+
+    monkeypatch.setattr("valeterna.characters.player.is_debug", lambda: True)
+
+    player.show_stats()
+
+    lo, hi = player.get_attack_range()
+    expected = power_score(
+        SimpleNamespace(
+            min_atk=lo,
+            max_atk=hi,
+            crit_chance=player.get_total_crit_chance(),
+            crit_damage=player.get_total_crit_damage(),
+            max_health=player.stats.max_health,
+            speed=player.get_total_speed(),
+        )
+    )
+    assert f"{expected:,.0f}" in capsys.readouterr().out

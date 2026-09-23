@@ -20,12 +20,14 @@ class RataGigante(Enemy):
     WEAKNESSES = frozenset({"fuego"})
 
     def __init__(self):
-        # El enemigo más débil del roster: poca vida, rápida, ataque flojo.
+        # Rápida y frágil, pero por delante del Goblin en poder real (feedback
+        # del usuario tras jugar: se desbloquea justo después de él, así que
+        # debía notarse más difícil, no menos — ver TODO.md).
         super().__init__(
             "Rata Gigante",
-            Stats(28, 28, 6, 10, 1, speed=14, precision=6, evasion=4, crit_chance=0.05, crit_damage=1.5),
-            gold_min=3,
-            gold_max=5,
+            Stats(34, 34, 8, 13, 1, speed=15, precision=6, evasion=4, crit_chance=0.05, crit_damage=1.5),
+            gold_min=5,
+            gold_max=8,
         )
 
     def perform_turn(self, player) -> None:

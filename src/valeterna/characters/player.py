@@ -1,7 +1,9 @@
 import random
+from types import SimpleNamespace
 
 from valeterna.characters.base import Character
 from valeterna.characters.classes import CharClass, get_profile
+from valeterna.characters.power_budget import power_score
 from valeterna.characters.stats import Stats, apply_mitigation
 from valeterna.combat.elements import (
     COMBUSTION_MERGE_NAMES,
@@ -11,6 +13,7 @@ from valeterna.combat.elements import (
     is_status_blocked_by_combustion,
     resolve_status_reaction,
 )
+from valeterna.config.debug import is_debug
 from valeterna.inventory.inventory import Inventory
 from valeterna.items.equipment import ARMOR_SLOTS, slot_label
 from valeterna.ui import console
@@ -658,6 +661,18 @@ class Player(Character):
         regen = self.get_total_regen()
         if regen:
             print(console.stat_line(f"Regeneración: {regen} HP/turno", "regen"))
+        if is_debug():
+            power = power_score(
+                SimpleNamespace(
+                    min_atk=lo,
+                    max_atk=hi,
+                    crit_chance=self.get_total_crit_chance(),
+                    crit_damage=self.get_total_crit_damage(),
+                    max_health=self.stats.max_health,
+                    speed=self.get_total_speed(),
+                )
+            )
+            print(console.stat_line(f"[DEBUG] Poder: {power:,.0f}", "debug"))
         if self.equipped_weapon:
             print(f"Arma: {console.colorize(self.equipped_weapon.name, console.Fore.RED)}")
 
