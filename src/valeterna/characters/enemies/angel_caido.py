@@ -15,6 +15,15 @@ class AngelCaido(Enemy):
     )
     ELEMENTS_DEALT = frozenset({"sagrado"})
     INFLICTS = frozenset()
+    ENCOUNTER_KIND = "elite"
+    ENCOUNTER_LINE = (
+        "Una luz que quema en vez de calentar desciende ante ti. "
+        "Lo que fue sagrado te mira ahora como se mira a una presa."
+    )
+    TAUNT_LINES = (
+        "Lo sagrado no perdona dos veces.",
+        "Ya viste de lo que soy capaz. Y aun así has vuelto.",
+    )
 
     # Conserva su naturaleza sagrada pese a la caída, pero esa misma caída —su
     # corrupción— es la grieta que la oscuridad explota.

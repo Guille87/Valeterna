@@ -13,6 +13,15 @@ class GolemDePiedra(Enemy):
     SIGNATURE = "Terremoto: de vez en cuando golpea el suelo y su ataque es imposible de esquivar."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_KIND = "elite"
+    ENCOUNTER_LINE = (
+        "El suelo cruje bajo un peso imposible. El Gólem de Piedra se yergue ante ti, "
+        "y toda la mina parece contener el aliento."
+    )
+    TAUNT_LINES = (
+        "Golpea todo lo que quieras. La piedra no se cansa; tú sí.",
+        "Ya has estado aquí. Y ya sabes cómo termina.",
+    )
 
     # Mole de roca: el rayo se disipa en la tierra sin hacer nada (inmune, y por
     # tanto tampoco puede quedar paralizado), pero el hielo se cuela por las

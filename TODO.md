@@ -1048,18 +1048,46 @@ el cambio a mitigación multiplicativa.
     `repeated=True`/`False` y un test de extremo a extremo con un enemigo
     mucho más rápido en una batalla real, comprobando que el aviso aparece.
 
-- [ ] **Encuentros de Explorar con sabor a rol** (pendiente de definir con el
-  usuario, feedback tras probar la v0.14.0-hunt). Ahora mismo, al toparte con
-  un enemigo por Explorar, el juego va directo a la ficha de combate sin
-  ningún texto de transición — el usuario pidió "variedad de mensajes" de
-  encuentro (llegar a un sitio, toparte con algo) y, para los enemigos
-  especiales (élite/guardián como El Carnicero), una línea de diálogo única
-  la primera vez que te lo encuentras, distinta si no llegas a derrotarlo y
-  vuelves a por él. Sin diseñar todavía: cuántas variantes de texto por tipo
-  de encuentro, si el diálogo de élite/guardián usa el mismo motor que
-  `world/npc.py` o algo más simple, y cómo encaja con `DESCRIPTION`/lore ya
-  existentes en cada `Enemy`. Requiere una propuesta y luz verde antes de
-  implementarlo (no es un fix pequeño como los dos de arriba).
+- [x] **Encuentros con sabor de rol al empezar el combate** (GDD §8.1
+  follow-up, feedback del usuario tras probar la v0.14.0-hunt: "estilo
+  Pokémon", un aviso sencillo al toparte con un enemigo, no un motor de
+  diálogo como `world/npc.py`). Resumen del pedido: enemigos normales, una
+  frase sencilla de "algo se te pone delante"; élite, algo más tenebroso que
+  deje claro que no va a ser fácil; guardián, lo mismo pero aún más
+  tenebroso; y para élite/guardián, si el jugador ya ha perdido contra ese
+  enemigo, desde el siguiente encuentro que provoque/vacile en vez de repetir
+  la intro.
+  - Tres atributos de clase nuevos en `Enemy` (`enemy_base.py`):
+    `ENCOUNTER_KIND` (`"normal"` por defecto / `"elite"` / `"guardian"`),
+    `ENCOUNTER_LINE` (la frase de la 1ª vez) y `TAUNT_LINES` (tupla de
+    provocaciones, solo élite/guardián, una al azar cada vez).
+  - Clasificación: en vez de inventar un criterio nuevo, élite = los 5
+    enemigos que ya tenían música de combate propia
+    (`HARD_BATTLE_ENEMIES`: Gólem de Piedra, Mago, Nigromante, Ángel Caído,
+    Demonio); guardián = El Carnicero y el Dragón (el usuario confirmó
+    incluir también al Dragón, el jefe final, con el mismo sistema). El
+    resto (13 enemigos) se quedan en "normal".
+  - `combat/battle.py::_announce_encounter(player, enemy)`: 1ª vez que ves a
+    ese enemigo (cualquier tipo) → siempre imprime `ENCOUNTER_LINE`. Desde la
+    2ª, solo élite/guardián dicen algo más, y solo si ya perdiste contra él
+    (`_defeat_flag`, puesto por `_handle_defeat(player, enemy, ...)`, ahora
+    con el enemigo como parámetro opcional). Se llama desde `_run_one_battle`
+    justo antes de "¡Ha comenzado la batalla...!", con el mismo criterio que
+    el resto del sabor de esa pantalla (se omite en Turbo). Sale tanto desde
+    Explorar como desde Cazar — la frase describe enfrentarte al enemigo, no
+    cómo lo encontraste.
+  - Persistencia sin tocar el esquema de guardado: reaprovecha
+    `player.mundo["banderas"]` con dos flags por enemigo (`vio_a_<nombre>`,
+    `perdio_contra_<nombre>`), el mismo patrón que ya usan los flags de
+    diálogo.
+  - Las 20 frases de encuentro y las provocaciones de El Carnicero/Dragón las
+    escribió Claude siguiendo el tono ya establecido en cada `DESCRIPTION`;
+    pendiente de revisión del usuario (especialmente la del guardián, que
+    pidió revisarla ella misma).
+  - Tests: `tests/test_battle.py` — 1ª vez vs. repetición en un enemigo
+    normal, la provocación de un élite solo se desbloquea tras perder,
+    `_handle_defeat` solo marca la derrota en enemigos no-normales, se oculta
+    en Turbo, y aparece en una batalla real de extremo a extremo.
 
 ## Pulido final (casi lo último antes de 1.0)
 

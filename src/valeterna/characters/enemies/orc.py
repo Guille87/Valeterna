@@ -13,6 +13,7 @@ class Orc(Enemy):
     SIGNATURE = "Furia cíclica: 3 turnos de calma y 3 de furia; enfurecido, sus golpes hacen el doble de daño."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_LINE = "Un Orco arranca una rama al pasar, solo para demostrarte que puede."
 
     # Piel gruesa curtida: el veneno le cuesta más hacer mella.
     RESISTANCES = frozenset({"veneno"})

@@ -13,6 +13,7 @@ class Gargola(Enemy):
     SIGNATURE = "Embestida: cada 3 turnos carga con todo su peso y golpea un 80 % más fuerte."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_LINE = "Una estatua que no debería moverse... se mueve. Una Gárgola despierta ante ti."
 
     # Constructo de piedra animado por magia: sin sangre que envenenar, pero lo
     # arcano resquebraja el hechizo que la mantiene en pie.

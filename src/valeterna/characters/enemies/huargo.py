@@ -13,6 +13,7 @@ class Huargo(Enemy):
     SIGNATURE = "Mordisco de manada: a veces otro lobo se suma al ataque con un mordisco extra."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_LINE = "Un Huargo te corta el paso, gruñendo bajo."
 
     def __init__(self):
         # Lobo salvaje: rápido y evasivo, pero frágil (poca vida y armadura).

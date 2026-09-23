@@ -7,8 +7,10 @@ from valeterna.characters.enemies.mage import Mago
 from valeterna.characters.enemies.troll import Troll
 from valeterna.combat.battle import (
     ENEMY_PROGRESSION,
+    _announce_encounter,
     _attempt_flee,
     _execute_turn,
+    _handle_defeat,
     _run_enemy_turn,
     _run_player_turn,
     initiate_battle,
@@ -1025,3 +1027,71 @@ def test_turbo_auto_battle_runs_without_any_sleep(player, monkeypatch):
 
     assert player.is_alive()
     assert slept == []  # turbo: cero pausas, ni de turno ni el "Presiona Enter" final
+
+
+# --- Frase de encuentro (v0.14.x, GDD §8.1 follow-up, feedback del usuario) -----
+
+
+def test_announce_encounter_shows_the_line_only_the_first_time(player, capsys):
+    from valeterna.characters.enemies.goblin import Goblin
+
+    goblin = Goblin()
+    _announce_encounter(player, goblin)
+    assert goblin.ENCOUNTER_LINE in capsys.readouterr().out
+    assert "vio_a_Goblin" in player.mundo["banderas"]
+
+    _announce_encounter(player, goblin)
+    assert capsys.readouterr().out == ""  # enemigo normal: nada más allá de la 1ª vez
+
+
+def test_announce_encounter_elite_taunts_only_after_a_previous_loss(player, capsys):
+    from valeterna.characters.enemies.mage import Mago
+
+    mago = Mago()
+    _announce_encounter(player, mago)  # 1ª vez: la intro
+    assert mago.ENCOUNTER_LINE in capsys.readouterr().out
+
+    _announce_encounter(player, mago)  # 2ª vez, sin haber perdido nunca: nada
+    assert capsys.readouterr().out == ""
+
+    player.mundo["banderas"].add("perdio_contra_Mago")
+    _announce_encounter(player, mago)  # ya perdiste una vez: ahora sí provoca
+    out = capsys.readouterr().out
+    assert any(line in out for line in mago.TAUNT_LINES)
+
+
+def test_handle_defeat_marks_the_loss_only_for_non_normal_enemies(player):
+    from valeterna.characters.enemies.el_carnicero import ElCarnicero
+    from valeterna.characters.enemies.goblin import Goblin
+
+    _handle_defeat(player, Goblin(), pause=False)
+    assert "perdio_contra_Goblin" not in player.mundo["banderas"]
+
+    _handle_defeat(player, ElCarnicero(), pause=False)
+    assert "perdio_contra_El Carnicero" in player.mundo["banderas"]
+
+
+def test_encounter_line_is_hidden_in_turbo_mode(player, monkeypatch, capsys):
+    """Igual que el resto del sabor de la pantalla de inicio (ficha de ambos
+    combatientes, iniciativa), la frase de encuentro se omite en Turbo. Turbo
+    solo arranca así desde la 2ª pelea de una cadena en adelante (`chain`),
+    así que se prueba `_run_one_battle` directamente en ese caso."""
+    from valeterna.characters.enemies.goblin import Goblin
+    from valeterna.combat.battle import _run_one_battle
+
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+
+    enemy = Goblin()
+    enemy.stats.min_atk = enemy.stats.max_atk = 1
+    _run_one_battle(player, enemy, ["Goblin"], ["Goblin"], chain={"mode": "turbo", "count": 1}, fight_index=2)
+
+    assert enemy.ENCOUNTER_LINE not in capsys.readouterr().out
+
+
+def test_encounter_line_shows_up_in_a_real_battle(player, weak_enemy, monkeypatch, capsys):
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: "1")
+
+    initiate_battle(player, weak_enemy, ["Goblin"], ["Goblin"])
+
+    assert weak_enemy.ENCOUNTER_LINE in capsys.readouterr().out

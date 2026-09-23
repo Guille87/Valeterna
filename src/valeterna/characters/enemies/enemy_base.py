@@ -35,6 +35,14 @@ class Enemy:
     ELEMENTS_DEALT: frozenset = frozenset()  # elementos de sus ataques
     INFLICTS: frozenset = frozenset()  # estados que puede aplicar al jugador
 
+    # --- Frase de encuentro al iniciar el combate (v0.14.x, feedback del
+    # usuario: "estilo Pokémon", no es un motor de diálogo, solo una línea de
+    # sabor). `ENCOUNTER_KIND` clasifica al enemigo: "normal" (por defecto),
+    # "elite" o "guardian" — ver `combat/battle.py::_announce_encounter`.
+    ENCOUNTER_KIND: str = "normal"
+    ENCOUNTER_LINE: str = ""  # 1ª vez que te lo encuentras
+    TAUNT_LINES: tuple = ()  # élite/guardián, desde el 2º encuentro si ya perdiste contra él
+
     def __init__(self, name: str, stats: Stats, gold_min: int, gold_max: int):
         self.name = name
         self.stats = stats  # Objeto de la clase Stats

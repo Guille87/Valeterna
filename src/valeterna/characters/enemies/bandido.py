@@ -13,6 +13,7 @@ class Bandido(Enemy):
     SIGNATURE = "Emboscada y desarme: ataca desde las sombras y puede anular el bonus de tu arma durante 2 turnos."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset({"desarmado"})
+    ENCOUNTER_LINE = "Un Bandido sale de entre las sombras, cuchillo en mano."
 
     # Humano de carne y hueso: el veneno le afecta igual que a cualquier persona.
     WEAKNESSES = frozenset({"veneno"})
