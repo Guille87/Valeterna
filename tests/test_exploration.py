@@ -7,6 +7,11 @@ from valeterna.ui import exploration
 
 
 def test_explore_with_no_unlocked_enemies_reports_nothing_to_explore(player, capsys):
+    # Piedrablanca es un hub (sin combate por diseño, ver test_hub_*): para
+    # probar el caso "zona con roster aún sin diseñar y nada desbloqueado"
+    # hace falta una zona normal, la Ciénaga.
+    player.mundo["zona_actual"] = "cienaga_de_los_ahogados"
+
     exploration._explore(player, unlocked_enemies=[], defeated_enemies=[])
 
     assert "No hay nada que explorar todavía" in capsys.readouterr().out
@@ -48,8 +53,9 @@ def test_explore_rolls_nothing_of_interest(player, monkeypatch, capsys):
 
 
 def test_explore_falls_back_to_any_unlocked_enemy_outside_the_zone_roster(player, monkeypatch):
-    """Piedrablanca no tiene roster propio: Explorar no debe bloquearse si el
-    jugador ya tiene algún enemigo desbloqueado."""
+    """La Ciénaga todavía no tiene roster propio diseñado: Explorar no debe
+    bloquearse si el jugador ya tiene algún enemigo desbloqueado."""
+    player.mundo["zona_actual"] = "cienaga_de_los_ahogados"
     calls = {}
     monkeypatch.setattr(exploration, "initiate_battle", lambda *a, **k: calls.update(k=1))
     monkeypatch.setattr("valeterna.ui.exploration.random.random", lambda: 0.0)
@@ -58,6 +64,40 @@ def test_explore_falls_back_to_any_unlocked_enemy_outside_the_zone_roster(player
     exploration._explore(player, unlocked_enemies=["Goblin"], defeated_enemies=[])
 
     assert calls
+
+
+def test_explore_never_fights_in_a_hub_even_with_enemies_unlocked(player, monkeypatch):
+    """Feedback del usuario: Piedrablanca es un pueblo (GDD §3: "hub, no
+    enemies") — a diferencia de una zona con roster aún sin diseñar como la
+    Ciénaga, aquí Explorar nunca debe acabar en combate, tengas lo que
+    tengas desbloqueado. El hallazgo (mismo roll bajo, `_DISCOVERY_POTION_CHANCE`
+    también se cumple) sigue funcionando con normalidad.
+    """
+    calls = {}
+    monkeypatch.setattr(exploration, "initiate_battle", lambda *a, **k: calls.update(k=1))
+    # roll bajo: en cualquier otra zona con candidatos esto sería un encuentro.
+    monkeypatch.setattr("valeterna.ui.exploration.random.random", lambda: 0.0)
+
+    exploration._explore(player, unlocked_enemies=["Goblin", "Dragón"], defeated_enemies=[])
+
+    assert not calls
+    assert player.inventory.quantities.get("Poción de Salud") == 1
+
+
+def test_explore_hub_discovery_chance_does_not_inherit_the_combat_slice(player, monkeypatch, capsys):
+    """La franja que en otra zona sería combate (0.65) no se la queda el
+    hallazgo en el hub: el hallazgo sigue teniendo exactamente su propia
+    probabilidad (`_EXPLORE_DISCOVERY_CHANCE`, 0.15), no 0.65+0.15 = 0.80.
+    Un roll de 0.50 caería dentro de ese rango inflado si el fallback de
+    combate hubiese pasado su probabilidad al hallazgo por error."""
+    gold_before = player.inventory.gold
+    monkeypatch.setattr("valeterna.ui.exploration.random.random", lambda: 0.50)
+
+    exploration._explore(player, unlocked_enemies=["Goblin"], defeated_enemies=[])
+
+    assert player.inventory.gold == gold_before
+    assert player.inventory.quantities.get("Poción de Salud") is None
+    assert "no encuentras nada de interés" in capsys.readouterr().out
 
 
 def test_zone_candidates_preserves_the_zones_tier_order():
@@ -74,10 +114,21 @@ def test_zone_candidates_preserves_the_zones_tier_order():
 def test_zone_candidates_falls_back_to_unlocked_order_without_a_roster():
     from valeterna.world.map import ZONES
 
-    zone = ZONES["piedrablanca"]  # sin roster propio
+    zone = ZONES["cienaga_de_los_ahogados"]  # roster aún sin diseñar, no un hub
     unlocked = ["Goblin", "Huargo"]
 
     assert exploration._zone_candidates(zone, unlocked) == unlocked
+
+
+def test_zone_candidates_is_always_empty_for_a_hub():
+    """Piedrablanca (GDD §3: "hub, no enemies") nunca recurre al fallback de
+    "cualquier enemigo desbloqueado" — a diferencia de una zona con roster
+    aún sin diseñar como la Ciénaga (test de arriba)."""
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]
+    assert zone.is_hub is True
+    assert exploration._zone_candidates(zone, unlocked_enemies=["Goblin", "Dragón"]) == []
 
 
 def test_weighted_enemy_choice_favours_later_tiers(monkeypatch):
@@ -104,6 +155,18 @@ def test_hunt_flow_with_no_candidates_reports_nothing_to_hunt(player, capsys):
     exploration._hunt_flow(player, ZONES["los_yermos"], unlocked_enemies=[], defeated_enemies=[])
 
     assert "Todavía no has derrotado a ningún enemigo" in capsys.readouterr().out
+
+
+def test_hunt_flow_reports_a_safe_zone_message_in_a_hub(player, capsys):
+    """Piedrablanca (hub) nunca tiene nada que cazar, tengas lo que tengas
+    desbloqueado — mensaje distinto al de "todavía no has derrotado nada"."""
+    from valeterna.world.map import ZONES
+
+    exploration._hunt_flow(
+        player, ZONES["piedrablanca"], unlocked_enemies=["Goblin", "Dragón"], defeated_enemies=["Goblin"]
+    )
+
+    assert "zona segura" in capsys.readouterr().out
 
 
 def test_hunt_flow_never_lists_the_frontier_enemy_not_defeated_yet(player, capsys):
@@ -395,6 +458,41 @@ def test_discovery_rolls_gold(player, monkeypatch):
     exploration._discovery(player)
 
     assert player.inventory.gold == gold_before + 5
+
+
+def test_hub_discovery_each_kind_appears_at_most_once(player, monkeypatch):
+    """Feedback del usuario: en un hub (Piedrablanca), a diferencia de una
+    zona con enemigos, el oro y la poción de Explorar no deben reponerse sin
+    límite — cada uno sale como mucho una vez por partida."""
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]
+    monkeypatch.setattr("valeterna.ui.exploration.random.random", lambda: 0.0)  # potion primero
+    monkeypatch.setattr("valeterna.ui.exploration.random.randint", lambda a, b: 5)
+
+    exploration._hub_discovery(player, zone)  # 1ª vez: poción (roll bajo -> potion_left aún True)
+    assert player.inventory.quantities.get("Poción de Salud") == 1
+    assert "hallazgo_pocion_piedrablanca" in player.mundo["banderas"]
+
+    gold_before = player.inventory.gold
+    exploration._hub_discovery(player, zone)  # poción ya agotada: toca oro, aunque el roll siga siendo bajo
+    assert player.inventory.gold == gold_before + 5
+    assert player.inventory.quantities.get("Poción de Salud") == 1  # no se repite
+    assert "hallazgo_oro_piedrablanca" in player.mundo["banderas"]
+
+
+def test_hub_discovery_reports_nothing_left_once_both_are_found(player, monkeypatch, capsys):
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]
+    player.mundo["banderas"].update({"hallazgo_oro_piedrablanca", "hallazgo_pocion_piedrablanca"})
+    gold_before = player.inventory.gold
+
+    exploration._hub_discovery(player, zone)
+
+    assert player.inventory.gold == gold_before
+    assert player.inventory.quantities.get("Poción de Salud") is None
+    assert "Ya has encontrado todo lo que había que encontrar en Piedrablanca" in capsys.readouterr().out
 
 
 def test_travel_flow_fast_travels_to_a_visited_zone(player, monkeypatch):
