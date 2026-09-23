@@ -103,21 +103,38 @@ def test_hunt_flow_with_no_candidates_reports_nothing_to_hunt(player, capsys):
 
     exploration._hunt_flow(player, ZONES["los_yermos"], unlocked_enemies=[], defeated_enemies=[])
 
-    assert "No hay ningún enemigo que puedas cazar" in capsys.readouterr().out
+    assert "Todavía no has derrotado a ningún enemigo" in capsys.readouterr().out
 
 
-def test_hunt_flow_lists_candidates_with_a_check_on_the_defeated_ones(player, monkeypatch, capsys):
+def test_hunt_flow_never_lists_the_frontier_enemy_not_defeated_yet(player, capsys):
+    """Feedback del usuario: el enemigo desbloqueado pero aún no derrotado ni
+    una vez (la "frontera") no debe aparecer en Cazar, solo en Explorar."""
     from valeterna.world.map import ZONES
 
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "3")  # Volver (Goblin, Huargo, Volver)
+    exploration._hunt_flow(
+        player,
+        ZONES["los_yermos"],
+        unlocked_enemies=["Goblin"],
+        defeated_enemies=[],  # Goblin sin derrotar aún
+    )
+
+    out = capsys.readouterr().out
+    assert "Goblin" not in out
+    assert "Todavía no has derrotado a ningún enemigo" in out
+
+
+def test_hunt_flow_lists_only_the_already_defeated_enemies(player, monkeypatch, capsys):
+    from valeterna.world.map import ZONES
+
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "2")  # Volver (Goblin, Volver)
 
     exploration._hunt_flow(
         player, ZONES["los_yermos"], unlocked_enemies=["Goblin", "Huargo"], defeated_enemies=["Goblin"]
     )
 
-    lines = [line for line in capsys.readouterr().out.splitlines() if "Goblin" in line or "Huargo" in line]
-    assert "✔" in lines[0]  # Goblin, ya derrotado
-    assert "✔" not in lines[1]  # Huargo, todavía no
+    out = capsys.readouterr().out
+    assert "1. Goblin" in out
+    assert "Huargo" not in out  # desbloqueado pero aún no derrotado: es la frontera
 
 
 def test_hunt_flow_picks_the_chosen_enemy_directly_no_roll_involved(player, monkeypatch):
@@ -128,7 +145,7 @@ def test_hunt_flow_picks_the_chosen_enemy_directly_no_roll_involved(player, monk
     monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "2")  # Huargo
 
     exploration._hunt_flow(
-        player, ZONES["los_yermos"], unlocked_enemies=["Goblin", "Huargo"], defeated_enemies=["Goblin"]
+        player, ZONES["los_yermos"], unlocked_enemies=["Goblin", "Huargo"], defeated_enemies=["Goblin", "Huargo"]
     )
 
     assert calls["enemy"] == "Huargo"
@@ -139,9 +156,11 @@ def test_hunt_flow_can_go_back_without_fighting(player, monkeypatch):
 
     calls = {}
     monkeypatch.setattr(exploration, "initiate_battle", lambda *a, **k: calls.update(k=1))
-    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "3")  # Volver
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "2")  # Volver (Goblin, Volver)
 
-    exploration._hunt_flow(player, ZONES["los_yermos"], unlocked_enemies=["Goblin", "Huargo"], defeated_enemies=[])
+    exploration._hunt_flow(
+        player, ZONES["los_yermos"], unlocked_enemies=["Goblin", "Huargo"], defeated_enemies=["Goblin"]
+    )
 
     assert not calls
 

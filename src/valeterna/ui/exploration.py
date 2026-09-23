@@ -135,23 +135,23 @@ def _explore(player, unlocked_enemies: list, defeated_enemies: list) -> None:
 
 def _hunt_flow(player, zone, unlocked_enemies: list, defeated_enemies: list) -> None:
     """Cazar... (v0.14.x, feedback del usuario): elige un enemigo concreto ya
-    desbloqueado de la zona actual y va directo al combate, sin la tirada de
-    Explorar (ni su hallazgo de oro/poción) — para farmear botín/oro/nivel de
-    un enemigo en concreto, o para no depender del azar cuando lo que quieres
-    es avanzar contra el guardián. `✔` marca los que ya has derrotado alguna
-    vez (el resto de la lista es siempre el enemigo "frontera" que aún no has
-    vencido, que es justo por el que estás progresando)."""
+    derrotado alguna vez de la zona actual y va directo al combate, sin la
+    tirada de Explorar (ni su hallazgo de oro/poción) — para farmear
+    botín/oro/nivel de un enemigo en concreto. El enemigo "frontera" (el
+    último desbloqueado que aún no has vencido ni una vez, el que abre paso al
+    siguiente) NO aparece aquí — feedback del usuario: verlo listado antes de
+    haberlo derrotado ni una vez rompía la idea de "cazar lo que ya conoces";
+    ese primer encuentro sigue siendo cosa de Explorar."""
     from valeterna.ui.menus import _get_enemy_instance
 
-    candidates = _zone_candidates(zone, unlocked_enemies)
+    candidates = [e for e in _zone_candidates(zone, unlocked_enemies) if e in defeated_enemies]
     if not candidates:
-        console.info("No hay ningún enemigo que puedas cazar en esta zona todavía.")
+        console.info("Todavía no has derrotado a ningún enemigo de esta zona; explora para encontrar el primero.")
         return
 
     print(console.colorize("\n--- CAZAR ---", console.Fore.CYAN))
     for i, name in enumerate(candidates, 1):
-        marker = " " + console.colorize("✔", console.Fore.GREEN, bright=True) if name in defeated_enemies else ""
-        print(f"{i}. {name}{marker}")
+        print(f"{i}. {name}")
     print(f"{len(candidates) + 1}. Volver")
 
     choice = console.ask(f"\nElige a quién cazar (1-{len(candidates) + 1}): ")

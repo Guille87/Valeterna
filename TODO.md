@@ -1013,6 +1013,54 @@ el cambio a mitigación multiplicativa.
     tirada pasó a `random.choices`) se actualizaron para mockear la función
     que de verdad se llama ahora.
 
+- [x] **"Cazar..." no debe listar al enemigo "frontera" todavía sin
+  derrotar, y aviso simétrico de turno repetido del enemigo** (feedback del
+  usuario tras probar la v0.14.0-hunt en partida real, antes incluso de
+  fusionar el PR anterior).
+  - **Bug de Cazar**: la primera versión de `_hunt_flow` reutilizaba
+    `_zone_candidates` tal cual, que devuelve todo lo *desbloqueado*, no solo
+    lo *derrotado* — así que al empezar la partida (con el Goblin
+    desbloqueado pero sin pelear ni una vez) Cazar ya lo mostraba, y tras
+    vencerlo, Cazar mostraba también a la Rata Gigante (el nuevo "frontera")
+    igual de sin derrotar. `_hunt_flow` ahora filtra
+    `_zone_candidates(...)` contra `defeated_enemies`, así que solo aparecen
+    enemigos ya vencidos al menos una vez; con la lista vacía (nada
+    derrotado todavía en la zona) muestra un aviso en vez de una lista
+    vacía o el enemigo sin conocer. El primer encuentro con cualquier
+    enemigo sigue siendo cosa de Explorar, nunca de Cazar — de paso ya no
+    hace falta el ✔ de "derrotado" en la lista, porque ahora todo lo listado
+    lo está.
+  - **Aviso de turno repetido, lado enemigo**: en un combate real el usuario
+    vio dos turnos seguidos del Goblin (más rápido que su personaje) sin
+    ningún indicio de por qué — la barra ATB estaba funcionando como
+    debía (rebasa el umbral más de una vez antes de que el jugador lo cruce
+    ni una), pero solo el lado del jugador avisaba de esto ("⏩ Eres más
+    rápido: actúas de nuevo antes que {enemigo}."). `_run_one_battle` ahora
+    también rastrea si el jugador ha actuado desde el último turno del
+    enemigo (`player_acted`, espejo de la `enemy_acted` que ya existía) y se
+    lo pasa a `_run_enemy_turn(..., repeated=...)`, que imprime su propia
+    línea ("⏩ {enemigo} es más rápido: actúa de nuevo antes que tú.") justo
+    bajo la cabecera de turno cuando toca.
+  - Tests: `tests/test_exploration.py` reescribe los tests de `_hunt_flow`
+    para el nuevo filtrado (frontera nunca listada, solo derrotados,
+    "Volver" con un único candidato) y ajusta los mensajes esperados.
+    `tests/test_battle.py` añade un test unitario de `_run_enemy_turn` con
+    `repeated=True`/`False` y un test de extremo a extremo con un enemigo
+    mucho más rápido en una batalla real, comprobando que el aviso aparece.
+
+- [ ] **Encuentros de Explorar con sabor a rol** (pendiente de definir con el
+  usuario, feedback tras probar la v0.14.0-hunt). Ahora mismo, al toparte con
+  un enemigo por Explorar, el juego va directo a la ficha de combate sin
+  ningún texto de transición — el usuario pidió "variedad de mensajes" de
+  encuentro (llegar a un sitio, toparte con algo) y, para los enemigos
+  especiales (élite/guardián como El Carnicero), una línea de diálogo única
+  la primera vez que te lo encuentras, distinta si no llegas a derrotarlo y
+  vuelves a por él. Sin diseñar todavía: cuántas variantes de texto por tipo
+  de encuentro, si el diálogo de élite/guardián usa el mismo motor que
+  `world/npc.py` o algo más simple, y cómo encaja con `DESCRIPTION`/lore ya
+  existentes en cada `Enemy`. Requiere una propuesta y luz verde antes de
+  implementarlo (no es un fix pequeño como los dos de arriba).
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

@@ -71,6 +71,19 @@ def test_battle_announces_who_has_the_initiative(player, weak_enemy, monkeypatch
     assert "tiene la iniciativa" in capsys.readouterr().out
 
 
+def test_a_much_faster_enemy_gets_the_repeated_turn_notice_in_a_real_battle(player, weak_enemy, monkeypatch, capsys):
+    """Espejo, de extremo a extremo, del test de "Eres más rápido" del lado
+    del jugador: si el enemigo es mucho más rápido tiene varios turnos antes
+    de que le toque al jugador, y eso debe avisarse igual que al revés."""
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: "1")
+    weak_enemy.stats.speed = 999  # muchísimo más rápido: varios turnos suyos antes del 1º del jugador
+
+    initiate_battle(player, weak_enemy, ["Goblin"], ["Goblin"])
+
+    assert "es más rápido: actúa de nuevo antes que tú" in capsys.readouterr().out
+
+
 def test_initiative_message_matches_who_actually_acts_first_on_a_near_tie(player, weak_enemy, monkeypatch, capsys):
     """v0.14.0-c (feedback del usuario): con velocidades parecidas (10 vs 11)
     los dos cruzan el umbral ATB en el mismo tick, y ahí el turno del jugador
@@ -112,6 +125,30 @@ def test_player_turn_header_includes_the_class(player, weak_enemy, monkeypatch):
     with contextlib.redirect_stdout(buf):
         _run_player_turn(arc, weak_enemy, ["Goblin"], is_auto=False, turn_no=3)
     assert "── Turno 3 · Mag (Arcanista) ──" in buf.getvalue()
+
+
+def test_repeated_enemy_turn_shows_the_mirror_notice_of_the_players_one(player, monkeypatch, capsys):
+    """Feedback del usuario: la barra ATB podía dar dos turnos seguidos al
+    enemigo (más rápido) sin ningún aviso, a diferencia del lado del jugador
+    ("Eres más rápido..."). `_run_one_battle` pasa `repeated=True` cuando el
+    jugador no ha actuado desde el último turno del enemigo."""
+    from valeterna.characters.enemies.goblin import Goblin
+
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    _run_enemy_turn(player, Goblin(), ["Goblin"], turbo=False, turn_no=2, repeated=True)
+
+    out = capsys.readouterr().out
+    assert "es más rápido: actúa de nuevo antes que tú" in out
+
+
+def test_non_repeated_enemy_turn_shows_no_mirror_notice(player, monkeypatch, capsys):
+    from valeterna.characters.enemies.goblin import Goblin
+
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    _run_enemy_turn(player, Goblin(), ["Goblin"], turbo=False, turn_no=1, repeated=False)
+
+    out = capsys.readouterr().out
+    assert "es más rápido: actúa de nuevo" not in out
 
 
 def test_turbo_enemy_turn_still_shows_the_status_bars():

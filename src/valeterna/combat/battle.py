@@ -285,6 +285,7 @@ def _run_one_battle(
     gauge_player = 0.0
     gauge_enemy = 0.0
     enemy_acted = True  # el primer turno del jugador no cuenta como "repetido"
+    player_acted = True  # el primer turno del enemigo no cuenta como "repetido"
     while player.is_alive() and enemy.is_alive():
         rm.update()
 
@@ -312,6 +313,7 @@ def _run_one_battle(
             if was_auto and not is_auto:
                 auto_cancelled = True  # pulsó 'Q'; si vuelve a activar auto se corrige abajo
             enemy_acted = False
+            player_acted = True
             if signal == "huir":
                 player_fled = True
                 break
@@ -328,8 +330,11 @@ def _run_one_battle(
         if player.is_alive() and gauge_enemy >= ATB_THRESHOLD:
             gauge_enemy -= ATB_THRESHOLD
             turn_no += 1
-            _run_enemy_turn(player, enemy, defeated_enemies, turbo=is_auto == "turbo", turn_no=turn_no)
+            _run_enemy_turn(
+                player, enemy, defeated_enemies, turbo=is_auto == "turbo", turn_no=turn_no, repeated=not player_acted
+            )
             enemy_acted = True
+            player_acted = False
             _try_represalia(player, enemy, defeated_enemies)
             player.took_physical_hit = False
 
@@ -640,10 +645,16 @@ def _try_represalia(player, enemy, defeated_enemies: list) -> None:
         _execute_turn(player, enemy, defeated_enemies)
 
 
-def _run_enemy_turn(player, enemy, defeated_enemies: list, turbo: bool = False, turn_no: int = 0) -> None:
+def _run_enemy_turn(
+    player, enemy, defeated_enemies: list, turbo: bool = False, turn_no: int = 0, repeated: bool = False
+) -> None:
     """Ejecuta el turno del enemigo cuando su gauge ATB está lista. En `turbo`
     solo se saltan las pausas/sleeps; las barras de vida y los avisos se muestran
-    igual, para no perder de vista cómo va el combate."""
+    igual, para no perder de vista cómo va el combate. `repeated` = el enemigo
+    vuelve a actuar sin que el jugador haya actuado por el medio (es más
+    rápido) — espejo de la nota "Eres más rápido" del lado del jugador
+    (feedback del usuario: la barra ATB podía dar dos turnos seguidos al
+    enemigo sin que quedase claro por qué)."""
     if not turbo:
         time.sleep(1)
 
@@ -658,6 +669,8 @@ def _run_enemy_turn(player, enemy, defeated_enemies: list, turbo: bool = False, 
 
     if can_act:
         print(_turn_header(turn_no, enemy.name))
+        if repeated:
+            print(console.colorize(f"⏩ {enemy.name} es más rápido: actúa de nuevo antes que tú.", console.Fore.CYAN))
         enemy.perform_turn(player)
     enemy.on_turn_end()
     enemy.decay_status_effects()
