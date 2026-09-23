@@ -127,6 +127,27 @@ _KNOWN_OUT_OF_RANGE = {
     "Lobo Umbrío",
     "Ent Corrompido",
     "El Enraizado",
+    # Ciénaga de los Ahogados (v0.14.0-f): mismo motivo que los 6 de arriba
+    # del Bosque — el rango formal de la zona resetea bajo en cada zona
+    # nueva, pero El Enraizado (guardián del Bosque, ya implementado) tiene
+    # un poder real (~112.225) muy por encima de su propio rango. Diseñar
+    # los 10 tiers de la Ciénaga contra la curva formal en vez de contra el
+    # poder real de El Enraizado los habría hecho más débiles que el
+    # enemigo que el jugador acaba de superar — así que, igual que en el
+    # Bosque, cada tier se dimensionó para superar el poder real del
+    # anterior (~118.818 → ~205.746), y Gárgola (guardián que sigue a la
+    # Ciénaga) se reforzó a su vez (~214.245) para que la transición de
+    # zona también siga siendo progresiva.
+    "Sanguijuela Colosal",
+    "Espantajo Anegado",
+    "Ahogado Errante",
+    "Chamán del Cieno",
+    "Cangrejo Acorazado",
+    "Serpiente de Fango",
+    "Sacerdote Ahogado",
+    "Horror de Profundidad",
+    "Guardián del Templo Hundido",
+    "El Anegado",
 }
 
 
