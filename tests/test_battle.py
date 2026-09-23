@@ -34,6 +34,42 @@ def test_victory_unlocks_next_enemy_and_grants_rewards(player, weak_enemy, monke
     assert player.enemy_kill_counts["Goblin"] == 1
 
 
+def test_victory_does_not_spoil_the_name_of_the_next_unlocked_enemy(player, monkeypatch, capsys):
+    """Feedback del usuario: el siguiente enemigo se desbloquea igual (la
+    lógica de progresión no cambia), pero su nombre ya no se anuncia en la
+    pantalla de victoria — que lo descubra explorando."""
+    from valeterna.characters.enemies.goblin import Goblin
+    from valeterna.combat.battle import _handle_victory
+
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    next_enemy = ENEMY_PROGRESSION["Goblin"]
+    unlocked = ["Goblin"]
+
+    _handle_victory(player, Goblin(), [], unlocked)
+
+    assert next_enemy in unlocked  # se desbloquea...
+    assert next_enemy not in capsys.readouterr().out  # ...pero no se anuncia por su nombre
+
+
+def test_victory_shows_gold_total_and_xp_with_current_level_progress(player, monkeypatch, capsys):
+    """Feedback del usuario: además del oro/XP obtenidos, mostrar el oro total
+    que lleva encima y su nivel/progreso de XP hacia el siguiente."""
+    from valeterna.characters.enemies.goblin import Goblin
+    from valeterna.combat.battle import _handle_victory
+
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    player.inventory.gold = 40
+    goblin = Goblin()
+
+    _handle_victory(player, goblin, [], ["Goblin"])
+
+    import re
+
+    out = re.sub(r"\x1b\[[0-9;]*m", "", capsys.readouterr().out)
+    assert f"(Total: {player.inventory.gold})" in out
+    assert f"Nivel {player.level}: {player.experience}/{player.required_xp()}" in out
+
+
 def test_victory_drop_line_shows_type_and_equipment_stats(player, monkeypatch, capsys):
     from valeterna.characters.enemies.goblin import Goblin
     from valeterna.combat.battle import _handle_victory
@@ -250,8 +286,9 @@ def test_chain_runs_several_fights_when_player_picks_auto(player, monkeypatch):
     from valeterna.characters.enemies.goblin import Goblin
 
     monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    # "" primero: la pausa de la frase de encuentro del Goblin (1ª vez que lo ves).
     # Turno 1: "6" (auto) -> "3" peleas. A partir de ahí auto y "" para las pausas.
-    answers = iter(["6", "3"])
+    answers = iter(["", "6", "3"])
     monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: next(answers, ""))
 
     first = Goblin()
@@ -268,7 +305,8 @@ def test_chain_prints_a_loot_summary_at_the_end(player, monkeypatch, capsys):
     from valeterna.characters.enemies.goblin import Goblin
 
     monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
-    answers = iter(["6", "2"])
+    # "" primero: la pausa de la frase de encuentro del Goblin (1ª vez que lo ves).
+    answers = iter(["", "6", "2"])
     monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: next(answers, ""))
 
     first = Goblin()
@@ -340,7 +378,9 @@ def test_chain_stops_on_defeat(player, monkeypatch):
     from valeterna.characters.enemies.orc import Orc
 
     monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
-    answers = iter(["6", "5"])
+    # "" primero y antes de la 2ª pelea: las pausas de la frase de encuentro
+    # de cada enemigo, la 1ª vez que lo ves (Goblin, luego Orco).
+    answers = iter(["", "6", "5", ""])
     monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: next(answers, ""))
 
     first = Goblin()
@@ -1032,8 +1072,10 @@ def test_turbo_auto_battle_runs_without_any_sleep(player, monkeypatch):
 # --- Frase de encuentro (v0.14.x, GDD §8.1 follow-up, feedback del usuario) -----
 
 
-def test_announce_encounter_shows_the_line_only_the_first_time(player, capsys):
+def test_announce_encounter_shows_the_line_only_the_first_time(player, monkeypatch, capsys):
     from valeterna.characters.enemies.goblin import Goblin
+
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: "")
 
     goblin = Goblin()
     _announce_encounter(player, goblin)
@@ -1044,8 +1086,10 @@ def test_announce_encounter_shows_the_line_only_the_first_time(player, capsys):
     assert capsys.readouterr().out == ""  # enemigo normal: nada más allá de la 1ª vez
 
 
-def test_announce_encounter_elite_taunts_only_after_a_previous_loss(player, capsys):
+def test_announce_encounter_elite_taunts_only_after_a_previous_loss(player, monkeypatch, capsys):
     from valeterna.characters.enemies.mage import Mago
+
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: "")
 
     mago = Mago()
     _announce_encounter(player, mago)  # 1ª vez: la intro
@@ -1058,6 +1102,23 @@ def test_announce_encounter_elite_taunts_only_after_a_previous_loss(player, caps
     _announce_encounter(player, mago)  # ya perdiste una vez: ahora sí provoca
     out = capsys.readouterr().out
     assert any(line in out for line in mago.TAUNT_LINES)
+
+
+def test_announce_encounter_pauses_only_when_it_prints_something(player, monkeypatch):
+    """Feedback del usuario: si no se pausa, la frase se pierde entre la línea
+    y la ficha de combate que sale justo detrás. Un enemigo normal repetido
+    (sin nada que decir) no debe pedir esa pausa."""
+    from valeterna.characters.enemies.goblin import Goblin
+
+    asked = []
+    monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: asked.append(1) or "")
+
+    goblin = Goblin()
+    _announce_encounter(player, goblin)
+    assert len(asked) == 1  # 1ª vez: pausa
+
+    _announce_encounter(player, goblin)
+    assert len(asked) == 1  # repetición sin nada que decir: sin pausa
 
 
 def test_handle_defeat_marks_the_loss_only_for_non_normal_enemies(player):

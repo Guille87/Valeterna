@@ -456,7 +456,10 @@ def _equip_armor_flow(player) -> None:
         print(console.colorize("\n--- EQUIPAR ARMADURA ---", console.Fore.YELLOW))
         for idx, slot in enumerate(ARMOR_SLOTS, 1):
             equipped = player.equipped_armor.get(slot)
-            label = equipped.name if equipped else "-- vacío --"
+            if equipped:
+                label = f"{console.colorize(equipped.name, console.Fore.BLUE)} ({equipped.get_stats_info()})"
+            else:
+                label = "-- vacío --"
             print(f"{idx}. {slot_label(slot)}: {label}")
         print(f"{len(ARMOR_SLOTS) + 1}. Volver")
 

@@ -348,3 +348,18 @@ def test_show_stats_prints_crit_damage_as_a_percentage(player, capsys):
     assert "Daño Crítico: +60%" in out
     assert "x1." not in out
     assert "160%" not in out
+
+
+def test_show_stats_lists_what_each_equipped_item_grants(player, capsys):
+    """Feedback del usuario: junto al nombre de cada pieza equipada, las
+    estadísticas que otorga (mismo `get_stats_info()` que ya usa el botín)."""
+    from valeterna.items.equipment import Armor
+
+    casco = Armor("Yelmo de Prueba", "desc", 5, slot="casco", max_health=15, defense=2)
+    casco.use(player)
+
+    player.show_stats()
+    import re
+
+    out = re.sub(r"\x1b\[[0-9;]*m", "", capsys.readouterr().out)
+    assert "Casco: Yelmo de Prueba (Armadura: 2 | Vida: +15)" in out

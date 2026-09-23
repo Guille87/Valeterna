@@ -177,8 +177,8 @@ def _print_chain_loot(player, start: dict) -> None:
 
     print(console.colorize("\n--- BOTÍN DE LA CADENA ---", console.Fore.CYAN, bright=True))
     gold_sign = "+" if gold_delta >= 0 else ""
-    print(console.stat_line(f"Oro: {gold_sign}{gold_delta}", "oro"))
-    xp_line = f"XP: +{xp_delta}"
+    print(console.stat_line(f"Oro: {gold_sign}{gold_delta}  (Total: {player.inventory.gold})", "oro"))
+    xp_line = f"XP: +{xp_delta}  (Nivel {player.level}: {player.experience}/{player.required_xp()})"
     if levels > 0:
         xp_line += f"  (subes {levels} nivel{'es' if levels > 1 else ''}: {start['level']} → {player.level})"
     print(console.stat_line(xp_line, "xp"))
@@ -228,9 +228,13 @@ def _announce_encounter(player, enemy) -> None:
     cualquier tipo. Desde la 2ª vez, solo élite/guardián dicen algo más, y
     solo si el jugador ya perdió contra él alguna vez (`_defeat_flag`,
     puesto por `_handle_defeat`) — una `TAUNT_LINES` al azar en vez de
-    repetir la misma frase de siempre."""
+    repetir la misma frase de siempre. Si se imprime algo, pausa con
+    "Presiona Enter..." antes de seguir (feedback del usuario: si no, el
+    texto se pierde entre la línea y la ficha de combate que viene justo
+    detrás)."""
     banderas = player.mundo["banderas"]
     seen_flag = _seen_flag(enemy)
+    printed = False
 
     if seen_flag not in banderas:
         banderas.add(seen_flag)
@@ -238,10 +242,13 @@ def _announce_encounter(player, enemy) -> None:
             dramatic = enemy.ENCOUNTER_KIND != "normal"
             color = console.Fore.RED if dramatic else console.Fore.LIGHTBLACK_EX
             print(console.colorize(enemy.ENCOUNTER_LINE, color, bright=dramatic, tint=False))
-        return
-
-    if enemy.ENCOUNTER_KIND != "normal" and enemy.TAUNT_LINES and _defeat_flag(enemy) in banderas:
+            printed = True
+    elif enemy.ENCOUNTER_KIND != "normal" and enemy.TAUNT_LINES and _defeat_flag(enemy) in banderas:
         print(console.colorize(random.choice(enemy.TAUNT_LINES), console.Fore.RED, bright=True, tint=False))
+        printed = True
+
+    if printed:
+        console.ask("\nPresiona Enter para continuar...")
 
 
 def _run_one_battle(
@@ -984,21 +991,30 @@ def _handle_victory(player, enemy, defeated_enemies: list, unlocked_enemies: lis
     if enemy.name not in defeated_enemies:
         defeated_enemies.append(enemy.name)
 
-        # Consultamos si este enemigo desbloquea a otro
+        # Desbloquea al siguiente enemigo de la cadena, sin anunciar cuál es
+        # (feedback del usuario: que lo descubra explorando, no aquí).
         next_enemy = ENEMY_PROGRESSION.get(enemy.name)
-
         if next_enemy and next_enemy not in unlocked_enemies:
             unlocked_enemies.append(next_enemy)
-            print(console.colorize(f"✨ ¡NUEVO ENEMIGO DESBLOQUEADO: {next_enemy}!", console.Fore.MAGENTA))
 
     # Recompensa de Oro
     gold = enemy.get_gold_drop()
     player.inventory.gold += gold
-    print(f"💰 Oro obtenido: {console.colorize(str(gold), console.Fore.YELLOW)}")
+    print(
+        f"💰 Oro obtenido: {console.colorize(str(gold), console.Fore.YELLOW)} "
+        f"(Total: {console.colorize(str(player.inventory.gold), console.Fore.YELLOW)})"
+    )
 
     # Experiencia y Nivel
     old_level = player.level
-    player.gain_experience(gold * 2)
+    xp_gained = gold * 2
+    player.gain_experience(xp_gained)
+    print(
+        console.stat_line(
+            f"✨ XP obtenida: +{xp_gained}  (Nivel {player.level}: {player.experience}/{player.required_xp()})",
+            "xp",
+        )
+    )
 
     # Comprobamos si subió de nivel
     player.just_leveled_up = player.level > old_level

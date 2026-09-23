@@ -103,3 +103,22 @@ def test_check_admin_password_rejects_a_wrong_password(monkeypatch):
     monkeypatch.setattr(menus.console, "ask", lambda _prompt: "incorrecta")
 
     assert menus._check_admin_password() is False
+
+
+def test_equip_armor_flow_shows_what_each_equipped_piece_grants(player, monkeypatch, capsys):
+    """Feedback del usuario: en "Equipar Armadura", junto a la pieza ya
+    equipada, las estadísticas que otorga (mismo `get_stats_info()` que ya se
+    usa en el botín y en Estadísticas)."""
+    import re
+
+    from valeterna.items.equipment import ARMOR_SLOTS, Armor
+
+    casco = Armor("Yelmo de Prueba", "desc", 5, slot="casco", max_health=15, defense=2)
+    casco.use(player)
+
+    monkeypatch.setattr(menus.console, "ask", lambda *a, **k: str(len(ARMOR_SLOTS) + 1))  # Volver
+
+    menus._equip_armor_flow(player)
+
+    out = re.sub(r"\x1b\[[0-9;]*m", "", capsys.readouterr().out)
+    assert "Casco: Yelmo de Prueba (Armadura: 2 | Vida: +15)" in out

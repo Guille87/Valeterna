@@ -1082,12 +1082,50 @@ el cambio a mitigación multiplicativa.
     diálogo.
   - Las 20 frases de encuentro y las provocaciones de El Carnicero/Dragón las
     escribió Claude siguiendo el tono ya establecido en cada `DESCRIPTION`;
-    pendiente de revisión del usuario (especialmente la del guardián, que
-    pidió revisarla ella misma).
+    **revisadas y aprobadas por el usuario** tras probarlas en partida (si
+    hace falta retocar o añadir más adelante, se hará entonces).
   - Tests: `tests/test_battle.py` — 1ª vez vs. repetición en un enemigo
     normal, la provocación de un élite solo se desbloquea tras perder,
     `_handle_defeat` solo marca la derrota en enemigos no-normales, se oculta
     en Turbo, y aparece en una batalla real de extremo a extremo.
+
+- [x] **Pausa en la frase de encuentro, pantalla de victoria más informativa,
+  y estadísticas del equipo a la vista** (feedback del usuario tras probar
+  las frases de encuentro en partida real).
+  - **Pausa tras la frase de encuentro**: `_announce_encounter` no paraba, así
+    que el texto (intro o provocación) se perdía entre esa línea y la ficha
+    de combate que sale justo detrás. Ahora, si imprime algo, pide "Presiona
+    Enter para continuar..." antes de seguir; una repetición sin nada que
+    decir (enemigo normal ya visto) no pide nada.
+  - **Pantalla de victoria**: el oro y la XP obtenidos ahora muestran también
+    el total/progreso actual — `💰 Oro obtenido: X (Total: Y)` y `✨ XP
+    obtenida: +X (Nivel N: XP/XP necesaria)` —, y ya no se anuncia el nombre
+    del siguiente enemigo desbloqueado (`✨ ¡NUEVO ENEMIGO DESBLOQUEADO!`
+    eliminado): sigue desbloqueándose igual, pero el jugador debe descubrir
+    quién es explorando, no leerlo en la pantalla de victoria. De paso se
+    quitó el "Has obtenido X XP." que imprimía `Player.gain_experience()`
+    por su cuenta, redundante con la nueva línea de `_handle_victory` (su
+    único caller).
+  - **Estadísticas del equipo a la vista**: en "Personaje → Estadísticas" y en
+    "Equipar Armadura", cada hueco ocupado muestra ahora, junto al nombre,
+    las estadísticas que otorga esa pieza (`Armor.get_stats_info()`, el mismo
+    texto que ya se usaba en el botín de la victoria) — antes había que
+    desequipar/volver a equipar o mirar la tienda para recordar qué daba cada
+    cosa.
+  - Tropiezo de esta ronda: la pausa nueva rompió varios tests de
+    `test_battle.py` que encadenaban respuestas fijas de `console.ask` (p. ej.
+    los de auto-batalla en cadena) porque el primer "Enter" de la pausa se
+    comía la respuesta pensada para el menú siguiente — no era un bloqueo
+    real de teclado, sino un bucle infinito local (`_player_menu` reintentando
+    con `""` para siempre) que parecía un cuelgue. Se detectó instalando
+    temporalmente `pytest-timeout` (no es una dependencia del proyecto,
+    solo se usó para depurar) y se arregló añadiendo la respuesta extra en la
+    posición correcta de cada secuencia mockeada.
+  - Tests: `tests/test_battle.py` (la pausa solo cuando imprime algo; oro
+    total y XP/nivel en la pantalla de victoria; el nombre del siguiente
+    enemigo ya no se anuncia), `tests/test_player.py` (`show_stats()` lista
+    las estadísticas del equipo), `tests/test_menus.py` (`_equip_armor_flow`
+    hace lo mismo).
 
 ## Pulido final (casi lo último antes de 1.0)
 
