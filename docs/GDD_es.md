@@ -132,8 +132,8 @@ desbloqueo de enemigos que ya usa el combate, según
 | **Piedrablanca** | Última aldea libre | — | Taberna (descanso), Herrería, Mercado, Refugio | Yerma, Dorn, Halbrand, Nia |
 | **Los Yermos** | Descampados junto a la aldea | *(10, completo — §4.6)* | Campamento de bandidos, Túmulo | Cael |
 | **Bosque de los Susurros** | Bosque encantado | *(10, completo — §4.7)* | Claro del altar, Cabaña quemada | Mirelle |
-| **Ciénaga de los Ahogados** | Pantano anegado | *(todos nuevos)* | Templo hundido, Embarcadero podrido | *(nuevo)* |
-| **Cañón del Trueno** | Paso de montaña, piedra | Gárgola, Gólem de Piedra | Mina derrumbada, Puente colgante | Kort |
+| **Ciénaga de los Ahogados** | Pantano anegado | *(10, completa — §4.8)* | Templo hundido, Embarcadero podrido | Oren |
+| **Cañón del Trueno** | Paso de montaña, piedra | Gárgola (reforzada — §4.8), Gólem de Piedra | Mina derrumbada, Puente colgante | Kort |
 | **Torre de los Arcanos / Necrópolis** | Torre de mago + cementerio | Mago, Nigromante | Biblioteca, Cripta | Sella |
 | **Ciudadela en Ruinas** | La capital arrasada, suelo infernal | Ángel Caído, Demonio | Catedral rota, Plaza | Aldric |
 | **El Corazón de la Brecha** | El origen — se diseña el último | *(§4)* | — | — |
@@ -294,6 +294,43 @@ propia transición de zona siga siendo progresiva — ver
 números exactos, y `_KNOWN_OUT_OF_RANGE` en `tests/test_power_budget.py`
 para por qué las desviaciones que reporta la herramienta en esta zona son
 esperadas, no un error.
+
+### 4.8 Ciénaga de los Ahogados (10) *(implementado en v0.14.0-f)*
+
+Esta zona no tenía roster alguno antes de esta sub-fase — los 10 enemigos son
+nuevos, ambientados en el pantano anegado, los relatos de Oren sobre el agua
+que "devuelve a los suyos" por la noche, y el relieve del templo hundido que
+muestra algo antiguo al que unas figuras arrodilladas miraban hacia arriba.
+
+| Tier | Rango | Nombre | Arquetipo | Distintivo | Inflige | Débil a | Resiste | Inmune a |
+|------|-------|--------|-----------|------------|---------|---------|---------|----------|
+| 1 | estándar | Sanguijuela Colosal | bruto | vida robada: se cura con parte del daño que inflige, cada golpe | físico | fuego | — | veneno |
+| 2 | estándar | Espantajo Anegado | hostigador | prob. de sangrado al golpear | físico | — | — | — |
+| 3 | estándar | Ahogado Errante | emboscador | acecha tras la primera derrota | físico | sagrado | — | — |
+| 4 | **élite** | Chamán del Cieno | apoyo | se cura, maldición leve | oscuridad | sagrado | oscuridad | — |
+| 5 | estándar | Cangrejo Acorazado | tanque | tenazada inesquivable | físico | — | — | — |
+| 6 | estándar | Serpiente de Fango | hostigador | segundo mordisco periódico, prob. veneno | físico | fuego | — | — |
+| 7 | **élite** | Sacerdote Ahogado | apoyo/control | ataque especial de confusión, rezo oscuro | oscuridad | sagrado | oscuridad | — |
+| 8 | estándar | Horror de Profundidad | bruto | ataque especial con prob. de aturdir | físico | — | — | — |
+| 9 | **élite** | Guardián del Templo Hundido | tanque | golpe de piedra inesquivable | físico | sagrado | — | paralizado |
+| 10 | **guardián** | El Anegado | bruto/apoyo | se cura bajo 40 % vida, maldice al golpear | oscuridad | sagrado | oscuridad | veneno |
+
+**Misma necesidad de dificultad progresiva que en el Bosque, pero sin margen
+para absorberla**: en el mapa (§3) la Ciénaga va entre el Bosque y el Cañón
+del Trueno, pero el poder real de El Enraizado (~112k) y el poder real
+*original* de Gárgola (~120k) estaban solo un ~7 % separados — ni de lejos
+suficiente para 10 tiers progresivos. Se resolvió, acordado con el usuario
+antes de implementarlo, reforzando a **Gárgola** (solo estadísticas — vida,
+rango de ataque y oro; su mecánica de embestida y sus afinidades no cambian
+— poder real ~120k → ~214k) en vez de comprimir los tiers de la zona nueva
+en una banda poco realista y apenas progresiva; Gólem de Piedra no necesitó
+ningún cambio, ya estaba cómodamente por encima del nuevo techo. Los 10
+tiers de la Ciénaga suben entonces desde justo por encima de El Enraizado
+hasta justo por debajo de la Gárgola reforzada (~118,8k → ~205,7k) — ver
+`characters/enemies/sanguijuela_colosal.py` y los archivos vecinos para los
+números exactos, y `_KNOWN_OUT_OF_RANGE` en `tests/test_power_budget.py`
+para por qué las desviaciones que reporta la herramienta en esta zona son
+esperadas, mismo motivo que en el Bosque.
 
 ---
 
@@ -748,8 +785,8 @@ cambiar; el GDD es un documento vivo y cualquier cosa de aquí puede cambiar.
 | **v0.11.0** | Equipo y afinidades reales | 4 conjuntos de armadura · resistencia elemental en armadura · debilidades / resistencias / inmunidades reales en los 14 enemigos actuales · armas elementales nuevas (sagrado / oscuridad / arcano) · reacciones elementales |
 | **v0.12.0** | El mundo, parte 1 | zonas + mapa + bucle de exploración · posada / descanso (coste por nivel) · viaje frontera + viaje rápido · migración de guardado v2 · tienda / herrería reubicadas · encuentros aleatorios + hallazgos |
 | **v0.13.0** | Diálogo y NPCs | diálogo ramificado con respuestas del jugador · conversaciones únicas vs repetibles · NPCs de Piedrablanca + las 6 regiones actuales · notas de lore + Diario |
-| **v0.14.0** | Bestiario y enemigos I | bestiario progresivo · herramienta de presupuesto de poder (fija la curva de nivel) · Los Yermos + Bosque rellenados a ~10 (élites 5/7/9 + guardián 10) · habilidades de clase de nivel medio atadas a esos enemigos |
-| **v0.15.0** | Enemigos II | Ciénaga (nueva) + Cañón + Torre/Necrópolis a ~10 · escalado del botín (únicos + comunes tirados) · drop-scaling entre zonas · más habilidades de clase |
+| **v0.14.0** | Bestiario y enemigos I | bestiario progresivo · herramienta de presupuesto de poder (fija la curva de nivel) · Los Yermos + Bosque + Ciénaga rellenados a ~10 cada una (élites hacia el 4-9 + guardián 10) · habilidades de clase de nivel medio atadas a esos enemigos |
+| **v0.15.0** | Enemigos II | Cañón + Torre/Necrópolis a ~10 · escalado del botín (únicos + comunes tirados) · drop-scaling entre zonas · más habilidades de clase |
 | **v0.16.0** | Enemigos III | Ciudadela a ~10 · habilidades de clase de hito alto · misiones secundarias de esas regiones |
 | **v0.17.0** | Historia principal | sistema de misiones · questline "La Brecha" (7 actos) enganchada a los NPCs / guardianes existentes · progresión por historia en vez de elegir enemigo |
 | **v0.18.0** | La Arena | modo de oleadas crecientes · recompensas de Arena (títulos + algunas piezas de conjunto + un único difícil) |

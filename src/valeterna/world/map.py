@@ -134,8 +134,8 @@ def default_zone_for_progress(defeated_enemies: list) -> str:
     se ha derrotado a algún enemigo backbone. Sin ningún progreso, Piedrablanca
     (el pueblo). Aproximación deliberada: todavía no hay guardianes que abran
     zonas "de verdad", así que se infiere del propio progreso de combate. Una
-    zona todavía sin roster (p. ej. Ciénaga de los Ahogados, GDD §4) se salta
-    sin cortar el avance — no bloquea llegar a la siguiente."""
+    zona todavía sin roster (`enemies=()`, ninguna hoy salvo Piedrablanca) se
+    saltaría sin cortar el avance — no bloquearía llegar a la siguiente."""
     current = ZONE_ORDER[0]
     for zone_id in ZONE_ORDER[1:]:
         enemies = ZONES[zone_id].enemies
