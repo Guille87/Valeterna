@@ -129,6 +129,7 @@ STAT_COLORS = {
     "xp": Fore.LIGHTBLACK_EX,
     "elemento": Fore.CYAN,
     "equipo": Fore.BLUE,
+    "debug": Fore.LIGHTBLACK_EX,
 }
 
 

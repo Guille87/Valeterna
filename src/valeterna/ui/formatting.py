@@ -1,4 +1,8 @@
+from types import SimpleNamespace
+
 from valeterna import i18n
+from valeterna.characters.power_budget import power_score
+from valeterna.config.debug import is_debug
 from valeterna.items.factory import item_kind_label
 from valeterna.ui import console
 
@@ -39,6 +43,18 @@ def print_player_enemy_info(player, enemy, defeated_enemies: list) -> None:
     )
     if player.get_total_regen():
         _p(f"Regeneración: {player.get_total_regen()} HP/turno", "regen")
+    if is_debug():
+        player_power = power_score(
+            SimpleNamespace(
+                min_atk=atk_min,
+                max_atk=atk_max,
+                crit_chance=player.get_total_crit_chance(),
+                crit_damage=player.get_total_crit_damage(),
+                max_health=player.stats.max_health,
+                speed=player.get_total_speed(),
+            )
+        )
+        _p(f"[DEBUG] Poder: {player_power:,.0f}", "debug")
     print()
 
     revealed = enemy.name in defeated_enemies
@@ -66,6 +82,11 @@ def print_player_enemy_info(player, enemy, defeated_enemies: list) -> None:
     )
     if revealed and enemy.stats.regen:
         _p(f"Regeneración: {enemy.stats.regen} HP/turno", "regen")
+    if is_debug():
+        # A diferencia del resto de esta ficha, el poder del enemigo se
+        # muestra siempre en DEBUG, esté o no `revealed` — es una herramienta
+        # de testeo, no algo que el jugador vaya a ver nunca (ver config/debug.py).
+        _p(f"[DEBUG] Poder: {power_score(enemy.stats):,.0f}", "debug")
 
     print("\n" + "=" * 60)
 
