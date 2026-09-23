@@ -1184,6 +1184,39 @@ el cambio a mitigación multiplicativa.
     (primero uno, luego el otro aunque la tirada favorezca al ya agotado),
     y el mensaje de "ya no queda nada" una vez encontrados ambos.
 
+- [x] **Tabla completa del bestiario (Excel) + poder de jugador/enemigo solo
+  en DEBUG** (petición del usuario, a mayores tras el fix de Piedrablanca).
+  - Tabla: `bestiario_valeterna.xlsx`, generada extrayendo los datos
+    directamente del código (instancia real de cada uno de los 20 enemigos,
+    `drop_table()`, `power_score()`/`target_score()` de
+    `power_budget.py`) para que no haya errores de transcripción — entregada
+    al usuario como archivo, no versionada en el repo (es una referencia de
+    diseño, no algo que el código consuma). Columnas, en el orden elegido:
+    Zona, Tier, Rango, Nombre, Arquetipo, Distintivo/Mecánica, Inflige,
+    Débil a, Resiste, Inmune a, HP, Ataque, Armadura, Res. Mágica,
+    Prob./Daño Crítico, Velocidad, Precisión, Evasión, Pen.
+    Armadura/Mágica, Oro, Experiencia, Botín, **Poder real** y **Objetivo de
+    poder** (las dos últimas, del `power_budget.py`: se añadió "Poder real"
+    además de lo pedido porque es el contraste que hace útil la
+    herramienta). "Arquetipo" es la única columna sin fuente directa en el
+    código — una etiqueta de una línea escrita a mano por enemigo, a partir
+    de su `SIGNATURE`/`DESCRIPTION`.
+  - **Modo DEBUG** (`config/debug.py::is_debug()`): activado solo por la
+    variable de entorno `VALETERNA_DEBUG` (mismo patrón que `$CI` en
+    `updater.py` o `$JRT_CRASH_WEBHOOK` en `crash_reporting.py`), nunca
+    desde dentro del juego — ni siquiera el personaje "admin" lo activa, es
+    una herramienta de desarrollo, no un cheat de partida. Se usa en
+    `ui/formatting.py::print_player_enemy_info()`: añade una línea
+    "[DEBUG] Poder: X" bajo la ficha de cada combatiente. La del jugador usa
+    sus totales reales (arma/armadura equipada incluida, vía
+    `get_total_*()`); la del enemigo, `enemy.stats` directamente. A
+    diferencia del resto de esa ficha, el poder del enemigo se muestra
+    siempre, incluso sin haberlo derrotado nunca (`revealed=False`) — es
+    para testear, no información que un jugador vaya a leer.
+  - Tests: `tests/test_debug.py` (parseo de la variable de entorno),
+    `tests/test_formatting.py` (sin DEBUG no sale nada; con DEBUG sale para
+    los dos; el del enemigo ignora `revealed`).
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

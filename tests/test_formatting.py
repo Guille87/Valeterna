@@ -53,6 +53,41 @@ def test_print_player_enemy_info_pairs_related_stats_on_one_line(player, capsys)
     assert f"Daño Crítico: +{(enemy.stats.crit_damage - 1) * 100:.0f}%" in out
 
 
+def test_print_player_enemy_info_hides_power_without_debug(player, monkeypatch, capsys):
+    monkeypatch.setattr("valeterna.ui.formatting.is_debug", lambda: False)
+
+    print_player_enemy_info(player, Goblin(), defeated_enemies=[])
+
+    assert "[DEBUG] Poder:" not in capsys.readouterr().out
+
+
+def test_print_player_enemy_info_shows_power_in_debug_for_both(player, monkeypatch, capsys):
+    """Feedback del usuario: el poder de jugador y enemigo, calculado con
+    power_score(), solo en modo DEBUG (variable de entorno VALETERNA_DEBUG,
+    ver config/debug.py) — nunca para un jugador normal."""
+    monkeypatch.setattr("valeterna.ui.formatting.is_debug", lambda: True)
+    enemy = Goblin()
+
+    print_player_enemy_info(player, enemy, defeated_enemies=[])
+
+    assert capsys.readouterr().out.count("[DEBUG] Poder:") == 2
+
+
+def test_print_player_enemy_info_shows_enemy_power_in_debug_even_if_undefeated(player, monkeypatch, capsys):
+    """A diferencia del resto de la ficha, el poder del enemigo no se oculta
+    tras "???" en DEBUG — es una herramienta de testeo, no información que
+    un jugador vaya a leer."""
+    monkeypatch.setattr("valeterna.ui.formatting.is_debug", lambda: True)
+    from valeterna.characters.power_budget import power_score
+
+    enemy = Goblin()
+
+    print_player_enemy_info(player, enemy, defeated_enemies=[])
+
+    out = capsys.readouterr().out
+    assert f"{power_score(enemy.stats):,.0f}" in out
+
+
 def test_print_player_enemy_info_shows_magic_attack_for_arcanist(capsys):
     from valeterna.characters.classes import CharClass, starting_stats
     from valeterna.characters.player import Player
