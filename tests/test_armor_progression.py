@@ -1,21 +1,28 @@
 import random
 
 from valeterna.characters.enemies.angel_caido import AngelCaido
+from valeterna.characters.enemies.arana_tejesombras import AranaTejesombras
 from valeterna.characters.enemies.bandido import Bandido
 from valeterna.characters.enemies.chaman_goblin import ChamanGoblin
 from valeterna.characters.enemies.demonio import Demonio
 from valeterna.characters.enemies.dragon import Dragon
+from valeterna.characters.enemies.druida_corrupto import DruidaCorrupto
 from valeterna.characters.enemies.el_carnicero import ElCarnicero
+from valeterna.characters.enemies.el_enraizado import ElEnraizado
+from valeterna.characters.enemies.enjambre_polillas import EnjambrePolillas
+from valeterna.characters.enemies.ent_corrompido import EntCorrompido
 from valeterna.characters.enemies.espiritu_vengativo import EspirituVengativo
 from valeterna.characters.enemies.gargola import Gargola
 from valeterna.characters.enemies.goblin import Goblin
 from valeterna.characters.enemies.goblin_montaraz import GoblinMontaraz
 from valeterna.characters.enemies.golem import GolemDePiedra
 from valeterna.characters.enemies.huargo import Huargo
+from valeterna.characters.enemies.lobo_umbrio import LoboUmbrio
 from valeterna.characters.enemies.mage import Mago
 from valeterna.characters.enemies.nigromante import Nigromante
 from valeterna.characters.enemies.ogro_del_yermo import OgroDelYermo
 from valeterna.characters.enemies.orc import Orc
+from valeterna.characters.enemies.oso_espectral import OsoEspectral
 from valeterna.characters.enemies.rata_gigante import RataGigante
 from valeterna.characters.enemies.salteador import Salteador
 from valeterna.characters.enemies.skeleton import Skeleton
@@ -39,13 +46,20 @@ CHAIN = [
     (11, Orc),
     (12, EspirituVengativo),
     (13, Troll),
-    (14, Gargola),
-    (15, GolemDePiedra),
-    (16, Mago),
-    (17, Nigromante),
-    (18, AngelCaido),
-    (19, Demonio),
-    (20, Dragon),
+    (14, AranaTejesombras),
+    (15, DruidaCorrupto),
+    (16, OsoEspectral),
+    (17, EnjambrePolillas),
+    (18, LoboUmbrio),
+    (19, EntCorrompido),
+    (20, ElEnraizado),
+    (21, Gargola),
+    (22, GolemDePiedra),
+    (23, Mago),
+    (24, Nigromante),
+    (25, AngelCaido),
+    (26, Demonio),
+    (27, Dragon),
 ]
 
 # El stat "base" garantizado en todo objeto de ese hueco (ver la conversación
@@ -79,10 +93,28 @@ STAT_FIELDS = [
 # Excepciones deliberadas, acordadas explícitamente con el usuario, donde el
 # stat base de un hueco NO sube respecto al enemigo anterior de ese mismo
 # hueco: el peto del Mago (una túnica no debe superar en armadura a una coraza
-# de piedra, se compensa con resistencia mágica) y las botas del Gólem
+# de piedra, se compensa con resistencia mágica), las botas del Gólem
 # (mantienen su identidad de "lentas pero muy resistentes" con una velocidad
-# mínima en vez de ninguna).
-KNOWN_EXCEPTIONS = {("Mago", "peto"), ("Gólem de Piedra", "botas")}
+# mínima en vez de ninguna) y el casco del Oso Espectral (un cráneo "hueco por
+# dentro" da menos max_health que el casco de hueso del Ogro del Yermo, encaja
+# con su naturaleza fantasmal/menos sólida).
+# El guante del Enjambre de Polillas Pálidas da menos crit_damage que el del
+# Salteador: es una pieza de utilidad ligada al polvo venenoso del enjambre
+# (tema, no precisión de asesino), no pensada para competir en ese stat.
+# El cinturón del Gólem da menos defense que el de El Enraizado: compensa con
+# un bonus de max_health que El Enraizado no lleva, en línea con la identidad
+# de "tanque" del Gólem antes que con armadura pura en ese hueco.
+# Las hombreras del Gólem dan menos precision que las de El Enraizado: de
+# nuevo la identidad de "tanque lento" del Gólem, compensada con un bonus de
+# defense que El Enraizado no lleva en ese hueco.
+KNOWN_EXCEPTIONS = {
+    ("Mago", "peto"),
+    ("Gólem de Piedra", "botas"),
+    ("Oso Espectral", "casco"),
+    ("Enjambre de Polillas Pálidas", "guantes"),
+    ("Gólem de Piedra", "cinturon"),
+    ("Gólem de Piedra", "hombreras"),
+}
 
 
 def _all_armor_drops():
