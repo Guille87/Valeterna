@@ -1127,6 +1127,40 @@ el cambio a mitigación multiplicativa.
     las estadísticas del equipo), `tests/test_menus.py` (`_equip_armor_flow`
     hace lo mismo).
 
+- [x] **Piedrablanca ya no puede acabar en combate al Explorar** (fix,
+  feedback del usuario tras el merge de la v0.14.0-d). Motivo: el GDD dice
+  explícitamente "Piedrablanca (hub, no enemies)" — es la aldea segura —,
+  pero `_zone_candidates()` trataba cualquier zona sin roster propio igual:
+  si no había enemigos declarados, caía a "cualquier enemigo ya
+  desbloqueado", así que se podía "explorar" la plaza del pueblo y toparse
+  con un Goblin o hasta con El Carnicero.
+  - `Zone` (`world/zone.py`) gana un campo `is_hub: bool = False`, `True`
+    solo en Piedrablanca (`world/data/piedrablanca.py`). Distingue dos
+    situaciones que antes se trataban igual: un roster todavía sin diseñar
+    (la Ciénaga de los Ahogados, que sí tendrá su propio bestiario en una
+    sub-fase futura) frente a una zona que, por diseño, nunca tiene
+    enemigos (solo Piedrablanca).
+  - `_zone_candidates()`: si `zone.is_hub`, devuelve `[]` siempre, sin el
+    fallback a "cualquier enemigo desbloqueado". La Ciénaga sigue exactamente
+    igual que antes (el fallback sigue siendo el comportamiento correcto ahí,
+    es temporal hasta que le toque su sub-fase).
+  - `_explore()`: en un hub la rama de combate nunca se activa —
+    `encounter_chance` pasa a ser 0 en vez de `_EXPLORE_ENCOUNTER_CHANCE`
+    (0.65) —, pero el hallazgo de oro/pociones conserva exactamente su
+    propia probabilidad (`_EXPLORE_DISCOVERY_CHANCE`, 0.15): la franja que
+    antes iba a combate pasa a ser "nada de interés", no se la queda el
+    hallazgo por error (hubiera inflado el hallazgo de 15% a 80%).
+  - `_hunt_flow()`: en un hub, "Cazar..." avisa con un mensaje distinto
+    ("Esto es una zona segura; aquí no hay nada que cazar.") antes incluso
+    de mirar qué hay derrotado.
+  - Tests: `tests/test_world.py` (`is_hub` en Piedrablanca, y que ninguna
+    otra zona lo hereda sin querer), `tests/test_exploration.py` (el
+    fallback de la Ciénaga se mantiene reescribiendo los tests que antes
+    usaban Piedrablanca para probarlo; nuevos tests de que Piedrablanca
+    nunca lucha aunque tengas el Dragón desbloqueado, de que el hallazgo
+    conserva su probabilidad real y no la inflada, y del mensaje propio de
+    "Cazar..." en un hub).
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

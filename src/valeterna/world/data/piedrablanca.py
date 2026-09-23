@@ -20,6 +20,7 @@ ZONE = Zone(
     enemies=(),
     sub_locations=("Taberna", "Herrería", "Mercado", "Refugio"),
     key_npcs=("Yerma", "Dorn", "Halbrand", "Nia"),
+    is_hub=True,  # GDD §3: "hub, no enemies" — nunca hay combate aquí (v0.14.x)
 )
 
 _MET_YERMA = set_flag("conocio_a_yerma")

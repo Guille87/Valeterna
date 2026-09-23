@@ -22,6 +22,14 @@ def test_zone_order_matches_the_zones_registry():
 def test_piedrablanca_is_the_hub_with_no_enemies():
     assert ZONE_ORDER[0] == "piedrablanca"
     assert ZONES["piedrablanca"].enemies == ()
+    assert ZONES["piedrablanca"].is_hub is True
+
+
+def test_only_piedrablanca_is_a_hub():
+    """`is_hub` distingue "sin combate por diseño" (Piedrablanca) de "roster
+    todavía sin diseñar" (p. ej. la Ciénaga, que sigue sin `is_hub`)."""
+    hubs = [zid for zid, zone in ZONES.items() if zone.is_hub]
+    assert hubs == ["piedrablanca"]
 
 
 def test_every_backbone_enemy_belongs_to_exactly_one_zone():

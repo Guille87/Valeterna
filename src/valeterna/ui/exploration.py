@@ -88,8 +88,14 @@ def zone_loop(player, unlocked_enemies: list, defeated_enemies: list, is_admin: 
 def _zone_candidates(zone, unlocked_enemies: list) -> list[str]:
     """Enemigos de la zona ya desbloqueados, en el orden de tier del propio
     diseño (el orden declarado en `Zone.enemies`, de más flojo a más fuerte);
-    si la zona no tiene roster propio todavía (p. ej. la Ciénaga), cae a
-    cualquier enemigo desbloqueado para no bloquear nada."""
+    si la zona no tiene roster propio todavía (p. ej. la Ciénaga, un roster
+    aún sin diseñar), cae a cualquier enemigo desbloqueado para no bloquear
+    nada. Un hub (`zone.is_hub`, hoy solo Piedrablanca — GDD §3: "hub, no
+    enemies") nunca recurre a ese fallback: por diseño no hay combate ahí,
+    tengas lo que tengas desbloqueado (feedback del usuario: antes se podía
+    "explorar" el pueblo y toparse con cualquier enemigo)."""
+    if zone.is_hub:
+        return []
     return [e for e in zone.enemies if e in unlocked_enemies] or list(unlocked_enemies)
 
 
@@ -106,17 +112,22 @@ def _weighted_enemy_choice(candidates: list[str]) -> str:
 def _explore(player, unlocked_enemies: list, defeated_enemies: list) -> None:
     """Tirada ponderada (GDD §8.1): combate / hallazgo / nada. El combate
     sortea entre los enemigos desbloqueados de la zona actual, favoreciendo
-    a los más avanzados (`_weighted_enemy_choice`)."""
+    a los más avanzados (`_weighted_enemy_choice`). En un hub sin roster
+    (`_zone_candidates` devuelve `[]` siempre — hoy solo Piedrablanca) no hay
+    rama de combate en absoluto: esa franja de probabilidad no se la queda el
+    hallazgo (que se mantiene igual de frecuente), pasa a ser "nada de
+    interés" (v0.14.x, feedback del usuario)."""
     from valeterna.ui.menus import _get_enemy_instance
 
     zone = ZONES[player.mundo["zona_actual"]]
     candidates = _zone_candidates(zone, unlocked_enemies)
-    if not candidates:
+    if not candidates and not zone.is_hub:
         console.info("No hay nada que explorar todavía.")
         return
 
+    encounter_chance = _EXPLORE_ENCOUNTER_CHANCE if candidates else 0.0
     roll = random.random()
-    if roll < _EXPLORE_ENCOUNTER_CHANCE:
+    if candidates and roll < encounter_chance:
         enemy_name = _weighted_enemy_choice(candidates)
         # enemy_factory permite encadenar peleas si el jugador activa la
         # auto-batalla contra un enemigo ya derrotado (ver initiate_battle).
@@ -127,7 +138,7 @@ def _explore(player, unlocked_enemies: list, defeated_enemies: list) -> None:
             unlocked_enemies,
             enemy_factory=lambda: _get_enemy_instance(enemy_name),
         )
-    elif roll < _EXPLORE_ENCOUNTER_CHANCE + _EXPLORE_DISCOVERY_CHANCE:
+    elif roll < encounter_chance + _EXPLORE_DISCOVERY_CHANCE:
         _discovery(player)
     else:
         console.say("Exploras la zona, pero no encuentras nada de interés.")
@@ -141,8 +152,14 @@ def _hunt_flow(player, zone, unlocked_enemies: list, defeated_enemies: list) -> 
     último desbloqueado que aún no has vencido ni una vez, el que abre paso al
     siguiente) NO aparece aquí — feedback del usuario: verlo listado antes de
     haberlo derrotado ni una vez rompía la idea de "cazar lo que ya conoces";
-    ese primer encuentro sigue siendo cosa de Explorar."""
+    ese primer encuentro sigue siendo cosa de Explorar. En un hub
+    (`zone.is_hub`, hoy solo Piedrablanca) nunca hay nada que cazar, tengas
+    lo que tengas desbloqueado."""
     from valeterna.ui.menus import _get_enemy_instance
+
+    if zone.is_hub:
+        console.info("Esto es una zona segura; aquí no hay nada que cazar.")
+        return
 
     candidates = [e for e in _zone_candidates(zone, unlocked_enemies) if e in defeated_enemies]
     if not candidates:
