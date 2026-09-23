@@ -101,7 +101,33 @@ _YERMOS_TIERS = {"Goblin": 2, "Huargo": 4, "Esqueleto": 6, "Bandido": 7}
 # por qué: Espíritu Vengativo es más rápido y letal de lo que "toca" para ser
 # de los primeros enemigos de su zona; el Gólem de Piedra es, con diferencia,
 # el más resistente de todo el roster hasta ahora.
-_KNOWN_OUT_OF_RANGE = {"Espíritu Vengativo", "Gólem de Piedra"}
+#
+# Los 6 enemigos del Bosque de los Susurros de v0.14.0-e (tiers 4-10, todos
+# menos Araña Tejesombras) también caen aquí, pero por un motivo distinto y
+# deliberado: el rango [tier1, tier10] de una zona lo marca la curva
+# *objetivo*, que reinicia baja en cada zona nueva — pero Troll (tier 3, ya
+# implementado antes de esta herramienta) tiene un poder REAL de ~38.062,
+# muy por encima de su propio objetivo (~10.336) y ya cerca del techo del
+# rango de toda la zona (49.286). Diseñar los tiers 4-10 contra la curva
+# objetivo en vez de contra el poder real de Troll habría significado que la
+# dificultad *bajara* justo después de él — lo contrario de lo que pide el
+# usuario ("si se llega al Bosque es porque se ha superado Los Yermos, así
+# que el Bosque tiene que ser más difícil, y así sucesivamente"). En su
+# lugar, cada tier nuevo se diseñó por encima del poder real del anterior
+# (Troll → Araña → Druida → ... → El Enraizado), y El Enraizado (guardián,
+# ~112.225) se dejó deliberadamente por debajo de Gárgola (primer enemigo del
+# Cañón del Trueno, ~120.350) para que la transición de zona siga siendo
+# progresiva. Ver TODO.md para la tabla completa de poder real por tier.
+_KNOWN_OUT_OF_RANGE = {
+    "Espíritu Vengativo",
+    "Gólem de Piedra",
+    "Druida Corrupto",
+    "Oso Espectral",
+    "Enjambre de Polillas Pálidas",
+    "Lobo Umbrío",
+    "Ent Corrompido",
+    "El Enraizado",
+}
 
 
 def test_every_backbone_enemy_scores_without_error_and_is_documented():

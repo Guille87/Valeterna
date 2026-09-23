@@ -1217,6 +1217,66 @@ el cambio a mitigación multiplicativa.
     `tests/test_formatting.py` (sin DEBUG no sale nada; con DEBUG sale para
     los dos; el del enemigo ignora `revealed`).
 
+- [x] **v0.14.0-e: Bosque de los Susurros a 10 enemigos** (GDD §4.1/§4.7).
+  Mismo patrón que Los Yermos (v0.14.0-c): Orco, Espíritu Vengativo y Troll
+  (tiers 1-3) se quedan tal cual, y se añaden 7 enemigos nuevos siguiendo la
+  plantilla de tiers del GDD §4.1 (1-4/6/8 estándar, 5/7/9 élite, 10
+  guardián). El guardián se ató a la lore ya escrita del Claro del Altar
+  ("lo que se ata aquí no descansa; lo que lo ata, tampoco") — de ahí "El
+  Enraizado".
+  - **Roster** (tier · rango · nombre · mecánica): 4 · estándar · Araña
+    Tejesombras · mordisco venenoso; 5 · élite · Druida Corrupto ·
+    autocuración + maldición (oscuridad); 6 · estándar · Oso Espectral ·
+    vida robada (nueva mecánica, cura con parte del daño infligido en cada
+    golpe, no solo bajo un umbral de vida); 7 · élite · Enjambre de
+    Polillas Pálidas · segundo golpe periódico + veneno; 8 · estándar ·
+    Lobo Umbrío · acecha tras la primera derrota (como el Goblin); 9 ·
+    élite · Ent Corrompido · golpe de raíces inesquivable (como el Gólem);
+    10 · guardián · El Enraizado · autocuración bajo 40% + maldición al
+    golpear (oscuridad), abre el Cañón del Trueno.
+  - Todas las mecánicas reutilizan patrones ya implementados (nada de
+    estados nuevos) — decisión explícita del usuario: "las mecánicas las
+    revisaremos más detalladamente más adelante, por ahora pondremos algo
+    como lo que tenemos, pero seguramente alguna se cambie según vaya
+    probando el juego para que no sea repetitivo".
+  - **El tema central de esta ronda: dificultad progresiva de verdad.** El
+    usuario señaló que si se llega al Bosque es porque se ha superado Los
+    Yermos, así que el Bosque tiene que ser más difícil que Los Yermos, y
+    así sucesivamente con cada zona — no basta con que el enemigo tier 1
+    del Bosque supere el objetivo *formal* de su propio tier 1 (que
+    reinicia bajo en cada zona nueva), tiene que superar de verdad al
+    enemigo que el jugador acaba de vencer. El problema concreto: Troll
+    (tier 3, ya implementado antes de que existiera `power_budget.py`)
+    tiene un poder real de ~38.062, muy por encima de su propio objetivo
+    formal (~10.336) — diseñar los tiers 4-10 contra la curva objetivo en
+    vez de contra el poder real de Troll habría hecho que la dificultad
+    *bajara* justo después de él, justo lo contrario de lo pedido.
+  - **Solución**: cada tier nuevo se dimensionó para superar el poder real
+    (no el objetivo formal) del tier anterior, con una progresión de
+    Troll (~38k) → Araña (~46k) → Druida (~52k) → Oso Espectral (~62k) →
+    Enjambre (~69k) → Lobo Umbrío (~82k) → Ent Corrompido (~99k) → El
+    Enraizado (~112k) — y el poder real de El Enraizado se dejó
+    deliberadamente por debajo del de Gárgola (~120k, primer enemigo del
+    Cañón del Trueno) para que la propia transición de zona también sea
+    progresiva. Consecuencia aceptada: 6 de los 7 enemigos nuevos (todos
+    menos Araña Tejesombras) caen fuera del rango `[tier1, tier10]` que
+    marca la curva formal de su zona — se documentó explícitamente en
+    `tests/test_power_budget.py::_KNOWN_OUT_OF_RANGE`, con el motivo, en
+    vez de forzarlos a encajar y romper la progresión real.
+  - Cadena de desbloqueo: `Troll → Araña Tejesombras → Druida Corrupto →
+    Oso Espectral → Enjambre de Polillas Pálidas → Lobo Umbrío → Ent
+    Corrompido → El Enraizado → Gárgola` (el resto de la cadena, sin
+    cambios).
+  - El Enraizado es el segundo enemigo marcado `ENCOUNTER_KIND="guardian"`
+    (tras El Carnicero) con su propia frase de encuentro y provocaciones,
+    usando el sistema de v0.14.0-d.
+  - Tests: `tests/test_bosque_10.py` (15 tests: mecánicas de los 7 enemigos
+    nuevos), `tests/test_new_enemies.py` (cadena de desbloqueo
+    actualizada), `tests/test_power_budget.py` (excepciones documentadas).
+    Probado también con un combate simulado completo de extremo a extremo
+    contra los 8 enemigos de la cadena hasta El Enraizado (victoria en
+    todos, desbloqueo correcto de Gárgola al final).
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

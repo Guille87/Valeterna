@@ -123,8 +123,8 @@ migration and `is_zone_reachable()`'s live check.
 | Zone | Theme | Backbone enemies (existing) | Sub-locations | Key NPCs |
 |------|-------|-----------------------------|---------------|----------|
 | **Piedrablanca** | Last free village | — | Taberna (rest), Herrería, Mercado, Refugio | Yerma, Dorn, Halbrand, Nia |
-| **Los Yermos** | Wilds around the village | Goblin, Huargo, Esqueleto, Bandido | Campamento de bandidos, Túmulo | Cael |
-| **Bosque de los Susurros** | Haunted forest | Orco, Espíritu Vengativo, Troll | Claro del altar, Cabaña quemada | Mirelle |
+| **Los Yermos** | Wilds around the village | *(10, complete — §4.6)* | Campamento de bandidos, Túmulo | Cael |
+| **Bosque de los Susurros** | Haunted forest | *(10, complete — §4.7)* | Claro del altar, Cabaña quemada | Mirelle |
 | **Ciénaga de los Ahogados** | Drowned marsh | *(all new)* | Templo hundido, Embarcadero podrido | *(new)* |
 | **Cañón del Trueno** | Mountain pass, stone | Gárgola, Gólem de Piedra | Mina derrumbada, Puente colgante | Kort |
 | **Torre de los Arcanos / Necrópolis** | Mage tower + graveyard | Mago, Nigromante | Biblioteca, Cripta | Sella |
@@ -207,7 +207,8 @@ turn), stacking armour shred, life drain, enrage under a threshold, `consagrar`
 
 ### 4.6 Sample zone — Los Yermos (10) *(implemented in v0.14.0-c)*
 
-Demonstrates the template; the other six zones are follow-up design work.
+Demonstrates the template; the other six zones are follow-up design work
+(Bosque de los Susurros done next, §4.7 — the other five remain open).
 
 | Tier | Rank | Name | Archetype | Signature | Deals | Weak to | Resists | Immune to |
 |------|------|------|-----------|-----------|-------|---------|---------|-----------|
@@ -237,6 +238,43 @@ calibrated around it) even though its design tier (2) is now below Rata
 Gigante's (1) — Rata Gigante unlocks second instead. See
 `docs/design/presupuesto_de_poder.md` for how each enemy's stats were sized
 against the power-budget curve (§4.4) before writing its code.
+
+### 4.7 Bosque de los Susurros (10) *(implemented in v0.14.0-e)*
+
+Orco, Espíritu Vengativo and Troll (tiers 1-3) predate this template; the 7
+new enemies (tiers 4-10) follow it.
+
+| Tier | Rank | Name | Archetype | Signature | Deals | Weak to | Resists | Immune to |
+|------|------|------|-----------|-----------|-------|---------|---------|-----------|
+| 1 | standard | Orco | bruiser | cyclical fury: 3 turns calm, 3 turns double damage | físico | — | veneno | — |
+| 2 | standard | Espíritu Vengativo | ambusher | curse reduces armour | físico | sagrado | — | veneno, sangrado |
+| 3 | standard | Troll | tank | regenerates HP every turn | físico | fuego | — | — |
+| 4 | standard | Araña Tejesombras | skirmisher | poison bite | físico | fuego | — | — |
+| 5 | **elite** | Druida Corrupto | support | self-heal, minor curse | oscuridad | sagrado | oscuridad | — |
+| 6 | standard | Oso Espectral | bruiser | life drain: heals for a share of the damage it deals, every hit | físico | sagrado | — | veneno |
+| 7 | **elite** | Enjambre de Polillas Pálidas | skirmisher/swarm | periodic second bite, minor poison chance | físico | fuego | — | sangrado |
+| 8 | standard | Lobo Umbrío | ambusher | ambushes after first defeat | físico | — | — | — |
+| 9 | **elite** | Ent Corrompido | tank | unavoidable root strike | físico | fuego | — | paralizado |
+| 10 | **guardian** | El Enraizado | bruiser/support | self-heal below 40 % HP, curses on hit | oscuridad | sagrado | oscuridad, veneno | — |
+
+**Life drain** (Oso Espectral) is new to the signature-ability menu (§4.5):
+heals the attacker for a fixed share of the damage it just dealt on every
+successful hit, rather than only below a health threshold like the
+self-heal pattern used elsewhere. **Stats deliberately diverge from
+`target_score()`** (feedback from the user: "reaching the Bosque means
+you've already cleared Los Yermos, so it has to be harder, and so on for
+every zone after it" — difficulty must stay progressive, zone over zone).
+The formal target curve resets low at the start of every zone, but Troll's
+*real* power score (already implemented, pre-power-budget-tool) sits far
+above its own zone-relative target — designing tiers 4-10 against the
+formal curve instead of against Troll's actual power would have made the
+Bosque's early tiers weaker than the enemy the player just fought. Instead,
+each new tier was sized to exceed the real power of the one before it, and
+El Enraizado's real power was kept below Gárgola's (the Cañón del Trueno's
+first enemy) so the zone transition stays progressive too — see
+`characters/enemies/oso_espectral.py` and the neighbouring files for the
+exact numbers, and `tests/test_power_budget.py`'s `_KNOWN_OUT_OF_RANGE` for
+why this zone's own tool-reported deviations are expected, not bugs.
 
 ---
 

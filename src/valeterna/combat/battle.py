@@ -32,7 +32,14 @@ ENEMY_PROGRESSION = {
     "El Carnicero": "Orco",  # guardián de Los Yermos: abre el Bosque
     "Orco": "Espíritu Vengativo",
     "Espíritu Vengativo": "Troll",
-    "Troll": "Gárgola",
+    "Troll": "Araña Tejesombras",
+    "Araña Tejesombras": "Druida Corrupto",
+    "Druida Corrupto": "Oso Espectral",
+    "Oso Espectral": "Enjambre de Polillas Pálidas",
+    "Enjambre de Polillas Pálidas": "Lobo Umbrío",
+    "Lobo Umbrío": "Ent Corrompido",
+    "Ent Corrompido": "El Enraizado",
+    "El Enraizado": "Gárgola",  # guardián del Bosque: abre el Cañón del Trueno
     "Gárgola": "Gólem de Piedra",
     "Gólem de Piedra": "Mago",
     "Mago": "Nigromante",
