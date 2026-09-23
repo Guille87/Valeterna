@@ -7,7 +7,18 @@ ZONE = Zone(
     id="canon_del_trueno",
     name="Cañón del Trueno",
     theme="Paso de montaña, piedra",
-    enemies=("Gárgola", "Gólem de Piedra"),
+    enemies=(
+        "Gárgola",
+        "Gólem de Piedra",
+        "Minero Poseído",
+        "Murciélago de Tormenta",
+        "Chispa del Puntal",
+        "Aparición de la Cuadrilla",
+        "Verdugo de la Mina",
+        "Cabra Montés Corrupta",
+        "Heraldo de la Tormenta",
+        "El Decimoquinto",
+    ),  # v0.15.0-a: roster completo (GDD §4)
     sub_locations=("Mina derrumbada", "Puente colgante"),
     key_npcs=("Kort",),
 )

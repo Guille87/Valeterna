@@ -133,7 +133,7 @@ desbloqueo de enemigos que ya usa el combate, según
 | **Los Yermos** | Descampados junto a la aldea | *(10, completo — §4.6)* | Campamento de bandidos, Túmulo | Cael |
 | **Bosque de los Susurros** | Bosque encantado | *(10, completo — §4.7)* | Claro del altar, Cabaña quemada | Mirelle |
 | **Ciénaga de los Ahogados** | Pantano anegado | *(10, completa — §4.8)* | Templo hundido, Embarcadero podrido | Oren |
-| **Cañón del Trueno** | Paso de montaña, piedra | Gárgola (reforzada — §4.8), Gólem de Piedra | Mina derrumbada, Puente colgante | Kort |
+| **Cañón del Trueno** | Paso de montaña, piedra | *(10, completa — §4.9)* | Mina derrumbada, Puente colgante | Kort |
 | **Torre de los Arcanos / Necrópolis** | Torre de mago + cementerio | Mago, Nigromante | Biblioteca, Cripta | Sella |
 | **Ciudadela en Ruinas** | La capital arrasada, suelo infernal | Ángel Caído, Demonio | Catedral rota, Plaza | Aldric |
 | **El Corazón de la Brecha** | El origen — se diseña el último | *(§4)* | — | — |
@@ -331,6 +331,46 @@ hasta justo por debajo de la Gárgola reforzada (~118,8k → ~205,7k) — ver
 números exactos, y `_KNOWN_OUT_OF_RANGE` en `tests/test_power_budget.py`
 para por qué las desviaciones que reporta la herramienta en esta zona son
 esperadas, mismo motivo que en el Bosque.
+
+### 4.9 Cañón del Trueno (10) *(implementado en v0.15.0-a)*
+
+Gárgola y Gólem de Piedra (tiers 1-2, preexistentes, Gárgola reforzada en
+§4.8) son anteriores a esta plantilla; los 8 enemigos nuevos (tiers 3-10) sí
+la siguen, ligados directamente a los diálogos y notas de lore ya existentes
+de Kort sobre el derrumbe de la mina: los catorce mineros nombrados, el
+mineral de tormenta que la Torre usaba para canalizar la Brecha, y un
+decimoquinto nombre a medio grabar en un puntal.
+
+| Tier | Rango | Nombre | Arquetipo | Distintivo | Inflige | Débil a | Resiste | Inmune a |
+|------|-------|--------|-----------|------------|---------|---------|---------|----------|
+| 1 | estándar | Gárgola | tanque | embestida cada 3 turnos | físico | arcano | — | veneno |
+| 2 | estándar | Gólem de Piedra | tanque | terremoto inesquivable | físico | hielo | — | rayo, paralizado |
+| 3 | estándar | Minero Poseído | bruto | prob. de sangrado al golpear (picoazo) | físico | sagrado | — | — |
+| 4 | estándar | Murciélago de Tormenta | hostigador | segundo revoloteo periódico | físico | — | — | — |
+| 5 | **élite** | Chispa del Puntal | control | descarga de rayo, prob. de paralizar al golpear | rayo | hielo | — | rayo, paralizado |
+| 6 | estándar | Aparición de la Cuadrilla | emboscadora | emboscada tras la primera derrota | físico | — | — | — |
+| 7 | **élite** | Verdugo de la Mina | tanque | derrumbe inesquivable | físico | sagrado | — | paralizado |
+| 8 | estándar | Cabra Montés Corrupta | bruto | topetazo con prob. de aturdir | físico | — | — | — |
+| 9 | **élite** | Heraldo de la Tormenta | apoyo | se cura, maldición leve, rayo | rayo | sagrado | rayo | — |
+| 10 | **guardián** | El Decimoquinto | bruto/apoyo | se cura bajo 40 % vida, prob. de paralizar con rayo | rayo | sagrado | rayo | — |
+
+**Mismo enfoque de dificultad progresiva que en las dos zonas anteriores,
+pero el siguiente enlace real (Mago) es un punto ciego que la herramienta no
+puede arreglar**: el poder real de Gólem de Piedra ya enlazaba directo con
+el de Mago antes de empezar esta sub-fase — Mago es uno de los dos únicos
+casos documentados (§4.4) donde `power_score()` no puede ver de verdad la
+amenaza de un enemigo (cura + control, ataque base deliberadamente bajo),
+así que esa transición concreta ya estaba rota. Rebalancear las stats del
+Mago para compensarlo iría en contra de su identidad de mago frágil a
+propósito, y es exactamente el tipo de rebalanceo sistémico que ya sigue
+aparcado en otro sitio (ver `TODO.md`) — así que los 8 tiers nuevos se
+dimensionaron igual que los del Bosque y la Ciénaga, subiendo
+progresivamente desde el poder real de Gólem de Piedra, sin intentar quedar
+por debajo de Mago. Esa transición concreta sigue siendo una excepción
+documentada y preexistente, no algo que esta sub-fase intentara disimular —
+ver `characters/enemies/minero_poseido.py` y los archivos vecinos para los
+números exactos, y `_KNOWN_OUT_OF_RANGE` en `tests/test_power_budget.py`
+para el razonamiento completo.
 
 ---
 
@@ -786,7 +826,7 @@ cambiar; el GDD es un documento vivo y cualquier cosa de aquí puede cambiar.
 | **v0.12.0** | El mundo, parte 1 | zonas + mapa + bucle de exploración · posada / descanso (coste por nivel) · viaje frontera + viaje rápido · migración de guardado v2 · tienda / herrería reubicadas · encuentros aleatorios + hallazgos |
 | **v0.13.0** | Diálogo y NPCs | diálogo ramificado con respuestas del jugador · conversaciones únicas vs repetibles · NPCs de Piedrablanca + las 6 regiones actuales · notas de lore + Diario |
 | **v0.14.0** | Bestiario y enemigos I | bestiario progresivo · herramienta de presupuesto de poder (fija la curva de nivel) · Los Yermos + Bosque + Ciénaga rellenados a ~10 cada una (élites hacia el 4-9 + guardián 10) · habilidades de clase de nivel medio atadas a esos enemigos |
-| **v0.15.0** | Enemigos II | Cañón + Torre/Necrópolis a ~10 · escalado del botín (únicos + comunes tirados) · drop-scaling entre zonas · más habilidades de clase |
+| **v0.15.0** | Enemigos II | Cañón (hecho, §4.9) + Torre/Necrópolis a ~10 · escalado del botín (únicos + comunes tirados) · drop-scaling entre zonas · más habilidades de clase |
 | **v0.16.0** | Enemigos III | Ciudadela a ~10 · habilidades de clase de hito alto · misiones secundarias de esas regiones |
 | **v0.17.0** | Historia principal | sistema de misiones · questline "La Brecha" (7 actos) enganchada a los NPCs / guardianes existentes · progresión por historia en vez de elegir enemigo |
 | **v0.18.0** | La Arena | modo de oleadas crecientes · recompensas de Arena (títulos + algunas piezas de conjunto + un único difícil) |

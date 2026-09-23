@@ -2,16 +2,20 @@ import random
 
 from valeterna.characters.enemies.ahogado_errante import AhogadoErrante
 from valeterna.characters.enemies.angel_caido import AngelCaido
+from valeterna.characters.enemies.aparicion_de_la_cuadrilla import AparicionDeLaCuadrilla
 from valeterna.characters.enemies.arana_tejesombras import AranaTejesombras
 from valeterna.characters.enemies.bandido import Bandido
+from valeterna.characters.enemies.cabra_montes_corrupta import CabraMontesCorrupta
 from valeterna.characters.enemies.cangrejo_acorazado import CangrejoAcorazado
 from valeterna.characters.enemies.chaman_del_cieno import ChamanDelCieno
 from valeterna.characters.enemies.chaman_goblin import ChamanGoblin
+from valeterna.characters.enemies.chispa_del_puntal import ChispaDelPuntal
 from valeterna.characters.enemies.demonio import Demonio
 from valeterna.characters.enemies.dragon import Dragon
 from valeterna.characters.enemies.druida_corrupto import DruidaCorrupto
 from valeterna.characters.enemies.el_anegado import ElAnegado
 from valeterna.characters.enemies.el_carnicero import ElCarnicero
+from valeterna.characters.enemies.el_decimoquinto import ElDecimoquinto
 from valeterna.characters.enemies.el_enraizado import ElEnraizado
 from valeterna.characters.enemies.enjambre_polillas import EnjambrePolillas
 from valeterna.characters.enemies.ent_corrompido import EntCorrompido
@@ -22,10 +26,13 @@ from valeterna.characters.enemies.goblin import Goblin
 from valeterna.characters.enemies.goblin_montaraz import GoblinMontaraz
 from valeterna.characters.enemies.golem import GolemDePiedra
 from valeterna.characters.enemies.guardian_del_templo_hundido import GuardianDelTemploHundido
+from valeterna.characters.enemies.heraldo_de_la_tormenta import HeraldoDeLaTormenta
 from valeterna.characters.enemies.horror_de_profundidad import HorrorDeProfundidad
 from valeterna.characters.enemies.huargo import Huargo
 from valeterna.characters.enemies.lobo_umbrio import LoboUmbrio
 from valeterna.characters.enemies.mage import Mago
+from valeterna.characters.enemies.minero_poseido import MineroPoseido
+from valeterna.characters.enemies.murcielago_de_tormenta import MurcielagoDeTormenta
 from valeterna.characters.enemies.nigromante import Nigromante
 from valeterna.characters.enemies.ogro_del_yermo import OgroDelYermo
 from valeterna.characters.enemies.orc import Orc
@@ -37,6 +44,7 @@ from valeterna.characters.enemies.sanguijuela_colosal import SanguijuelaColosal
 from valeterna.characters.enemies.serpiente_de_fango import SerpienteDeFango
 from valeterna.characters.enemies.skeleton import Skeleton
 from valeterna.characters.enemies.troll import Troll
+from valeterna.characters.enemies.verdugo_de_la_mina import VerdugoDeLaMina
 from valeterna.crafting.forge import Forge
 from valeterna.items.equipment import Armor
 
@@ -75,11 +83,19 @@ CHAIN = [
     (30, ElAnegado),
     (31, Gargola),
     (32, GolemDePiedra),
-    (33, Mago),
-    (34, Nigromante),
-    (35, AngelCaido),
-    (36, Demonio),
-    (37, Dragon),
+    (33, MineroPoseido),
+    (34, MurcielagoDeTormenta),
+    (35, ChispaDelPuntal),
+    (36, AparicionDeLaCuadrilla),
+    (37, VerdugoDeLaMina),
+    (38, CabraMontesCorrupta),
+    (39, HeraldoDeLaTormenta),
+    (40, ElDecimoquinto),
+    (41, Mago),
+    (42, Nigromante),
+    (43, AngelCaido),
+    (44, Demonio),
+    (45, Dragon),
 ]
 
 # El stat "base" garantizado en todo objeto de ese hueco (ver la conversación

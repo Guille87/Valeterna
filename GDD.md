@@ -126,7 +126,7 @@ migration and `is_zone_reachable()`'s live check.
 | **Los Yermos** | Wilds around the village | *(10, complete — §4.6)* | Campamento de bandidos, Túmulo | Cael |
 | **Bosque de los Susurros** | Haunted forest | *(10, complete — §4.7)* | Claro del altar, Cabaña quemada | Mirelle |
 | **Ciénaga de los Ahogados** | Drowned marsh | *(10, complete — §4.8)* | Templo hundido, Embarcadero podrido | Oren |
-| **Cañón del Trueno** | Mountain pass, stone | Gárgola (reinforced — §4.8), Gólem de Piedra | Mina derrumbada, Puente colgante | Kort |
+| **Cañón del Trueno** | Mountain pass, stone | *(10, complete — §4.9)* | Mina derrumbada, Puente colgante | Kort |
 | **Torre de los Arcanos / Necrópolis** | Mage tower + graveyard | Mago, Nigromante | Biblioteca, Cripta | Sella |
 | **Ciudadela en Ruinas** | The razed capital, infernal ground | Ángel Caído, Demonio | Catedral rota, Plaza | Aldric |
 | **El Corazón de la Brecha** | The origin — designed last | *(§4)* | — | — |
@@ -311,6 +311,44 @@ Gárgola (~118.8k → ~205.7k) — see `characters/enemies/sanguijuela_colosal.p
 and the neighbouring files for the exact numbers, and
 `tests/test_power_budget.py`'s `_KNOWN_OUT_OF_RANGE` for why this zone's own
 tool-reported deviations are expected, same reasoning as the Bosque's.
+
+### 4.9 Cañón del Trueno (10) *(implemented in v0.15.0-a)*
+
+Gárgola and Gólem de Piedra (tiers 1-2, pre-existing, Gárgola reinforced in
+§4.8) predate this template; the 8 new enemies (tiers 3-10) follow it, tied
+directly into Kort's pre-existing dialogue and lore notes about the mine
+collapse: the 14 named miners, the mineral de tormenta the Torre used to
+channel the Breach, and a 15th name half-carved on a support beam.
+
+| Tier | Rank | Name | Archetype | Signature | Deals | Weak to | Resists | Immune to |
+|------|------|------|-----------|-----------|-------|---------|---------|-----------|
+| 1 | standard | Gárgola | tank | charge attack every 3 turns | físico | arcano | — | veneno |
+| 2 | standard | Gólem de Piedra | tank | unavoidable earthquake | físico | hielo | — | rayo, paralizado |
+| 3 | standard | Minero Poseído | bruiser | on-hit bleed chance (pickaxe) | físico | sagrado | — | — |
+| 4 | standard | Murciélago de Tormenta | skirmisher | periodic second swoop | físico | — | — | — |
+| 5 | **elite** | Chispa del Puntal | control | lightning bolt, on-hit paralysis chance | rayo | hielo | — | rayo, paralizado |
+| 6 | standard | Aparición de la Cuadrilla | ambusher | ambushes after first defeat | físico | — | — | — |
+| 7 | **elite** | Verdugo de la Mina | tank | unavoidable cave-in strike | físico | sagrado | — | paralizado |
+| 8 | standard | Cabra Montés Corrupta | bruiser | stun-chance headbutt | físico | — | — | — |
+| 9 | **elite** | Heraldo de la Tormenta | support | self-heal, minor curse, lightning bolt | rayo | sagrado | rayo | — |
+| 10 | **guardian** | El Decimoquinto | bruiser/support | self-heal below 40 % HP, on-hit paralysis via lightning | rayo | sagrado | rayo | — |
+
+**Same progressive-difficulty approach as the previous two zones, but the
+next real link (Mago) is a known blind spot the tool can't fix**: Gólem de
+Piedra's real power already linked directly to Mago's before this sub-phase
+started — Mago is one of only two documented cases (§4.4) where
+`power_score()` structurally can't see an enemy's real threat (heal +
+control, deliberately low base attack), so that specific transition was
+already broken. Rebalancing Mago's stats to compensate would fight its
+intended fragile-caster identity and is exactly the kind of systemic
+rebalance already deferred elsewhere (see `TODO.md`) — so the 8 new tiers
+were sized the same way as the Bosque's and the Ciénaga's, climbing
+progressively from Gólem de Piedra's real power, without trying to land
+below Mago. That one transition stays a documented, pre-existing exception
+rather than something this sub-phase tried to paper over — see
+`characters/enemies/minero_poseido.py` and the neighbouring files for the
+exact numbers, and `tests/test_power_budget.py`'s `_KNOWN_OUT_OF_RANGE` for
+the full reasoning.
 
 ---
 
@@ -740,7 +778,7 @@ is a living document and any of this can change.
 | **v0.12.0** | The world, part 1 | zones + map + exploration loop · inn / rest (cost scales with level) · frontier travel + fast-travel · save migration v2 · shop / forge relocated · random encounters + discoveries |
 | **v0.13.0** | Dialogue & NPCs | branching dialogue with player choices · one-time vs repeatable conversations · NPCs for Piedrablanca + the 6 existing regions · lore notes + Diario |
 | **v0.14.0** | Bestiary & enemies I | progressive bestiary · power-budget tool (sets the level curve) · Los Yermos + Bosque + Ciénaga fleshed to ~10 each (elites 4-9-ish + guardian 10) · mid-progression class skills tied to those enemies |
-| **v0.15.0** | Enemies II | Cañón + Torre/Necrópolis to ~10 · loot scaling (uniques + rolled commons) · cross-zone drop-scaling · more class skills |
+| **v0.15.0** | Enemies II | Cañón (done, §4.9) + Torre/Necrópolis to ~10 · loot scaling (uniques + rolled commons) · cross-zone drop-scaling · more class skills |
 | **v0.16.0** | Enemies III | Ciudadela to ~10 · high-milestone class skills · side quests for those regions |
 | **v0.17.0** | Main story | quest system · "La Brecha" questline (7 acts) wired to the existing NPCs / guardians · progression by story instead of picking an enemy |
 | **v0.18.0** | The Arena | escalating-wave mode · Arena rewards (titles + some set pieces + a hard-to-get unique) |
