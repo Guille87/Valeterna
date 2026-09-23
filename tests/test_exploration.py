@@ -460,6 +460,41 @@ def test_discovery_rolls_gold(player, monkeypatch):
     assert player.inventory.gold == gold_before + 5
 
 
+def test_hub_discovery_each_kind_appears_at_most_once(player, monkeypatch):
+    """Feedback del usuario: en un hub (Piedrablanca), a diferencia de una
+    zona con enemigos, el oro y la poción de Explorar no deben reponerse sin
+    límite — cada uno sale como mucho una vez por partida."""
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]
+    monkeypatch.setattr("valeterna.ui.exploration.random.random", lambda: 0.0)  # potion primero
+    monkeypatch.setattr("valeterna.ui.exploration.random.randint", lambda a, b: 5)
+
+    exploration._hub_discovery(player, zone)  # 1ª vez: poción (roll bajo -> potion_left aún True)
+    assert player.inventory.quantities.get("Poción de Salud") == 1
+    assert "hallazgo_pocion_piedrablanca" in player.mundo["banderas"]
+
+    gold_before = player.inventory.gold
+    exploration._hub_discovery(player, zone)  # poción ya agotada: toca oro, aunque el roll siga siendo bajo
+    assert player.inventory.gold == gold_before + 5
+    assert player.inventory.quantities.get("Poción de Salud") == 1  # no se repite
+    assert "hallazgo_oro_piedrablanca" in player.mundo["banderas"]
+
+
+def test_hub_discovery_reports_nothing_left_once_both_are_found(player, monkeypatch, capsys):
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]
+    player.mundo["banderas"].update({"hallazgo_oro_piedrablanca", "hallazgo_pocion_piedrablanca"})
+    gold_before = player.inventory.gold
+
+    exploration._hub_discovery(player, zone)
+
+    assert player.inventory.gold == gold_before
+    assert player.inventory.quantities.get("Poción de Salud") is None
+    assert "Ya has encontrado todo lo que había que encontrar en Piedrablanca" in capsys.readouterr().out
+
+
 def test_travel_flow_fast_travels_to_a_visited_zone(player, monkeypatch):
     player.mundo["zona_actual"] = "los_yermos"
     player.mundo["zonas_visitadas"] = ["piedrablanca", "los_yermos"]

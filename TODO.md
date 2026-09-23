@@ -1161,6 +1161,29 @@ el cambio a mitigación multiplicativa.
     conserva su probabilidad real y no la inflada, y del mensaje propio de
     "Cazar..." en un hub).
 
+- [x] **El hallazgo de Explorar en Piedrablanca deja de ser infinito**
+  (feedback del usuario, misma ronda que el fix de "no hay combate en el
+  hub"). Motivo: al quitar el combate del hub, el hallazgo de oro/poción
+  seguía saliendo cada vez que tocaba esa franja de la tirada — sin
+  enemigos que farmear, el jugador podía quedarse quieto en el pueblo y
+  Explorar sin fin para oro y pociones gratis.
+  - `_give_discovery_potion(player)` / `_give_discovery_gold(player)`:
+    extraídos de `_discovery` (mismo mensaje/objeto de siempre), ahora
+    reutilizados también por el hub.
+  - `_hub_discovery(player, zone)`: cada tipo de hallazgo (oro, poción) tiene
+    su propio flag de una sola vez en `mundo["banderas"]`
+    (`hallazgo_oro_<zona>` / `hallazgo_pocion_<zona>`, mismo patrón que los
+    flags de diálogo). Con los dos disponibles, la tirada es la misma que en
+    `_discovery`; agotado uno, se da directamente el que falta. Con los dos
+    ya encontrados, Explorar muestra "Ya has encontrado todo lo que había
+    que encontrar en Piedrablanca." en vez de otra recompensa.
+  - Una zona normal (`_discovery`, `not zone.is_hub`) no cambia: el
+    oro/pociones de un bosque o un páramo sigue sin límite, tiene sentido
+    que la naturaleza no se agote igual que un pueblo pequeño.
+  - Tests: `tests/test_exploration.py` — cada tipo sale como mucho una vez
+    (primero uno, luego el otro aunque la tirada favorezca al ya agotado),
+    y el mensaje de "ya no queda nada" una vez encontrados ambos.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena
