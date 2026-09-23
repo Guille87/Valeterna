@@ -61,7 +61,15 @@ ENEMY_PROGRESSION = {
     "Heraldo de la Tormenta": "El Decimoquinto",
     "El Decimoquinto": "Mago",  # guardián del Cañón: abre la Torre de los Arcanos/Necrópolis
     "Mago": "Nigromante",
-    "Nigromante": "Ángel Caído",
+    "Nigromante": "Tomo Viviente",
+    "Tomo Viviente": "Guardián Osario",
+    "Guardián Osario": "Custodio Arcano",
+    "Custodio Arcano": "Espectro de la Guardia",
+    "Espectro de la Guardia": "Bibliotecario Errante",
+    "Bibliotecario Errante": "Carroñero de Cripta",
+    "Carroñero de Cripta": "Guardián del Tomo Prohibido",
+    "Guardián del Tomo Prohibido": "El Archivista",
+    "El Archivista": "Ángel Caído",  # guardián de la Torre: abre la Ciudadela en Ruinas
     "Ángel Caído": "Demonio",
     "Demonio": "Dragón",
     "Dragón": None,  # Jefe final de la cadena

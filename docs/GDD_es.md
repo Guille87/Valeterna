@@ -134,7 +134,7 @@ desbloqueo de enemigos que ya usa el combate, según
 | **Bosque de los Susurros** | Bosque encantado | *(10, completo — §4.7)* | Claro del altar, Cabaña quemada | Mirelle |
 | **Ciénaga de los Ahogados** | Pantano anegado | *(10, completa — §4.8)* | Templo hundido, Embarcadero podrido | Oren |
 | **Cañón del Trueno** | Paso de montaña, piedra | *(10, completa — §4.9)* | Mina derrumbada, Puente colgante | Kort |
-| **Torre de los Arcanos / Necrópolis** | Torre de mago + cementerio | Mago, Nigromante | Biblioteca, Cripta | Sella |
+| **Torre de los Arcanos / Necrópolis** | Torre de mago + cementerio | *(10, completa — §4.10)* | Biblioteca, Cripta | Sella |
 | **Ciudadela en Ruinas** | La capital arrasada, suelo infernal | Ángel Caído, Demonio | Catedral rota, Plaza | Aldric |
 | **El Corazón de la Brecha** | El origen — se diseña el último | *(§4)* | — | — |
 
@@ -371,6 +371,49 @@ documentada y preexistente, no algo que esta sub-fase intentara disimular —
 ver `characters/enemies/minero_poseido.py` y los archivos vecinos para los
 números exactos, y `_KNOWN_OUT_OF_RANGE` en `tests/test_power_budget.py`
 para el razonamiento completo.
+
+### 4.10 Torre de los Arcanos / Necrópolis (10) *(implementado en v0.15.0-b)*
+
+Mago y Nigromante (tiers 1-2, preexistentes) son anteriores a esta
+plantilla; los 8 enemigos nuevos (tiers 3-10) sí la siguen, ligados
+directamente a los diálogos y notas de lore ya existentes de Sella: el
+consejo arcano que intentó canalizar la Brecha, un tomo prohibido
+("Rituales de Cierre y Apertura") desaparecido de la Biblioteca antes de
+que ella empezara a catalogar, y los muertos de la Cripta que "se levantan
+por turnos, uno menos en la lista cada noche".
+
+| Tier | Rango | Nombre | Arquetipo | Distintivo | Inflige | Débil a | Resiste | Inmune a |
+|------|-------|--------|-----------|------------|---------|---------|---------|----------|
+| 1 | estándar | Mago | control/apoyo | 4 hechizos elementales, autocuración | fuego/rayo/hielo/arcano | — | arcano | — |
+| 2 | estándar | Nigromante | control | invoca un aliado no-muerto menor | oscuridad | sagrado | — | oscuridad |
+| 3 | estándar | Tomo Viviente | hostigador | prob. de sangrado al golpear (corte de página) | físico | fuego | — | — |
+| 4 | estándar | Guardián Osario | bruto | segundo golpe de hueso periódico | físico | sagrado | — | — |
+| 5 | **élite** | Custodio Arcano | control | se autocura, dardo arcano | arcano | hielo | — | veneno |
+| 6 | estándar | Espectro de la Guardia | emboscador | emboscada tras la primera derrota | físico | sagrado | — | — |
+| 7 | **élite** | Bibliotecario Errante | control | ataque especial de confusión, dardo arcano | arcano | sagrado | arcano | — |
+| 8 | estándar | Carroñero de Cripta | bruto | vida robada: se cura con parte del daño que inflige, cada golpe | físico | sagrado | veneno | — |
+| 9 | **élite** | Guardián del Tomo Prohibido | tanque | onda de sello inesquivable | físico | sagrado | — | paralizado |
+| 10 | **guardián** | El Archivista | bruto/apoyo | se cura bajo 40 % vida, maldice al golpear con un dardo arcano | arcano | sagrado | arcano | — |
+
+**Mismo enfoque de dificultad progresiva, y esta vez no hizo falta reforzar
+nada — pero el mismo tipo de transición rota y preexistente vuelve a
+aparecer un enlace más adelante**: el poder real de Nigromante ya tenía un
+hueco enorme por encima del de Mago (el mismo caso de punto ciego
+documentado que en §4.9), así que los 8 tiers nuevos tuvieron margen de
+sobra para subir desde el poder real de Nigromante sin tocar ningún
+enemigo existente. Sin embargo, el poder real de Nigromante ya enlazaba
+directo con el de Ángel Caído (primer enemigo de la Ciudadela, más bajo a
+su vez — otra inversión preexistente entre los 14 originales, tampoco
+corregida aquí), así que los tiers nuevos suben progresivamente desde
+Nigromante sin intentar quedar por debajo de Ángel Caído, mismo
+razonamiento que el caso Mago/Gólem. Los 8 son, por tanto, excepciones
+esperadas en `_KNOWN_OUT_OF_RANGE` de `tests/test_power_budget.py`, junto a
+las del Cañón. Una nota de diseño: se consideró usar `fractura mágica` (el
+estado del elemento arcano) para un par de estos enemigos, pero se
+descartó — hoy solo tiene efecto en el lado del `Enemy` (reduce a la mitad
+su propia autocuración) y no hace nada al `Player`, así que infligírsela al
+jugador habría sido solo de cara a la galería; se usaron en su lugar
+estados ya funcionales (`sangrado`, `maldicion`).
 
 ---
 
@@ -826,7 +869,7 @@ cambiar; el GDD es un documento vivo y cualquier cosa de aquí puede cambiar.
 | **v0.12.0** | El mundo, parte 1 | zonas + mapa + bucle de exploración · posada / descanso (coste por nivel) · viaje frontera + viaje rápido · migración de guardado v2 · tienda / herrería reubicadas · encuentros aleatorios + hallazgos |
 | **v0.13.0** | Diálogo y NPCs | diálogo ramificado con respuestas del jugador · conversaciones únicas vs repetibles · NPCs de Piedrablanca + las 6 regiones actuales · notas de lore + Diario |
 | **v0.14.0** | Bestiario y enemigos I | bestiario progresivo · herramienta de presupuesto de poder (fija la curva de nivel) · Los Yermos + Bosque + Ciénaga rellenados a ~10 cada una (élites hacia el 4-9 + guardián 10) · habilidades de clase de nivel medio atadas a esos enemigos |
-| **v0.15.0** | Enemigos II | Cañón (hecho, §4.9) + Torre/Necrópolis a ~10 · escalado del botín (únicos + comunes tirados) · drop-scaling entre zonas · más habilidades de clase |
+| **v0.15.0** | Enemigos II | Cañón (hecho, §4.9) + Torre/Necrópolis (hecho, §4.10) a ~10 · escalado del botín (únicos + comunes tirados) · drop-scaling entre zonas · más habilidades de clase |
 | **v0.16.0** | Enemigos III | Ciudadela a ~10 · habilidades de clase de hito alto · misiones secundarias de esas regiones |
 | **v0.17.0** | Historia principal | sistema de misiones · questline "La Brecha" (7 actos) enganchada a los NPCs / guardianes existentes · progresión por historia en vez de elegir enemigo |
 | **v0.18.0** | La Arena | modo de oleadas crecientes · recompensas de Arena (títulos + algunas piezas de conjunto + un único difícil) |

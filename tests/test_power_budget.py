@@ -169,6 +169,23 @@ _KNOWN_OUT_OF_RANGE = {
     "Cabra Montés Corrupta",
     "Heraldo de la Tormenta",
     "El Decimoquinto",
+    # Torre de los Arcanos / Necrópolis (v0.15.0-b): mismo motivo que el
+    # Cañón, con el mismo enlace roto de fondo. Nigromante (~431.944) ya
+    # enlazaba directo con Ángel Caído (primer enemigo de la Ciudadela,
+    # ~393.461) antes de esta sub-fase — otra inversión preexistente del
+    # mismo tipo que la del Mago, no corregida aquí tampoco. Los 8 tiers
+    # nuevos se dimensionaron para superar progresivamente el poder real
+    # de Nigromante (~467.728 → ~800.056), sin intentar quedar por debajo
+    # de Ángel Caído; esa transición sigue rota y documentada, igual que ya
+    # lo estaba.
+    "Tomo Viviente",
+    "Guardián Osario",
+    "Custodio Arcano",
+    "Espectro de la Guardia",
+    "Bibliotecario Errante",
+    "Carroñero de Cripta",
+    "Guardián del Tomo Prohibido",
+    "El Archivista",
 }
 
 
