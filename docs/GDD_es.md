@@ -130,8 +130,8 @@ desbloqueo de enemigos que ya usa el combate, según
 | Zona | Tema | Enemigos esqueleto (existentes) | Sub-lugares | NPCs clave |
 |------|------|--------------------------------|-------------|------------|
 | **Piedrablanca** | Última aldea libre | — | Taberna (descanso), Herrería, Mercado, Refugio | Yerma, Dorn, Halbrand, Nia |
-| **Los Yermos** | Descampados junto a la aldea | Goblin, Huargo, Esqueleto, Bandido | Campamento de bandidos, Túmulo | Cael |
-| **Bosque de los Susurros** | Bosque encantado | Orco, Espíritu Vengativo, Troll | Claro del altar, Cabaña quemada | Mirelle |
+| **Los Yermos** | Descampados junto a la aldea | *(10, completo — §4.6)* | Campamento de bandidos, Túmulo | Cael |
+| **Bosque de los Susurros** | Bosque encantado | *(10, completo — §4.7)* | Claro del altar, Cabaña quemada | Mirelle |
 | **Ciénaga de los Ahogados** | Pantano anegado | *(todos nuevos)* | Templo hundido, Embarcadero podrido | *(nuevo)* |
 | **Cañón del Trueno** | Paso de montaña, piedra | Gárgola, Gólem de Piedra | Mina derrumbada, Puente colgante | Kort |
 | **Torre de los Arcanos / Necrópolis** | Torre de mago + cementerio | Mago, Nigromante | Biblioteca, Cripta | Sella |
@@ -220,7 +220,9 @@ que bloquea la curación.
 
 ### 4.6 Zona de ejemplo — Los Yermos (10) *(implementado en v0.14.0-c)*
 
-Demuestra la plantilla; las otras seis zonas son trabajo de diseño posterior.
+Demuestra la plantilla; las otras seis zonas son trabajo de diseño posterior
+(el Bosque de los Susurros ya está hecho a continuación, §4.7 — las otras
+cinco siguen abiertas).
 
 | Tier | Rango | Nombre | Arquetipo | Distintivo | Inflige | Débil a | Resiste | Inmune a |
 |------|-------|--------|-----------|------------|---------|---------|---------|----------|
@@ -252,6 +254,46 @@ desbloquea la segunda en su lugar. Ver
 `docs/design/presupuesto_de_poder.md` para cómo se calculó el tamaño de cada
 enemigo contra la curva de presupuesto de poder (§4.4) antes de escribir su
 código.
+
+### 4.7 Bosque de los Susurros (10) *(implementado en v0.14.0-e)*
+
+Orco, Espíritu Vengativo y Troll (tiers 1-3) son anteriores a esta plantilla;
+los 7 enemigos nuevos (tiers 4-10) sí la siguen.
+
+| Tier | Rango | Nombre | Arquetipo | Distintivo | Inflige | Débil a | Resiste | Inmune a |
+|------|-------|--------|-----------|------------|---------|---------|---------|----------|
+| 1 | estándar | Orco | bruto | furia cíclica: 3 turnos calma, 3 con el doble de daño | físico | — | veneno | — |
+| 2 | estándar | Espíritu Vengativo | emboscador | maldición que reduce armadura | físico | sagrado | — | veneno, sangrado |
+| 3 | estándar | Troll | tanque | regenera vida cada turno | físico | fuego | — | — |
+| 4 | estándar | Araña Tejesombras | hostigador | mordisco venenoso | físico | fuego | — | — |
+| 5 | **élite** | Druida Corrupto | apoyo | se cura, maldición leve | oscuridad | sagrado | oscuridad | — |
+| 6 | estándar | Oso Espectral | bruto | vida robada: se cura con parte del daño que inflige, cada golpe | físico | sagrado | — | veneno |
+| 7 | **élite** | Enjambre de Polillas Pálidas | hostigador/enjambre | segundo mordisco periódico, prob. veneno leve | físico | fuego | — | sangrado |
+| 8 | estándar | Lobo Umbrío | emboscador | acecha tras la primera derrota | físico | — | — | — |
+| 9 | **élite** | Ent Corrompido | tanque | golpe de raíces inesquivable | físico | fuego | — | paralizado |
+| 10 | **guardián** | El Enraizado | bruto/apoyo | se cura bajo 40 % vida, maldice al golpear | oscuridad | sagrado | oscuridad, veneno | — |
+
+**Vida robada** (Oso Espectral) es nueva en el menú de habilidades
+distintivas (§4.5): cura al atacante con una parte fija del daño que acaba de
+infligir en cada golpe certero, en vez de solo por debajo de un umbral de
+vida como el patrón de autocuración usado en otros sitios. **Las
+estadísticas se apartan deliberadamente de `target_score()`** (feedback del
+usuario: "si se llega al Bosque es porque se ha superado Los Yermos, así que
+tiene que ser más difícil, y así sucesivamente con cada zona" — la
+dificultad tiene que ser progresiva, zona a zona). La curva objetivo formal
+reinicia baja al empezar cada zona, pero el poder *real* de Troll (ya
+implementado, antes de que existiera esta herramienta) está muy por encima
+de su propio objetivo relativo a su zona — diseñar los tiers 4-10 contra la
+curva formal en vez de contra el poder real de Troll habría dejado los
+primeros tiers del Bosque más flojos que el enemigo al que el jugador
+acababa de vencer. En su lugar, cada tier nuevo se dimensionó para superar
+el poder real del anterior, y el poder real de El Enraizado se dejó por
+debajo del de Gárgola (el primer enemigo del Cañón del Trueno) para que la
+propia transición de zona siga siendo progresiva — ver
+`characters/enemies/oso_espectral.py` y los archivos vecinos para los
+números exactos, y `_KNOWN_OUT_OF_RANGE` en `tests/test_power_budget.py`
+para por qué las desviaciones que reporta la herramienta en esta zona son
+esperadas, no un error.
 
 ---
 

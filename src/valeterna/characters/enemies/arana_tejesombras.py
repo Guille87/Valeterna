@@ -8,30 +8,40 @@ from valeterna.items.potions import HealingPotion
 from valeterna.ui import console
 
 
-class RataGigante(Enemy):
-    DESCRIPTION = "El primer peligro real de los Yermos: rápida, sucia y siempre en manada, aunque ataque sola."
-    SIGNATURE = "Mordisco rápido: puede envenenar con cada ataque."
+class AranaTejesombras(Enemy):
+    DESCRIPTION = "Teje entre las ramas más altas del Bosque, donde la luz ya no llega. Baja solo para cazar."
+    SIGNATURE = "Mordisco venenoso: su picadura puede envenenarte con cada golpe."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset({"veneno"})
-    ENCOUNTER_LINE = "Una Rata Gigante te enseña los dientes desde la maleza."
+    ENCOUNTER_LINE = "Algo se mueve entre las ramas altas. Una Araña Tejesombras baja hacia ti, hilo a hilo."
 
-    # Debilidad tal como manda el GDD §4.6 (tier 1 de Los Yermos): el fuego
-    # acaba con el nido antes de que pueda huir.
+    # Tier 4 del Bosque (GDD §4.1: tiers 1-4/6/8 estándar): el fuego quema la
+    # telaraña antes de que pueda usarla.
     WEAKNESSES = frozenset({"fuego"})
 
     def __init__(self):
-        # Rápida y frágil, pero por delante del Goblin en poder real (feedback
-        # del usuario tras jugar: se desbloquea justo después de él, así que
-        # debía notarse más difícil, no menos — ver TODO.md).
         super().__init__(
-            "Rata Gigante",
-            Stats(34, 34, 8, 13, 1, speed=15, precision=6, evasion=4, crit_chance=0.05, crit_damage=1.5),
-            gold_min=5,
-            gold_max=8,
+            "Araña Tejesombras",
+            Stats(
+                160,
+                160,
+                15,
+                20,
+                3,
+                magic_resist=0,
+                speed=16,
+                precision=11,
+                evasion=8,
+                crit_chance=0.06,
+                crit_damage=1.5,
+                armor_penetration=2,
+            ),
+            gold_min=60,
+            gold_max=75,
         )
 
     def perform_turn(self, player) -> None:
-        """Ataque normal; a veces el mordisco deja una infección que envenena."""
+        """Ataque normal; su mordisco puede dejar una infección venenosa."""
         if not resolve_hit(self.stats.precision, player.get_total_evasion()):
             print(
                 f"{console.colorize(self.name, console.Fore.RED)} ataca, pero "
@@ -51,31 +61,35 @@ class RataGigante(Enemy):
             f"{console.crit_suffix(is_crit)}"
         )
 
-        if random.random() < 0.25:
-            player.apply_status("veneno", 2)
-            print(console.colorize("¡La mordedura estaba infectada!", console.Fore.GREEN))
+        if random.random() < 0.3:
+            player.apply_status("veneno", 3)
+            print(console.colorize("¡El veneno recorre la herida!", console.Fore.GREEN))
             reaction_msg = player.pop_status_reaction_message()
             if reaction_msg:
                 print(reaction_msg)
 
     def drop_item(self) -> list:
         items = []
-        if random.random() <= 0.7:
+        if random.random() <= 0.55:
             items.append(HealingPotion("Poción de Salud", "Restaura 20 HP", 2, 20))
-        if random.random() <= 0.25:
+        if random.random() <= 0.3:
             items.append(
-                Material("Cola de Rata", "Correosa y resistente, casi imposible de cortar.", 2, rarity="Común")
+                Material(
+                    "Seda de Tejesombras", "Un hilo negro, ligero pero casi imposible de romper.", 6, rarity="Común"
+                )
             )
         if random.random() <= 0.1:
-            items.append(Weapon("Daga Oxidada", "Arrancada de algún viajero que no tuvo tanta suerte.", 5, 3))
+            items.append(
+                Weapon("Colmillo de Tejesombras", "Todavía gotea un veneno espeso y oscuro.", 20, 12, element="veneno")
+            )
         if random.random() <= 0.08:
             items.append(
                 Armor(
-                    "Botas de Piel de Rata",
-                    "Ligeras y silenciosas, cosidas para correr entre la maleza.",
-                    10,
-                    slot="botas",
-                    speed=1,
+                    "Perneras de Tejedora",
+                    "Tejidas con la misma seda que la araña usaba para colgarse de las ramas.",
+                    24,
+                    slot="perneras",
+                    evasion=3,
                 )
             )
         return items
