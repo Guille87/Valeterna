@@ -6,7 +6,18 @@ ZONE = Zone(
     id="cienaga_de_los_ahogados",
     name="Ciénaga de los Ahogados",
     theme="Marisma anegada",
-    enemies=(),  # roster nuevo por diseñar (GDD §4)
+    enemies=(
+        "Sanguijuela Colosal",
+        "Espantajo Anegado",
+        "Ahogado Errante",
+        "Chamán del Cieno",
+        "Cangrejo Acorazado",
+        "Serpiente de Fango",
+        "Sacerdote Ahogado",
+        "Horror de Profundidad",
+        "Guardián del Templo Hundido",
+        "El Anegado",
+    ),  # v0.14.0-f: roster completo (GDD §4)
     sub_locations=("Templo hundido", "Embarcadero podrido"),
     key_npcs=("Oren",),
 )

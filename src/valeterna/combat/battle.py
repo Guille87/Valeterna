@@ -39,7 +39,17 @@ ENEMY_PROGRESSION = {
     "Enjambre de Polillas Pálidas": "Lobo Umbrío",
     "Lobo Umbrío": "Ent Corrompido",
     "Ent Corrompido": "El Enraizado",
-    "El Enraizado": "Gárgola",  # guardián del Bosque: abre el Cañón del Trueno
+    "El Enraizado": "Sanguijuela Colosal",  # guardián del Bosque: abre la Ciénaga de los Ahogados
+    "Sanguijuela Colosal": "Espantajo Anegado",
+    "Espantajo Anegado": "Ahogado Errante",
+    "Ahogado Errante": "Chamán del Cieno",
+    "Chamán del Cieno": "Cangrejo Acorazado",
+    "Cangrejo Acorazado": "Serpiente de Fango",
+    "Serpiente de Fango": "Sacerdote Ahogado",
+    "Sacerdote Ahogado": "Horror de Profundidad",
+    "Horror de Profundidad": "Guardián del Templo Hundido",
+    "Guardián del Templo Hundido": "El Anegado",
+    "El Anegado": "Gárgola",  # guardián de la Ciénaga: abre el Cañón del Trueno
     "Gárgola": "Gólem de Piedra",
     "Gólem de Piedra": "Mago",
     "Mago": "Nigromante",

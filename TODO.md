@@ -1328,6 +1328,80 @@ el cambio a mitigación multiplicativa.
     curva de crecimiento se nota antes y con más fuerza que en juego manual
     — merece la pena medir ambos modos por separado.
 
+- [x] **v0.14.0-f: Ciénaga de los Ahogados rellenada a 10 enemigos** (GDD
+  §3/§4.8). Esta zona no tenía ni un solo enemigo diseñado todavía — roster
+  completo desde cero: Sanguijuela Colosal (tier 1, vida robada), Espantajo
+  Anegado (tier 2, sangrado al golpear), Ahogado Errante (tier 3, emboscada
+  tras la primera derrota, mismo patrón que el Lobo Umbrío), Chamán del
+  Cieno (tier 4, élite — autocuración + maldición leve, daño oscuridad),
+  Cangrejo Acorazado (tier 5, tenazada inesquivable), Serpiente de Fango
+  (tier 6, segundo mordisco periódico + veneno), Sacerdote Ahogado (tier 7,
+  élite — confusión + rezo oscuro), Horror de Profundidad (tier 8, coletazo
+  con probabilidad de aturdir), Guardián del Templo Hundido (tier 9, élite
+  — golpe de piedra inesquivable) y El Anegado (tier 10, **guardián**, abre
+  el Cañón del Trueno — autocuración bajo 40% vida + maldición al golpear,
+  daño oscuridad). Todo ligado a la lore ya sembrada: los diálogos de Oren
+  sobre lo que el agua "devuelve" por la noche y la nota de lore del relieve
+  del templo hundido (la figura inmensa que las pequeñas figuras miraban
+  hacia arriba — es, literalmente, El Anegado).
+  - **Problema de diseño real, detectado antes de escribir ningún enemigo**:
+    en el mapa la Ciénaga va entre el Bosque y el Cañón del Trueno, pero en
+    la cadena de desbloqueo real El Enraizado (guardián del Bosque, poder
+    real ~112.225) enlazaba directo con Gárgola (primer enemigo del Cañón,
+    poder real ~120.350) — solo un ~7% de diferencia, sin margen ni para 2
+    tiers nuevos, mucho menos para 10 con dificultad progresiva (regla
+    explícita del usuario desde v0.14.0-e: cada zona nueva debe ser más
+    difícil que la anterior).
+  - **Solución acordada con el usuario antes de implementar** (de 3 opciones
+    planteadas, eligió la recomendada): reforzar a Gárgola y así abrir hueco
+    real de poder para insertar los 10 tiers nuevos entre El Enraizado y
+    ella, en vez de comprimir la Ciénaga en una banda de poder demasiado
+    estrecha o reordenar la cadena de desbloqueo fuera del orden geográfico
+    del mapa.
+  - **Gárgola reforzada** (`characters/enemies/gargola.py`, solo números —
+    su mecánica de embestida y sus afinidades no cambian): vida 380→575,
+    ataque 29-39→34-46, penetración de armadura 8→10, oro 70-95→110-145;
+    poder real ~120.350 → ~214.245. Gólem de Piedra no necesitó ningún
+    cambio — ya estaba muy por encima (~266.976) del nuevo techo.
+  - Cada tier nuevo de la Ciénaga se dimensionó para superar el poder real
+    (no el objetivo formal de `power_budget.py`, que reinicia bajo en cada
+    zona) del enlace anterior de la cadena, con una progresión de El
+    Enraizado (~112k) → Sanguijuela (~118,8k) → Espantajo (~127,1k) →
+    Ahogado Errante (~136k) → Chamán del Cieno (~145,7k) → Cangrejo
+    (~155,7k) → Serpiente (~166,9k) → Sacerdote (~178,2k) → Horror
+    (~188k) → Guardián del Templo (~196,9k) → El Anegado (~205,7k), todo
+    por debajo de la Gárgola ya reforzada (~214,2k) para que la propia
+    transición a Cañón del Trueno también quede progresiva. Los 10 caen,
+    por tanto, fuera del rango `[tier1, tier10]` que marca la curva formal
+    de su zona — documentado explícitamente en
+    `tests/test_power_budget.py::_KNOWN_OUT_OF_RANGE`, mismo motivo que los
+    6 del Bosque.
+  - Cadena de desbloqueo: `El Enraizado → Sanguijuela Colosal → Espantajo
+    Anegado → Ahogado Errante → Chamán del Cieno → Cangrejo Acorazado →
+    Serpiente de Fango → Sacerdote Ahogado → Horror de Profundidad →
+    Guardián del Templo Hundido → El Anegado → Gárgola` (el resto de la
+    cadena, sin cambios).
+  - El Anegado es el tercer enemigo marcado `ENCOUNTER_KIND="guardian"`
+    (tras El Carnicero y El Enraizado), con su propia frase de encuentro y
+    provocaciones.
+  - Tests: `tests/test_cienaga_10.py` (mecánicas de los 10 enemigos nuevos
+    + progresión de poder estrictamente creciente incluyendo a Gárgola),
+    `tests/test_new_enemies.py` y `tests/test_bosque_10.py` (cadena de
+    desbloqueo actualizada), `tests/test_power_budget.py` (excepciones
+    documentadas), `tests/test_world.py` (la Ciénaga ya no es la zona sin
+    roster que usaban `test_default_zone_for_progress_stops_...` y
+    `test_zone_with_no_roster_is_always_reachable` — el segundo ahora prueba
+    la regla con una `Zone` sintética, ya que ninguna zona real se queda
+    hoy sin roster salvo el hub).
+  - **Nota aparte (detectada, no corregida en esta sub-fase)**:
+    `tests/test_armor_progression.py` tiene una `CHAIN` que solo cubre los
+    20 enemigos originales (los 14 de siempre + los 6 de Los Yermos) — nunca
+    se amplió con los 7 del Bosque (v0.14.0-e) ni con estos 10 de la
+    Ciénaga, así que sus comprobaciones de progresión de armaduras
+    (`test_base_stat_does_not_decrease_within_the_same_slot_along_the_chain`,
+    etc.) no ven ninguno de los 17 enemigos más recientes. Sigue sin fallar
+    porque simplemente no los mira, pero es un hueco real de cobertura.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

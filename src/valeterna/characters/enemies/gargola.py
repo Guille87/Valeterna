@@ -22,25 +22,28 @@ class Gargola(Enemy):
     IMMUNE_STATUSES = frozenset({"veneno"})
 
     def __init__(self):
-        # Tanque de piedra: mucha vida y armadura, muy lenta.
+        # Tanque de piedra: mucha vida y armadura, muy lenta. Reforzada
+        # (v0.14.0-f) para abrir hueco de poder real a los 10 enemigos nuevos
+        # de la Ciénaga de los Ahogados, que se insertan justo antes en la
+        # cadena de desbloqueo — ver TODO.md.
         super().__init__(
             "Gárgola",
             Stats(
-                380,
-                380,
-                29,
-                39,
-                14,
-                magic_resist=3,
+                575,
+                575,
+                34,
+                46,
+                18,
+                magic_resist=4,
                 speed=9,
-                precision=7,
+                precision=8,
                 evasion=0,
                 crit_chance=0.05,
                 crit_damage=1.7,
-                armor_penetration=8,
+                armor_penetration=10,
             ),
-            gold_min=70,
-            gold_max=95,
+            gold_min=110,
+            gold_max=145,
         )
         self.turns_taken = 0
 

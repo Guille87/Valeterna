@@ -27,7 +27,9 @@ def test_piedrablanca_is_the_hub_with_no_enemies():
 
 def test_only_piedrablanca_is_a_hub():
     """`is_hub` distingue "sin combate por diseño" (Piedrablanca) de "roster
-    todavía sin diseñar" (p. ej. la Ciénaga, que sigue sin `is_hub`)."""
+    todavía sin diseñar" (una zona con `enemies=()` que no sea Piedrablanca,
+    situación que ya no se da hoy — Ciénaga de los Ahogados fue la última en
+    completarse, v0.14.0-f — pero que `is_hub` sigue sin asumir)."""
     hubs = [zid for zid, zone in ZONES.items() if zone.is_hub]
     assert hubs == ["piedrablanca"]
 
@@ -62,11 +64,11 @@ def test_default_zone_for_progress_advances_along_the_chain():
 
 
 def test_default_zone_for_progress_stops_at_the_first_zone_with_no_defeats():
-    """Ciénaga de los Ahogados todavía no tiene roster (GDD §4): un progreso
-    que la "salta" por completo no debe hacer que la zona actual avance de
-    más allá de Cañón del Trueno."""
-    defeated = ["Goblin", "Orco", "Gárgola"]  # Los Yermos, Bosque, Cañón — pero no Ciénaga (vacía)
-    assert default_zone_for_progress(defeated) == "canon_del_trueno"
+    """Con la Ciénaga de los Ahogados completa desde v0.14.0-f, un progreso que
+    llega hasta ella pero no toca el Cañón debe detener la inferencia justo
+    en la Ciénaga."""
+    defeated = ["Goblin", "Orco", "Sanguijuela Colosal"]  # Los Yermos, Bosque, Ciénaga — pero no el Cañón
+    assert default_zone_for_progress(defeated) == "cienaga_de_los_ahogados"
 
 
 def test_next_zone_follows_the_chain():
@@ -78,8 +80,18 @@ def test_next_zone_is_none_after_the_last_zone():
     assert next_zone("corazon_de_la_brecha") is None
 
 
-def test_zone_with_no_roster_is_always_reachable():
-    assert is_zone_reachable("cienaga_de_los_ahogados", []) is True
+def test_zone_with_no_roster_is_always_reachable(monkeypatch):
+    """Ninguna zona real tiene hoy `enemies=()` salvo el hub (Piedrablanca, que
+    no pasa por esta regla): la Ciénaga fue la última en completarse
+    (v0.14.0-f). La regla en sí sigue viva en el código para la próxima zona
+    que se quede sin roster mientras se diseña, así que se comprueba aquí
+    con una zona sintética en vez de depender de que exista una real."""
+    from valeterna.world.zone import Zone
+
+    fake_zone = Zone(id="zona_sin_roster", name="Zona sin roster", theme="", enemies=(), sub_locations=(), key_npcs=())
+    monkeypatch.setitem(ZONES, fake_zone.id, fake_zone)
+
+    assert is_zone_reachable(fake_zone.id, []) is True
 
 
 def test_zone_reachable_once_its_first_enemy_is_unlocked():
