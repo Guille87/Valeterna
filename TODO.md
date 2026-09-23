@@ -1393,14 +1393,69 @@ el cambio a mitigación multiplicativa.
     `test_zone_with_no_roster_is_always_reachable` — el segundo ahora prueba
     la regla con una `Zone` sintética, ya que ninguna zona real se queda
     hoy sin roster salvo el hub).
-  - **Nota aparte (detectada, no corregida en esta sub-fase)**:
-    `tests/test_armor_progression.py` tiene una `CHAIN` que solo cubre los
+  - **Nota aparte (detectada, corregida por separado — ver PR #53)**:
+    `tests/test_armor_progression.py` tenía una `CHAIN` que solo cubría los
     20 enemigos originales (los 14 de siempre + los 6 de Los Yermos) — nunca
-    se amplió con los 7 del Bosque (v0.14.0-e) ni con estos 10 de la
-    Ciénaga, así que sus comprobaciones de progresión de armaduras
-    (`test_base_stat_does_not_decrease_within_the_same_slot_along_the_chain`,
-    etc.) no ven ninguno de los 17 enemigos más recientes. Sigue sin fallar
-    porque simplemente no los mira, pero es un hueco real de cobertura.
+    se había ampliado con los 7 del Bosque (v0.14.0-e) ni con los 10 de la
+    Ciénaga. Se lanzó como tarea aparte y se corrigió en la misma sesión;
+    ver el punto de v0.15.0-a más abajo para la ampliación con los 8 del
+    Cañón.
+
+- [x] **v0.15.0-a: Cañón del Trueno rellenado a 10 enemigos** (GDD §3/§4.9).
+  8 enemigos nuevos sobre la Gárgola y el Gólem de Piedra ya existentes:
+  Minero Poseído (tier 3, sangrado con el pico), Murciélago de Tormenta
+  (tier 4, segundo revoloteo periódico), Chispa del Puntal (tier 5, élite —
+  descarga de rayo con probabilidad de paralizar, inmune a su propio
+  elemento), Aparición de la Cuadrilla (tier 6, emboscada tras la primera
+  derrota, mismo patrón que el Ahogado Errante/Lobo Umbrío), Verdugo de la
+  Mina (tier 7, élite — derrumbe inesquivable), Cabra Montés Corrupta
+  (tier 8, topetazo con probabilidad de aturdir), Heraldo de la Tormenta
+  (tier 9, élite — autocuración + maldición leve, daño rayo) y El
+  Decimoquinto (tier 10, **guardián**, abre la Torre de los
+  Arcanos/Necrópolis — autocuración bajo 40% vida + rayo con probabilidad
+  de paralizar). Todo ligado a los diálogos y notas de lore de Kort ya
+  existentes: los catorce mineros nombrados en un puntal de la mina
+  derrumbada, el mineral de tormenta que la Torre usaba para canalizar la
+  Brecha, y el decimoquinto nombre a medio grabar — solo una "K" y el corte
+  de un cuchillo que se detuvo a tiempo. Es, literalmente, El Decimoquinto.
+  - **Elemento nuevo para la zona**: rayo (`combat/elements.py` ya lo tenía
+    definido — es físico, no mágico — pero ningún enemigo lo usaba en
+    ataques hasta ahora). Primeros ataques de enemigo que infligen
+    `paralizado` (Chispa del Puntal y El Decimoquinto), reutilizando el
+    patrón de "ataque especial con probabilidad de estado" ya usado para
+    veneno/sangrado/aturdido en otros enemigos — sin inventar ningún estado
+    nuevo.
+  - **Mismo problema de diseño que en la Ciénaga, con un matiz distinto**:
+    el siguiente enlace real de la cadena tras estos 8 (Mago, primer
+    enemigo de la Torre de los Arcanos) tiene un poder real anómalamente
+    bajo (~80.400) — uno de los dos "puntos ciegos" ya documentados de la
+    fórmula (cura + control, ataque base deliberadamente bajo). Esto ya
+    rompía la progresión formal *antes* de esta sub-fase: Gólem de Piedra
+    (~266.976) ya enlazaba directo con Mago. No se tocaron las stats del
+    Mago para "compensar" — sería ir en contra de su diseño de mago frágil
+    a propósito, y es justo el tipo de rebalanceo sistémico que ya sigue
+    aparcado más arriba en este mismo documento. Se decidió, tras
+    planteárselo al usuario y que confirmara, dimensionar los 8 tiers
+    nuevos para superar progresivamente el poder real de Gólem de Piedra
+    (~290.598 → ~497.484), sin intentar quedar por debajo de Mago — esa
+    transición concreta sigue rota y documentada, igual que ya lo estaba
+    antes de este roster.
+  - Cadena de desbloqueo: `Gólem de Piedra → Minero Poseído → Murciélago de
+    Tormenta → Chispa del Puntal → Aparición de la Cuadrilla → Verdugo de
+    la Mina → Cabra Montés Corrupta → Heraldo de la Tormenta → El
+    Decimoquinto → Mago` (el resto de la cadena, sin cambios).
+  - El Decimoquinto es el cuarto enemigo marcado `ENCOUNTER_KIND="guardian"`
+    (tras El Carnicero, El Enraizado y El Anegado), con su propia frase de
+    encuentro y provocaciones.
+  - Tests: `tests/test_canon_10.py` (mecánicas de los 8 enemigos nuevos +
+    progresión de poder estrictamente creciente incluyendo a Gólem de
+    Piedra), `tests/test_new_enemies.py` (cadena de desbloqueo
+    actualizada), `tests/test_power_budget.py` (excepciones documentadas),
+    `tests/test_armor_progression.py` (los 8 enemigos añadidos a `CHAIN`;
+    hizo falta subir el crítico de "Brazales de Tormenta" de Chispa del
+    Puntal de 0.03 a 0.05 para no romper la progresión de ese hueco frente
+    al Espíritu Vengativo — corregido en el propio enemigo, no con una
+    excepción).
 
 ## Pulido final (casi lo último antes de 1.0)
 

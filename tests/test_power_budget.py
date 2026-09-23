@@ -148,6 +148,27 @@ _KNOWN_OUT_OF_RANGE = {
     "Horror de Profundidad",
     "Guardián del Templo Hundido",
     "El Anegado",
+    # Cañón del Trueno (v0.15.0-a): mismo motivo otra vez, con un matiz
+    # extra. El siguiente enlace real de la cadena tras estos 8 (Mago,
+    # primer enemigo de la Torre de los Arcanos) tiene un poder real
+    # anómalamente bajo (~80.400) — es uno de los dos "puntos ciegos" ya
+    # documentados de la fórmula (cura + control, ataque base deliberadamente
+    # bajo). Eso ya rompía la progresión formal antes de esta sub-fase
+    # (Gólem de Piedra, ~266.976, ya enlazaba directo con Mago). No se
+    # rebalanceó al Mago para "parecer" más fuerte — sería tocar un diseño
+    # ya jugado a propósito, y el tipo de rebalanceo sistémico que sigue
+    # aparcado en TODO.md — así que los 8 tiers nuevos se dimensionaron para
+    # superar progresivamente el poder real de Gólem de Piedra (~290.598 →
+    # ~497.484), sin intentar quedar por debajo de Mago; esa transición
+    # concreta sigue rota, documentada, no corregida aquí.
+    "Minero Poseído",
+    "Murciélago de Tormenta",
+    "Chispa del Puntal",
+    "Aparición de la Cuadrilla",
+    "Verdugo de la Mina",
+    "Cabra Montés Corrupta",
+    "Heraldo de la Tormenta",
+    "El Decimoquinto",
 }
 
 

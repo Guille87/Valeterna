@@ -51,7 +51,15 @@ ENEMY_PROGRESSION = {
     "Guardián del Templo Hundido": "El Anegado",
     "El Anegado": "Gárgola",  # guardián de la Ciénaga: abre el Cañón del Trueno
     "Gárgola": "Gólem de Piedra",
-    "Gólem de Piedra": "Mago",
+    "Gólem de Piedra": "Minero Poseído",
+    "Minero Poseído": "Murciélago de Tormenta",
+    "Murciélago de Tormenta": "Chispa del Puntal",
+    "Chispa del Puntal": "Aparición de la Cuadrilla",
+    "Aparición de la Cuadrilla": "Verdugo de la Mina",
+    "Verdugo de la Mina": "Cabra Montés Corrupta",
+    "Cabra Montés Corrupta": "Heraldo de la Tormenta",
+    "Heraldo de la Tormenta": "El Decimoquinto",
+    "El Decimoquinto": "Mago",  # guardián del Cañón: abre la Torre de los Arcanos/Necrópolis
     "Mago": "Nigromante",
     "Nigromante": "Ángel Caído",
     "Ángel Caído": "Demonio",
