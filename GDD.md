@@ -125,8 +125,8 @@ migration and `is_zone_reachable()`'s live check.
 | **Piedrablanca** | Last free village | — | Taberna (rest), Herrería, Mercado, Refugio | Yerma, Dorn, Halbrand, Nia |
 | **Los Yermos** | Wilds around the village | *(10, complete — §4.6)* | Campamento de bandidos, Túmulo | Cael |
 | **Bosque de los Susurros** | Haunted forest | *(10, complete — §4.7)* | Claro del altar, Cabaña quemada | Mirelle |
-| **Ciénaga de los Ahogados** | Drowned marsh | *(all new)* | Templo hundido, Embarcadero podrido | *(new)* |
-| **Cañón del Trueno** | Mountain pass, stone | Gárgola, Gólem de Piedra | Mina derrumbada, Puente colgante | Kort |
+| **Ciénaga de los Ahogados** | Drowned marsh | *(10, complete — §4.8)* | Templo hundido, Embarcadero podrido | Oren |
+| **Cañón del Trueno** | Mountain pass, stone | Gárgola (reinforced — §4.8), Gólem de Piedra | Mina derrumbada, Puente colgante | Kort |
 | **Torre de los Arcanos / Necrópolis** | Mage tower + graveyard | Mago, Nigromante | Biblioteca, Cripta | Sella |
 | **Ciudadela en Ruinas** | The razed capital, infernal ground | Ángel Caído, Demonio | Catedral rota, Plaza | Aldric |
 | **El Corazón de la Brecha** | The origin — designed last | *(§4)* | — | — |
@@ -275,6 +275,42 @@ first enemy) so the zone transition stays progressive too — see
 `characters/enemies/oso_espectral.py` and the neighbouring files for the
 exact numbers, and `tests/test_power_budget.py`'s `_KNOWN_OUT_OF_RANGE` for
 why this zone's own tool-reported deviations are expected, not bugs.
+
+### 4.8 Ciénaga de los Ahogados (10) *(implemented in v0.14.0-f)*
+
+This zone had no roster at all before this sub-phase — all 10 enemies are
+new, themed around the drowned marsh, Oren's stories of the water "returning
+its own" at night, and the sunken temple relief that shows something ancient
+kneeling figures once looked up to.
+
+| Tier | Rank | Name | Archetype | Signature | Deals | Weak to | Resists | Immune to |
+|------|------|------|-----------|-----------|-------|---------|---------|-----------|
+| 1 | standard | Sanguijuela Colosal | bruiser | life drain: heals for a share of the damage it deals, every hit | físico | fuego | — | veneno |
+| 2 | standard | Espantajo Anegado | skirmisher | on-hit bleed chance | físico | — | — | — |
+| 3 | standard | Ahogado Errante | ambusher | ambushes after first defeat | físico | sagrado | — | — |
+| 4 | **elite** | Chamán del Cieno | support | self-heal, minor curse | oscuridad | sagrado | oscuridad | — |
+| 5 | standard | Cangrejo Acorazado | tank | unavoidable pincer crush | físico | — | — | — |
+| 6 | standard | Serpiente de Fango | skirmisher | periodic second bite, poison chance | físico | fuego | — | — |
+| 7 | **elite** | Sacerdote Ahogado | support/control | confusion special attack, dark bolt | oscuridad | sagrado | oscuridad | — |
+| 8 | standard | Horror de Profundidad | bruiser | stun-chance special attack | físico | — | — | — |
+| 9 | **elite** | Guardián del Templo Hundido | tank | unavoidable stone strike | físico | sagrado | — | paralizado |
+| 10 | **guardian** | El Anegado | bruiser/support | self-heal below 40 % HP, curses on hit | oscuridad | sagrado | oscuridad | veneno |
+
+**Same progressive-difficulty requirement as the Bosque, but with no
+headroom to absorb it**: on the map (§3) the Ciénaga sits between the
+Bosque and the Cañón del Trueno, but El Enraizado's real power (~112k) and
+Gárgola's *original* real power (~120k) were only ~7 % apart — nowhere near
+enough room for 10 progressive tiers. Resolved, agreed with the user before
+implementing, by reinforcing **Gárgola** itself (stats only — HP, attack
+range and gold; its charge mechanic and affinities are untouched — real
+power ~120k → ~214k) rather than compressing the new zone's own tiers into
+an unrealistically flat, barely-progressive band; Gólem de Piedra needed no
+change, already comfortably above the new ceiling. The Ciénaga's 10 tiers
+then climb from just above El Enraizado up to just below the reinforced
+Gárgola (~118.8k → ~205.7k) — see `characters/enemies/sanguijuela_colosal.py`
+and the neighbouring files for the exact numbers, and
+`tests/test_power_budget.py`'s `_KNOWN_OUT_OF_RANGE` for why this zone's own
+tool-reported deviations are expected, same reasoning as the Bosque's.
 
 ---
 
@@ -703,8 +739,8 @@ is a living document and any of this can change.
 | **v0.11.0** | Gear & real affinities | 4 armour sets · elemental resistance on armour · real weaknesses / resistances / immunities on the current 14 enemies · new elemental weapons (sagrado / oscuridad / arcano) · elemental reactions |
 | **v0.12.0** | The world, part 1 | zones + map + exploration loop · inn / rest (cost scales with level) · frontier travel + fast-travel · save migration v2 · shop / forge relocated · random encounters + discoveries |
 | **v0.13.0** | Dialogue & NPCs | branching dialogue with player choices · one-time vs repeatable conversations · NPCs for Piedrablanca + the 6 existing regions · lore notes + Diario |
-| **v0.14.0** | Bestiary & enemies I | progressive bestiary · power-budget tool (sets the level curve) · Los Yermos + Bosque fleshed to ~10 (elites 5/7/9 + guardian 10) · mid-progression class skills tied to those enemies |
-| **v0.15.0** | Enemies II | Ciénaga (new) + Cañón + Torre/Necrópolis to ~10 · loot scaling (uniques + rolled commons) · cross-zone drop-scaling · more class skills |
+| **v0.14.0** | Bestiary & enemies I | progressive bestiary · power-budget tool (sets the level curve) · Los Yermos + Bosque + Ciénaga fleshed to ~10 each (elites 4-9-ish + guardian 10) · mid-progression class skills tied to those enemies |
+| **v0.15.0** | Enemies II | Cañón + Torre/Necrópolis to ~10 · loot scaling (uniques + rolled commons) · cross-zone drop-scaling · more class skills |
 | **v0.16.0** | Enemies III | Ciudadela to ~10 · high-milestone class skills · side quests for those regions |
 | **v0.17.0** | Main story | quest system · "La Brecha" questline (7 acts) wired to the existing NPCs / guardians · progression by story instead of picking an enemy |
 | **v0.18.0** | The Arena | escalating-wave mode · Arena rewards (titles + some set pieces + a hard-to-get unique) |

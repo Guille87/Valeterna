@@ -21,7 +21,9 @@ from valeterna.combat.battle import ENEMY_PROGRESSION
 def test_bosque_chain_gates_the_guardian_before_the_canon():
     assert ENEMY_PROGRESSION["Troll"] == "Araña Tejesombras"
     assert ENEMY_PROGRESSION["Ent Corrompido"] == "El Enraizado"
-    assert ENEMY_PROGRESSION["El Enraizado"] == "Gárgola"  # el guardián abre el Cañón del Trueno
+    # El guardián abre la Ciénaga de los Ahogados (v0.14.0-f) en vez del
+    # Cañón del Trueno directamente.
+    assert ENEMY_PROGRESSION["El Enraizado"] == "Sanguijuela Colosal"
 
 
 # --- Araña Tejesombras: mordisco con veneno --------------------------------------
