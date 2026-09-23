@@ -13,6 +13,7 @@ class GoblinMontaraz(Enemy):
     SIGNATURE = "Flechas certeras: sus disparos pueden abrirte una herida que sangra."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset({"sangrado"})
+    ENCOUNTER_LINE = "Una flecha silba cerca de tu cabeza: un Goblin Montaraz te ha encontrado primero."
 
     # Débil al fuego, como el resto de goblins del clan.
     WEAKNESSES = frozenset({"fuego"})

@@ -13,6 +13,16 @@ class Dragon(Enemy):
     SIGNATURE = "Aliento de fuego: de vez en cuando incendia el suelo bajo tus pies y puede dejarte quemado."
     ELEMENTS_DEALT = frozenset({"fuego"})
     INFLICTS = frozenset({"quemado"})
+    ENCOUNTER_KIND = "guardian"
+    ENCOUNTER_LINE = (
+        "El cielo se oscurece antes de que lo veas. Cuando por fin aparece, entiendes por qué "
+        "Valeterna nunca se recuperó del todo: el Dragón ha vuelto, y esta vez te mira a ti."
+    )
+    TAUNT_LINES = (
+        "¿Sigues creyendo que esto termina de otra forma?",
+        "Vuelves con la misma espada y las mismas ganas de perder.",
+        "Valeterna ya ardió una vez por gente como tú. No hace falta que insistas.",
+    )
 
     # El Dragón de Ceniza es una criatura de fuego: inmune a las llamas (y a
     # que lo quemen), pero el hielo es justo lo que su naturaleza no soporta.

@@ -15,6 +15,7 @@ class EspirituVengativo(Enemy):
     SIGNATURE = "Maldición: a veces te maldice y reduce tu armadura durante 3 turnos."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset({"maldicion"})
+    ENCOUNTER_LINE = "El aire se enfría a tu alrededor. Un Espíritu Vengativo no ha olvidado nada."
 
     # Incorpóreo y sin sangre: el veneno no tiene nada que corromper, y sin
     # cuerpo físico tampoco puede sangrar. Sigue siendo un espectro atado al

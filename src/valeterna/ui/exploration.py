@@ -61,7 +61,7 @@ def zone_loop(player, unlocked_enemies: list, defeated_enemies: list, is_admin: 
         print(console.colorize(f"v{__version__}", console.Fore.BLACK, bright=True))
         print("=" * 40)
 
-        labels = ["Explorar", "Ir a...", "Hablar con...", "Viajar", "Personaje"]
+        labels = ["Explorar", "Cazar...", "Ir a...", "Hablar con...", "Viajar", "Personaje"]
         for i, label in enumerate(labels, 1):
             print(f"{i}. {label}")
 
@@ -74,32 +74,50 @@ def zone_loop(player, unlocked_enemies: list, defeated_enemies: list, is_admin: 
         if idx == 1:
             _explore(player, unlocked_enemies, defeated_enemies)
         elif idx == 2:
-            _sublocation_flow(player, zone)
+            _hunt_flow(player, zone, unlocked_enemies, defeated_enemies)
         elif idx == 3:
-            _talk_flow(player, zone)
+            _sublocation_flow(player, zone)
         elif idx == 4:
+            _talk_flow(player, zone)
+        elif idx == 5:
             _travel_flow(player, unlocked_enemies)
-        elif idx == 5 and _character_menu(player, unlocked_enemies, defeated_enemies, is_admin) == "volver_menu":
+        elif idx == 6 and _character_menu(player, unlocked_enemies, defeated_enemies, is_admin) == "volver_menu":
             break
+
+
+def _zone_candidates(zone, unlocked_enemies: list) -> list[str]:
+    """Enemigos de la zona ya desbloqueados, en el orden de tier del propio
+    diseño (el orden declarado en `Zone.enemies`, de más flojo a más fuerte);
+    si la zona no tiene roster propio todavía (p. ej. la Ciénaga), cae a
+    cualquier enemigo desbloqueado para no bloquear nada."""
+    return [e for e in zone.enemies if e in unlocked_enemies] or list(unlocked_enemies)
+
+
+def _weighted_enemy_choice(candidates: list[str]) -> str:
+    """Sortea un enemigo de `candidates`, con más peso cuanto más tarde
+    aparece en el orden de tier (v0.14.x, feedback del usuario): así
+    Explorar rara vez te "devuelve" al enemigo más flojo de la zona una vez
+    ya has avanzado bastante, sin dejar de ser una tirada — para elegir un
+    enemigo concreto de verdad está "Cazar..." (`_hunt_flow`)."""
+    weights = list(range(1, len(candidates) + 1))
+    return random.choices(candidates, weights=weights, k=1)[0]
 
 
 def _explore(player, unlocked_enemies: list, defeated_enemies: list) -> None:
     """Tirada ponderada (GDD §8.1): combate / hallazgo / nada. El combate
-    elige al azar entre los enemigos desbloqueados de la zona actual; si
-    ninguno de los backbone de la zona está entre los desbloqueados (p. ej.
-    una zona sin roster todavía, como la Ciénaga), cae a cualquier enemigo
-    desbloqueado para no bloquear la exploración."""
+    sortea entre los enemigos desbloqueados de la zona actual, favoreciendo
+    a los más avanzados (`_weighted_enemy_choice`)."""
     from valeterna.ui.menus import _get_enemy_instance
 
     zone = ZONES[player.mundo["zona_actual"]]
-    candidates = [e for e in zone.enemies if e in unlocked_enemies] or list(unlocked_enemies)
+    candidates = _zone_candidates(zone, unlocked_enemies)
     if not candidates:
         console.info("No hay nada que explorar todavía.")
         return
 
     roll = random.random()
     if roll < _EXPLORE_ENCOUNTER_CHANCE:
-        enemy_name = random.choice(candidates)
+        enemy_name = _weighted_enemy_choice(candidates)
         # enemy_factory permite encadenar peleas si el jugador activa la
         # auto-batalla contra un enemigo ya derrotado (ver initiate_battle).
         initiate_battle(
@@ -113,6 +131,48 @@ def _explore(player, unlocked_enemies: list, defeated_enemies: list) -> None:
         _discovery(player)
     else:
         console.say("Exploras la zona, pero no encuentras nada de interés.")
+
+
+def _hunt_flow(player, zone, unlocked_enemies: list, defeated_enemies: list) -> None:
+    """Cazar... (v0.14.x, feedback del usuario): elige un enemigo concreto ya
+    derrotado alguna vez de la zona actual y va directo al combate, sin la
+    tirada de Explorar (ni su hallazgo de oro/poción) — para farmear
+    botín/oro/nivel de un enemigo en concreto. El enemigo "frontera" (el
+    último desbloqueado que aún no has vencido ni una vez, el que abre paso al
+    siguiente) NO aparece aquí — feedback del usuario: verlo listado antes de
+    haberlo derrotado ni una vez rompía la idea de "cazar lo que ya conoces";
+    ese primer encuentro sigue siendo cosa de Explorar."""
+    from valeterna.ui.menus import _get_enemy_instance
+
+    candidates = [e for e in _zone_candidates(zone, unlocked_enemies) if e in defeated_enemies]
+    if not candidates:
+        console.info("Todavía no has derrotado a ningún enemigo de esta zona; explora para encontrar el primero.")
+        return
+
+    print(console.colorize("\n--- CAZAR ---", console.Fore.CYAN))
+    for i, name in enumerate(candidates, 1):
+        print(f"{i}. {name}")
+    print(f"{len(candidates) + 1}. Volver")
+
+    choice = console.ask(f"\nElige a quién cazar (1-{len(candidates) + 1}): ")
+    if not choice.isdigit():
+        console.error("Opción no válida.")
+        return
+    idx = int(choice) - 1
+    if idx == len(candidates):
+        return
+    if not (0 <= idx < len(candidates)):
+        console.error("Opción fuera de rango.")
+        return
+
+    enemy_name = candidates[idx]
+    initiate_battle(
+        player,
+        _get_enemy_instance(enemy_name),
+        defeated_enemies,
+        unlocked_enemies,
+        enemy_factory=lambda: _get_enemy_instance(enemy_name),
+    )
 
 
 def _discovery(player) -> None:

@@ -975,6 +975,158 @@ el cambio a mitigación multiplicativa.
     pasos), y uno ajustaba el valor esperado del crítico del Goblin al nuevo
     cálculo basado en `max_atk` en vez del `randint` mockeado.
 
+- [x] **"Cazar..." para elegir enemigo, y Explorar pesado hacia el progreso**
+  (GDD §8.1, feedback del usuario tras la v0.14.0-c). Motivo: con Los Yermos
+  ya a 10 enemigos, un jugador que había llegado hasta el tier 9 podía, en
+  la siguiente tirada de Explorar, volver a caer contra el Goblin del tier 1
+  — de las tres opciones que se plantearon (A: solo pesar Explorar, B: solo
+  añadir "Cazar", C: las dos), el usuario eligió la C.
+  - `_zone_candidates(zone, unlocked_enemies)`: extraído de `_explore` (antes
+    hacía el filtro inline), ahora compartido con `_hunt_flow`. Devuelve los
+    enemigos desbloqueados de la zona en el orden de `Zone.enemies` (de tier
+    1 a 10, el mismo orden que ya asume el ajuste de `power_budget.py`); si
+    la zona no tiene roster propio (Piedrablanca, Ciénaga), cae al orden de
+    `unlocked_enemies`.
+  - `_weighted_enemy_choice(candidates)`: `random.choices(candidates,
+    weights=range(1, len(candidates)+1))` — el enemigo más avanzado de la
+    zona tiene N veces más probabilidad que el primero (N = nº de
+    candidatos), sin llegar a excluir del todo a los primeros. Sustituye al
+    `random.choice()` uniforme de antes en `_explore`.
+  - **"Cazar..."** (`_hunt_flow`), nueva opción 2 del menú de zona (el menú
+    pasa de 5 a 6 opciones: Explorar, Cazar..., Ir a..., Hablar con...,
+    Viajar, Personaje — todo lo que iba después se desplaza un índice, igual
+    que pasó con el Diario en v0.13.0-c). Lista los mismos
+    `_zone_candidates`, con un ✔ verde en los ya derrotados (que en la
+    práctica son todos menos el más nuevo, el "frontera" que todavía no has
+    vencido — un enemigo solo se desbloquea al derrotar al anterior de la
+    cadena). Elegir uno va directo a `initiate_battle(...)`, sin la tirada
+    de oro/poción de Explorar (ese incentivo se queda solo en Explorar, a
+    propósito, para no volver "Cazar" estrictamente mejor en todos los
+    casos) — pensado para farmear un enemigo concreto (botín, oro, nivel) o
+    para no depender del azar cuando lo que quieres es ir a por el guardián.
+  - Tests: `tests/test_exploration.py` — `_zone_candidates` (orden de tier y
+    su fallback), `_weighted_enemy_choice` (pesos crecientes, sin comprobar
+    el azar real para no hacer un test inestable), listado de `_hunt_flow`
+    con checks, elegir un enemigo concreto, volver sin pelear, sin
+    candidatos, y que `zone_loop` despacha bien la opción 2. Los dos tests
+    viejos de `_explore` que mockeaban `random.choice` (ya sin uso real, la
+    tirada pasó a `random.choices`) se actualizaron para mockear la función
+    que de verdad se llama ahora.
+
+- [x] **"Cazar..." no debe listar al enemigo "frontera" todavía sin
+  derrotar, y aviso simétrico de turno repetido del enemigo** (feedback del
+  usuario tras probar la v0.14.0-hunt en partida real, antes incluso de
+  fusionar el PR anterior).
+  - **Bug de Cazar**: la primera versión de `_hunt_flow` reutilizaba
+    `_zone_candidates` tal cual, que devuelve todo lo *desbloqueado*, no solo
+    lo *derrotado* — así que al empezar la partida (con el Goblin
+    desbloqueado pero sin pelear ni una vez) Cazar ya lo mostraba, y tras
+    vencerlo, Cazar mostraba también a la Rata Gigante (el nuevo "frontera")
+    igual de sin derrotar. `_hunt_flow` ahora filtra
+    `_zone_candidates(...)` contra `defeated_enemies`, así que solo aparecen
+    enemigos ya vencidos al menos una vez; con la lista vacía (nada
+    derrotado todavía en la zona) muestra un aviso en vez de una lista
+    vacía o el enemigo sin conocer. El primer encuentro con cualquier
+    enemigo sigue siendo cosa de Explorar, nunca de Cazar — de paso ya no
+    hace falta el ✔ de "derrotado" en la lista, porque ahora todo lo listado
+    lo está.
+  - **Aviso de turno repetido, lado enemigo**: en un combate real el usuario
+    vio dos turnos seguidos del Goblin (más rápido que su personaje) sin
+    ningún indicio de por qué — la barra ATB estaba funcionando como
+    debía (rebasa el umbral más de una vez antes de que el jugador lo cruce
+    ni una), pero solo el lado del jugador avisaba de esto ("⏩ Eres más
+    rápido: actúas de nuevo antes que {enemigo}."). `_run_one_battle` ahora
+    también rastrea si el jugador ha actuado desde el último turno del
+    enemigo (`player_acted`, espejo de la `enemy_acted` que ya existía) y se
+    lo pasa a `_run_enemy_turn(..., repeated=...)`, que imprime su propia
+    línea ("⏩ {enemigo} es más rápido: actúa de nuevo antes que tú.") justo
+    bajo la cabecera de turno cuando toca.
+  - Tests: `tests/test_exploration.py` reescribe los tests de `_hunt_flow`
+    para el nuevo filtrado (frontera nunca listada, solo derrotados,
+    "Volver" con un único candidato) y ajusta los mensajes esperados.
+    `tests/test_battle.py` añade un test unitario de `_run_enemy_turn` con
+    `repeated=True`/`False` y un test de extremo a extremo con un enemigo
+    mucho más rápido en una batalla real, comprobando que el aviso aparece.
+
+- [x] **Encuentros con sabor de rol al empezar el combate** (GDD §8.1
+  follow-up, feedback del usuario tras probar la v0.14.0-hunt: "estilo
+  Pokémon", un aviso sencillo al toparte con un enemigo, no un motor de
+  diálogo como `world/npc.py`). Resumen del pedido: enemigos normales, una
+  frase sencilla de "algo se te pone delante"; élite, algo más tenebroso que
+  deje claro que no va a ser fácil; guardián, lo mismo pero aún más
+  tenebroso; y para élite/guardián, si el jugador ya ha perdido contra ese
+  enemigo, desde el siguiente encuentro que provoque/vacile en vez de repetir
+  la intro.
+  - Tres atributos de clase nuevos en `Enemy` (`enemy_base.py`):
+    `ENCOUNTER_KIND` (`"normal"` por defecto / `"elite"` / `"guardian"`),
+    `ENCOUNTER_LINE` (la frase de la 1ª vez) y `TAUNT_LINES` (tupla de
+    provocaciones, solo élite/guardián, una al azar cada vez).
+  - Clasificación: en vez de inventar un criterio nuevo, élite = los 5
+    enemigos que ya tenían música de combate propia
+    (`HARD_BATTLE_ENEMIES`: Gólem de Piedra, Mago, Nigromante, Ángel Caído,
+    Demonio); guardián = El Carnicero y el Dragón (el usuario confirmó
+    incluir también al Dragón, el jefe final, con el mismo sistema). El
+    resto (13 enemigos) se quedan en "normal".
+  - `combat/battle.py::_announce_encounter(player, enemy)`: 1ª vez que ves a
+    ese enemigo (cualquier tipo) → siempre imprime `ENCOUNTER_LINE`. Desde la
+    2ª, solo élite/guardián dicen algo más, y solo si ya perdiste contra él
+    (`_defeat_flag`, puesto por `_handle_defeat(player, enemy, ...)`, ahora
+    con el enemigo como parámetro opcional). Se llama desde `_run_one_battle`
+    justo antes de "¡Ha comenzado la batalla...!", con el mismo criterio que
+    el resto del sabor de esa pantalla (se omite en Turbo). Sale tanto desde
+    Explorar como desde Cazar — la frase describe enfrentarte al enemigo, no
+    cómo lo encontraste.
+  - Persistencia sin tocar el esquema de guardado: reaprovecha
+    `player.mundo["banderas"]` con dos flags por enemigo (`vio_a_<nombre>`,
+    `perdio_contra_<nombre>`), el mismo patrón que ya usan los flags de
+    diálogo.
+  - Las 20 frases de encuentro y las provocaciones de El Carnicero/Dragón las
+    escribió Claude siguiendo el tono ya establecido en cada `DESCRIPTION`;
+    **revisadas y aprobadas por el usuario** tras probarlas en partida (si
+    hace falta retocar o añadir más adelante, se hará entonces).
+  - Tests: `tests/test_battle.py` — 1ª vez vs. repetición en un enemigo
+    normal, la provocación de un élite solo se desbloquea tras perder,
+    `_handle_defeat` solo marca la derrota en enemigos no-normales, se oculta
+    en Turbo, y aparece en una batalla real de extremo a extremo.
+
+- [x] **Pausa en la frase de encuentro, pantalla de victoria más informativa,
+  y estadísticas del equipo a la vista** (feedback del usuario tras probar
+  las frases de encuentro en partida real).
+  - **Pausa tras la frase de encuentro**: `_announce_encounter` no paraba, así
+    que el texto (intro o provocación) se perdía entre esa línea y la ficha
+    de combate que sale justo detrás. Ahora, si imprime algo, pide "Presiona
+    Enter para continuar..." antes de seguir; una repetición sin nada que
+    decir (enemigo normal ya visto) no pide nada.
+  - **Pantalla de victoria**: el oro y la XP obtenidos ahora muestran también
+    el total/progreso actual — `💰 Oro obtenido: X (Total: Y)` y `✨ XP
+    obtenida: +X (Nivel N: XP/XP necesaria)` —, y ya no se anuncia el nombre
+    del siguiente enemigo desbloqueado (`✨ ¡NUEVO ENEMIGO DESBLOQUEADO!`
+    eliminado): sigue desbloqueándose igual, pero el jugador debe descubrir
+    quién es explorando, no leerlo en la pantalla de victoria. De paso se
+    quitó el "Has obtenido X XP." que imprimía `Player.gain_experience()`
+    por su cuenta, redundante con la nueva línea de `_handle_victory` (su
+    único caller).
+  - **Estadísticas del equipo a la vista**: en "Personaje → Estadísticas" y en
+    "Equipar Armadura", cada hueco ocupado muestra ahora, junto al nombre,
+    las estadísticas que otorga esa pieza (`Armor.get_stats_info()`, el mismo
+    texto que ya se usaba en el botín de la victoria) — antes había que
+    desequipar/volver a equipar o mirar la tienda para recordar qué daba cada
+    cosa.
+  - Tropiezo de esta ronda: la pausa nueva rompió varios tests de
+    `test_battle.py` que encadenaban respuestas fijas de `console.ask` (p. ej.
+    los de auto-batalla en cadena) porque el primer "Enter" de la pausa se
+    comía la respuesta pensada para el menú siguiente — no era un bloqueo
+    real de teclado, sino un bucle infinito local (`_player_menu` reintentando
+    con `""` para siempre) que parecía un cuelgue. Se detectó instalando
+    temporalmente `pytest-timeout` (no es una dependencia del proyecto,
+    solo se usó para depurar) y se arregló añadiendo la respuesta extra en la
+    posición correcta de cada secuencia mockeada.
+  - Tests: `tests/test_battle.py` (la pausa solo cuando imprime algo; oro
+    total y XP/nivel en la pantalla de victoria; el nombre del siguiente
+    enemigo ya no se anuncia), `tests/test_player.py` (`show_stats()` lista
+    las estadísticas del equipo), `tests/test_menus.py` (`_equip_armor_flow`
+    hace lo mismo).
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

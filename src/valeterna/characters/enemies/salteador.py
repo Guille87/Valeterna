@@ -21,6 +21,7 @@ class Salteador(Enemy):
     SIGNATURE = "Doble golpe y manos largas: a veces golpea dos veces seguidas, otras veces prefiere robarte el oro."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_LINE = "Un Salteador te mide de arriba abajo, calculando cuánto llevas encima."
 
     def __init__(self):
         # Skirmisher rápido y con buen ataque, pero armadura discreta.

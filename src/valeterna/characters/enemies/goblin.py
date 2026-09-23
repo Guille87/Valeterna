@@ -15,6 +15,7 @@ class Goblin(Enemy):
     SIGNATURE = "Emboscada: puede atacarte por sorpresa antes de empezar el combate."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_LINE = "Un Goblin se pone en tu camino, blandiendo algo que apenas parece un arma."
 
     def __init__(self):
         # health, max_health, min_atk, max_atk, defense

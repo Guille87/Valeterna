@@ -13,6 +13,15 @@ class Mago(Enemy):
     SIGNATURE = "Hechizos tácticos: elige el que aún no sufras (veneno, rayo, ventisca) o lanza bolas de fuego, y se cura si está muy herido."
     ELEMENTS_DEALT = frozenset({"fuego", "rayo", "veneno", "hielo"})
     INFLICTS = frozenset({"quemado", "paralizado", "veneno", "congelado"})
+    ENCOUNTER_KIND = "elite"
+    ENCOUNTER_LINE = (
+        "Un frío distinto al del aire te recorre la espalda. "
+        "El Mago de la Torre ya sabe que estás aquí, y ya ha elegido cómo hacerte sufrir."
+    )
+    TAUNT_LINES = (
+        "¿De verdad pensabas que la segunda vez sería distinta?",
+        "Cada hechizo que fallaste sigue aquí, esperando su turno.",
+    )
 
     # Domina lo arcano, así que se protege bien de ello; su fragilidad es
     # física (ya reflejada en su armadura, la más baja de su tramo).

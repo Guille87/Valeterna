@@ -177,8 +177,8 @@ def _print_chain_loot(player, start: dict) -> None:
 
     print(console.colorize("\n--- BOTÍN DE LA CADENA ---", console.Fore.CYAN, bright=True))
     gold_sign = "+" if gold_delta >= 0 else ""
-    print(console.stat_line(f"Oro: {gold_sign}{gold_delta}", "oro"))
-    xp_line = f"XP: +{xp_delta}"
+    print(console.stat_line(f"Oro: {gold_sign}{gold_delta}  (Total: {player.inventory.gold})", "oro"))
+    xp_line = f"XP: +{xp_delta}  (Nivel {player.level}: {player.experience}/{player.required_xp()})"
     if levels > 0:
         xp_line += f"  (subes {levels} nivel{'es' if levels > 1 else ''}: {start['level']} → {player.level})"
     print(console.stat_line(xp_line, "xp"))
@@ -209,6 +209,48 @@ def _print_chain_loot(player, start: dict) -> None:
         print(f"  {_color(name)}{suffix} {kind}")
 
 
+def _seen_flag(enemy) -> str:
+    return f"vio_a_{enemy.name}"
+
+
+def _defeat_flag(enemy) -> str:
+    return f"perdio_contra_{enemy.name}"
+
+
+def _announce_encounter(player, enemy) -> None:
+    """Frase de encuentro al toparte con un enemigo (v0.14.x, GDD §8.1
+    follow-up, feedback del usuario: estilo "un Pokémon salvaje apareció",
+    no es un árbol de diálogo como `world/npc.py` — solo una línea de sabor,
+    sin ramas ni respuestas. Sale tanto desde Explorar como desde Cazar: no
+    describe cómo lo encontraste, describe enfrentarte a ÉL.
+
+    1ª vez que ves a este enemigo (`ENCOUNTER_LINE`): siempre, para
+    cualquier tipo. Desde la 2ª vez, solo élite/guardián dicen algo más, y
+    solo si el jugador ya perdió contra él alguna vez (`_defeat_flag`,
+    puesto por `_handle_defeat`) — una `TAUNT_LINES` al azar en vez de
+    repetir la misma frase de siempre. Si se imprime algo, pausa con
+    "Presiona Enter..." antes de seguir (feedback del usuario: si no, el
+    texto se pierde entre la línea y la ficha de combate que viene justo
+    detrás)."""
+    banderas = player.mundo["banderas"]
+    seen_flag = _seen_flag(enemy)
+    printed = False
+
+    if seen_flag not in banderas:
+        banderas.add(seen_flag)
+        if enemy.ENCOUNTER_LINE:
+            dramatic = enemy.ENCOUNTER_KIND != "normal"
+            color = console.Fore.RED if dramatic else console.Fore.LIGHTBLACK_EX
+            print(console.colorize(enemy.ENCOUNTER_LINE, color, bright=dramatic, tint=False))
+            printed = True
+    elif enemy.ENCOUNTER_KIND != "normal" and enemy.TAUNT_LINES and _defeat_flag(enemy) in banderas:
+        print(console.colorize(random.choice(enemy.TAUNT_LINES), console.Fore.RED, bright=True, tint=False))
+        printed = True
+
+    if printed:
+        console.ask("\nPresiona Enter para continuar...")
+
+
 def _run_one_battle(
     player, enemy, defeated_enemies: list, unlocked_enemies: list, chain: dict, fight_index: int
 ) -> str:
@@ -216,15 +258,21 @@ def _run_one_battle(
     la 2ª pelea de una cadena en adelante) y recoge la elección del jugador si
     activa la auto-batalla aquí. Devuelve `"victory"` / `"defeat"` / `"fled"` /
     `"cancelled"`."""
+    # En la 2ª pelea de una cadena en adelante arrancamos ya en el modo elegido.
+    start_auto: bool | str = chain["mode"] if fight_index > 1 else False
+
+    # Frase de encuentro (v0.14.x, GDD §8.1 follow-up): antes de que empiece
+    # la batalla "de verdad", igual que el resto del sabor de esta pantalla se
+    # omite en Turbo (farmeo).
+    if start_auto != "turbo":
+        _announce_encounter(player, enemy)
+
     print("=" * 60)
     print(f"{console.colorize(f'¡Ha comenzado la batalla contra {enemy.name}!', console.Fore.WHITE, bright=True)}")
     rm = ResourceManager()
     # Vida justo al entrar en combate: si el jugador huye, solo debe poder
     # recuperar parte de lo que ha perdido en ESTA pelea.
     health_before_battle = player.stats.health
-
-    # En la 2ª pelea de una cadena en adelante arrancamos ya en el modo elegido.
-    start_auto: bool | str = chain["mode"] if fight_index > 1 else False
 
     # Ficha de ambos combatientes al empezar, ANTES de la posible emboscada (para
     # ver el enfrentamiento antes de que el enemigo pegue primero). En turbo se
@@ -239,7 +287,7 @@ def _run_one_battle(
 
         if not player.is_alive():
             # En una cadena la pausa (y el resumen) van una sola vez al final.
-            _handle_defeat(player, pause=chain["count"] == 1)
+            _handle_defeat(player, enemy, pause=chain["count"] == 1)
             _restore_player(player, {"atk": (player.stats.min_atk, player.stats.max_atk), "armor": player.stats.armor})
             return "defeat"
 
@@ -285,6 +333,7 @@ def _run_one_battle(
     gauge_player = 0.0
     gauge_enemy = 0.0
     enemy_acted = True  # el primer turno del jugador no cuenta como "repetido"
+    player_acted = True  # el primer turno del enemigo no cuenta como "repetido"
     while player.is_alive() and enemy.is_alive():
         rm.update()
 
@@ -312,6 +361,7 @@ def _run_one_battle(
             if was_auto and not is_auto:
                 auto_cancelled = True  # pulsó 'Q'; si vuelve a activar auto se corrige abajo
             enemy_acted = False
+            player_acted = True
             if signal == "huir":
                 player_fled = True
                 break
@@ -328,8 +378,11 @@ def _run_one_battle(
         if player.is_alive() and gauge_enemy >= ATB_THRESHOLD:
             gauge_enemy -= ATB_THRESHOLD
             turn_no += 1
-            _run_enemy_turn(player, enemy, defeated_enemies, turbo=is_auto == "turbo", turn_no=turn_no)
+            _run_enemy_turn(
+                player, enemy, defeated_enemies, turbo=is_auto == "turbo", turn_no=turn_no, repeated=not player_acted
+            )
             enemy_acted = True
+            player_acted = False
             _try_represalia(player, enemy, defeated_enemies)
             player.took_physical_hit = False
 
@@ -343,7 +396,7 @@ def _run_one_battle(
             break
 
         if not player.is_alive():
-            _handle_defeat(player, pause=chain["count"] == 1)  # cura del todo -> de ahí el flag
+            _handle_defeat(player, enemy, pause=chain["count"] == 1)  # cura del todo -> de ahí el flag
             player_defeated = True
             break
 
@@ -640,10 +693,16 @@ def _try_represalia(player, enemy, defeated_enemies: list) -> None:
         _execute_turn(player, enemy, defeated_enemies)
 
 
-def _run_enemy_turn(player, enemy, defeated_enemies: list, turbo: bool = False, turn_no: int = 0) -> None:
+def _run_enemy_turn(
+    player, enemy, defeated_enemies: list, turbo: bool = False, turn_no: int = 0, repeated: bool = False
+) -> None:
     """Ejecuta el turno del enemigo cuando su gauge ATB está lista. En `turbo`
     solo se saltan las pausas/sleeps; las barras de vida y los avisos se muestran
-    igual, para no perder de vista cómo va el combate."""
+    igual, para no perder de vista cómo va el combate. `repeated` = el enemigo
+    vuelve a actuar sin que el jugador haya actuado por el medio (es más
+    rápido) — espejo de la nota "Eres más rápido" del lado del jugador
+    (feedback del usuario: la barra ATB podía dar dos turnos seguidos al
+    enemigo sin que quedase claro por qué)."""
     if not turbo:
         time.sleep(1)
 
@@ -658,6 +717,8 @@ def _run_enemy_turn(player, enemy, defeated_enemies: list, turbo: bool = False, 
 
     if can_act:
         print(_turn_header(turn_no, enemy.name))
+        if repeated:
+            print(console.colorize(f"⏩ {enemy.name} es más rápido: actúa de nuevo antes que tú.", console.Fore.CYAN))
         enemy.perform_turn(player)
     enemy.on_turn_end()
     enemy.decay_status_effects()
@@ -930,21 +991,30 @@ def _handle_victory(player, enemy, defeated_enemies: list, unlocked_enemies: lis
     if enemy.name not in defeated_enemies:
         defeated_enemies.append(enemy.name)
 
-        # Consultamos si este enemigo desbloquea a otro
+        # Desbloquea al siguiente enemigo de la cadena, sin anunciar cuál es
+        # (feedback del usuario: que lo descubra explorando, no aquí).
         next_enemy = ENEMY_PROGRESSION.get(enemy.name)
-
         if next_enemy and next_enemy not in unlocked_enemies:
             unlocked_enemies.append(next_enemy)
-            print(console.colorize(f"✨ ¡NUEVO ENEMIGO DESBLOQUEADO: {next_enemy}!", console.Fore.MAGENTA))
 
     # Recompensa de Oro
     gold = enemy.get_gold_drop()
     player.inventory.gold += gold
-    print(f"💰 Oro obtenido: {console.colorize(str(gold), console.Fore.YELLOW)}")
+    print(
+        f"💰 Oro obtenido: {console.colorize(str(gold), console.Fore.YELLOW)} "
+        f"(Total: {console.colorize(str(player.inventory.gold), console.Fore.YELLOW)})"
+    )
 
     # Experiencia y Nivel
     old_level = player.level
-    player.gain_experience(gold * 2)
+    xp_gained = gold * 2
+    player.gain_experience(xp_gained)
+    print(
+        console.stat_line(
+            f"✨ XP obtenida: +{xp_gained}  (Nivel {player.level}: {player.experience}/{player.required_xp()})",
+            "xp",
+        )
+    )
 
     # Comprobamos si subió de nivel
     player.just_leveled_up = player.level > old_level
@@ -985,12 +1055,18 @@ def _handle_victory(player, enemy, defeated_enemies: list, unlocked_enemies: lis
     return (player.stats.min_atk, player.stats.max_atk), player.stats.armor
 
 
-def _handle_defeat(player, pause: bool = True) -> None:
+def _handle_defeat(player, enemy=None, pause: bool = True) -> None:
     """Gestiona lo que ocurre cuando el jugador cae en combate. `pause=False`
     cuando estamos en una cadena: la pausa (y el resumen de botín) se hacen una
-    sola vez al final."""
+    sola vez al final. `enemy` (opcional, por compatibilidad con llamadas
+    antiguas) marca en `mundo["banderas"]` que el jugador ha perdido alguna
+    vez contra él — solo élite/guardián lo usan, para desbloquear su
+    provocación desde el 2º encuentro (ver `_announce_encounter`)."""
     print("\n" + "x" * 60)
     print(console.colorize("¡HAS SIDO DERROTADO!", console.Fore.RED, bright=True))
+
+    if enemy is not None and enemy.ENCOUNTER_KIND != "normal":
+        player.mundo["banderas"].add(_defeat_flag(enemy))
 
     # Penalización de oro (ejemplo: pierdes el 30% de tu oro actual)
     penalty = player.inventory.gold // 3

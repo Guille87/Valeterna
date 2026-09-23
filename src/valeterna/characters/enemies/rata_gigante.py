@@ -13,6 +13,7 @@ class RataGigante(Enemy):
     SIGNATURE = "Mordisco rápido: puede envenenar con cada ataque."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset({"veneno"})
+    ENCOUNTER_LINE = "Una Rata Gigante te enseña los dientes desde la maleza."
 
     # Debilidad tal como manda el GDD §4.6 (tier 1 de Los Yermos): el fuego
     # acaba con el nido antes de que pueda huir.

@@ -13,6 +13,7 @@ class Troll(Enemy):
     SIGNATURE = "Regeneración: recupera vida al final de cada turno."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_LINE = "Un Troll se levanta pesadamente, con heridas que ya se están cerrando solas."
 
     # El fuego es lo único que impide que se regenere de verdad.
     WEAKNESSES = frozenset({"fuego"})

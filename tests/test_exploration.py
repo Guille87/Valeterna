@@ -19,7 +19,7 @@ def test_explore_rolls_an_encounter_against_a_zone_enemy(player, monkeypatch):
     calls = {}
     monkeypatch.setattr(exploration, "initiate_battle", lambda *a, **k: calls.update(kw=k, args=a))
     monkeypatch.setattr("valeterna.ui.exploration.random.random", lambda: 0.0)  # cae en "encuentro"
-    monkeypatch.setattr("valeterna.ui.exploration.random.choice", lambda seq: seq[0])
+    monkeypatch.setattr("valeterna.ui.exploration.random.choices", lambda seq, weights, k: [seq[0]])
 
     exploration._explore(player, unlocked_enemies=["Goblin"], defeated_enemies=[])
 
@@ -53,11 +53,116 @@ def test_explore_falls_back_to_any_unlocked_enemy_outside_the_zone_roster(player
     calls = {}
     monkeypatch.setattr(exploration, "initiate_battle", lambda *a, **k: calls.update(k=1))
     monkeypatch.setattr("valeterna.ui.exploration.random.random", lambda: 0.0)
-    monkeypatch.setattr("valeterna.ui.exploration.random.choice", lambda seq: seq[0])
+    monkeypatch.setattr("valeterna.ui.exploration.random.choices", lambda seq, weights, k: [seq[0]])
 
     exploration._explore(player, unlocked_enemies=["Goblin"], defeated_enemies=[])
 
     assert calls
+
+
+def test_zone_candidates_preserves_the_zones_tier_order():
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["los_yermos"]
+    unlocked = ["El Carnicero", "Goblin", "Bandido"]  # a propósito en desorden
+
+    # El orden de salida es el de Zone.enemies (de tier 1 a 10), no el de
+    # `unlocked_enemies`.
+    assert exploration._zone_candidates(zone, unlocked) == ["Goblin", "Bandido", "El Carnicero"]
+
+
+def test_zone_candidates_falls_back_to_unlocked_order_without_a_roster():
+    from valeterna.world.map import ZONES
+
+    zone = ZONES["piedrablanca"]  # sin roster propio
+    unlocked = ["Goblin", "Huargo"]
+
+    assert exploration._zone_candidates(zone, unlocked) == unlocked
+
+
+def test_weighted_enemy_choice_favours_later_tiers(monkeypatch):
+    """v0.14.x (feedback del usuario): Explorar pesa más hacia el enemigo más
+    avanzado, sin descartar del todo a los primeros. No comprobamos el azar de
+    verdad (sería un test inestable) — solo que se llama a `random.choices`
+    con pesos crecientes, uno por candidato."""
+    captured = {}
+    monkeypatch.setattr(
+        "valeterna.ui.exploration.random.choices",
+        lambda seq, weights, k: captured.update(seq=list(seq), weights=list(weights)) or [seq[-1]],
+    )
+
+    result = exploration._weighted_enemy_choice(["A", "B", "C"])
+
+    assert captured["seq"] == ["A", "B", "C"]
+    assert captured["weights"] == [1, 2, 3]
+    assert result == "C"
+
+
+def test_hunt_flow_with_no_candidates_reports_nothing_to_hunt(player, capsys):
+    from valeterna.world.map import ZONES
+
+    exploration._hunt_flow(player, ZONES["los_yermos"], unlocked_enemies=[], defeated_enemies=[])
+
+    assert "Todavía no has derrotado a ningún enemigo" in capsys.readouterr().out
+
+
+def test_hunt_flow_never_lists_the_frontier_enemy_not_defeated_yet(player, capsys):
+    """Feedback del usuario: el enemigo desbloqueado pero aún no derrotado ni
+    una vez (la "frontera") no debe aparecer en Cazar, solo en Explorar."""
+    from valeterna.world.map import ZONES
+
+    exploration._hunt_flow(
+        player,
+        ZONES["los_yermos"],
+        unlocked_enemies=["Goblin"],
+        defeated_enemies=[],  # Goblin sin derrotar aún
+    )
+
+    out = capsys.readouterr().out
+    assert "Goblin" not in out
+    assert "Todavía no has derrotado a ningún enemigo" in out
+
+
+def test_hunt_flow_lists_only_the_already_defeated_enemies(player, monkeypatch, capsys):
+    from valeterna.world.map import ZONES
+
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "2")  # Volver (Goblin, Volver)
+
+    exploration._hunt_flow(
+        player, ZONES["los_yermos"], unlocked_enemies=["Goblin", "Huargo"], defeated_enemies=["Goblin"]
+    )
+
+    out = capsys.readouterr().out
+    assert "1. Goblin" in out
+    assert "Huargo" not in out  # desbloqueado pero aún no derrotado: es la frontera
+
+
+def test_hunt_flow_picks_the_chosen_enemy_directly_no_roll_involved(player, monkeypatch):
+    from valeterna.world.map import ZONES
+
+    calls = {}
+    monkeypatch.setattr(exploration, "initiate_battle", lambda player, enemy, *a, **k: calls.update(enemy=enemy.name))
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "2")  # Huargo
+
+    exploration._hunt_flow(
+        player, ZONES["los_yermos"], unlocked_enemies=["Goblin", "Huargo"], defeated_enemies=["Goblin", "Huargo"]
+    )
+
+    assert calls["enemy"] == "Huargo"
+
+
+def test_hunt_flow_can_go_back_without_fighting(player, monkeypatch):
+    from valeterna.world.map import ZONES
+
+    calls = {}
+    monkeypatch.setattr(exploration, "initiate_battle", lambda *a, **k: calls.update(k=1))
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: "2")  # Volver (Goblin, Volver)
+
+    exploration._hunt_flow(
+        player, ZONES["los_yermos"], unlocked_enemies=["Goblin", "Huargo"], defeated_enemies=["Goblin"]
+    )
+
+    assert not calls
 
 
 def test_sublocation_flow_with_places(player, monkeypatch, capsys):
@@ -355,11 +460,20 @@ def test_character_menu_shows_admin_panel_only_for_admins(player, monkeypatch, c
 
 
 def test_zone_loop_exits_to_main_menu_via_the_character_menu(player, monkeypatch):
-    answers = iter(["5", "11"])  # Personaje -> Volver al Menú Principal
+    answers = iter(["6", "11"])  # Personaje -> Volver al Menú Principal
     monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
 
     exploration.zone_loop(player, unlocked_enemies=[], defeated_enemies=[], is_admin=False)
     # Si no lanza y termina, el bucle salió correctamente.
+
+
+def test_zone_loop_dispatches_option_2_to_hunt(player, monkeypatch):
+    # Sin ningún enemigo desbloqueado, Cazar avisa y no pregunta nada más.
+    answers = iter(["2", "6", "11"])  # Cazar -> Personaje -> Volver al Menú Principal
+    monkeypatch.setattr(exploration.console, "ask", lambda *a, **k: next(answers))
+
+    exploration.zone_loop(player, unlocked_enemies=[], defeated_enemies=[], is_admin=False)
+    # Si no lanza y termina, el bucle pasó por Cazar sin problemas.
 
 
 def test_talk_flow_without_npcs_reports_nobody_to_talk_to(player, capsys):

@@ -13,6 +13,7 @@ class Skeleton(Enemy):
     SIGNATURE = "Reanimación: la primera vez que cae, se reensambla con la mitad de su vida."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_LINE = "Un Esqueleto se incorpora entre los escombros con un chirrido de huesos."
 
     # No-muerto: lo sagrado le hace mella, y sin sangre ni órganos el veneno le
     # afecta poco y no puede envenenarle ni hacerle sangrar en absoluto.

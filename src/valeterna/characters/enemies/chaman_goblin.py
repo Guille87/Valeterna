@@ -13,6 +13,7 @@ class ChamanGoblin(Enemy):
     SIGNATURE = "Bendición oscura: se cura cuando está malherido y puede maldecir tu armadura."
     ELEMENTS_DEALT = frozenset({"oscuridad"})
     INFLICTS = frozenset({"maldicion"})
+    ENCOUNTER_LINE = "Un Chamán Goblin murmura algo entre dientes al verte llegar."
 
     # Débil a lo sagrado como el resto de su clan; su propio poder es oscuro,
     # así que lo resiste (mismo patrón que el Mago resistiendo arcano).

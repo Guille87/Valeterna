@@ -14,6 +14,19 @@ class ElCarnicero(Enemy):
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset({"sangrado"})
 
+    # Frase de encuentro (v0.14.x, GDD §8.1 follow-up): primer guardián del
+    # juego, así que su intro y sus provocaciones marcan el tono del resto.
+    ENCOUNTER_KIND = "guardian"
+    ENCOUNTER_LINE = (
+        "Una sombra cruza el sendero hacia el Bosque y se detiene. "
+        "El Carnicero no dice nada — solo levanta su cuchilla, manchada de todos los que lo intentaron antes que tú."
+    )
+    TAUNT_LINES = (
+        "¿Otra vez tú? Esta vez no llegarás ni a la mitad.",
+        "Vuelves a por más. Qué corta es la memoria del miedo.",
+        "El Bosque puede esperar. Tú, no tanto.",
+    )
+
     # Guardián, tier 10 de Los Yermos (GDD §4.6).
     WEAKNESSES = frozenset({"sagrado"})
     RESISTANCES = frozenset({"veneno"})

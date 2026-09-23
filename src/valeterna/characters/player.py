@@ -493,8 +493,10 @@ class Player(Character):
     # --- PROGRESIÓN ---
 
     def gain_experience(self, amount: int) -> None:
+        # No imprime nada aquí: el único caller (_handle_victory) ya muestra
+        # su propia línea con XP/nivel actual/XP necesaria (feedback del
+        # usuario), así que un aviso aparte aquí sería redundante.
         self.experience += amount
-        console.info(f"Has obtenido {amount} XP.")
         while self.experience >= self.required_xp():
             self._level_up()
 
@@ -662,7 +664,10 @@ class Player(Character):
         print(console.colorize("--- Equipamiento ---", console.Fore.CYAN))
         for slot in ARMOR_SLOTS:
             item = self.equipped_armor.get(slot)
-            label = console.colorize(item.name, console.Fore.BLUE) if item else "-- vacío --"
+            if item:
+                label = f"{console.colorize(item.name, console.Fore.BLUE)} ({item.get_stats_info()})"
+            else:
+                label = "-- vacío --"
             print(f"  {slot_label(slot)}: {label}")
 
         print(console.colorize("=" * 34, console.Fore.CYAN))
