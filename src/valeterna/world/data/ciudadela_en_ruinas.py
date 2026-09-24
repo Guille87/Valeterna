@@ -6,7 +6,18 @@ ZONE = Zone(
     id="ciudadela_en_ruinas",
     name="Ciudadela en Ruinas",
     theme="La capital arrasada, suelo infernal",
-    enemies=("Ángel Caído", "Demonio"),
+    enemies=(
+        "Ángel Caído",
+        "Demonio",
+        "Ciudadano Hueco",
+        "Guardia Caída",
+        "Serafín Corrupto",
+        "Eco de la Guardia",
+        "Custodio de Vidrieras",
+        "Verdugo Infernal",
+        "Heraldo del Amo",
+        "El Sin Rostro",
+    ),  # v0.15.0-c: roster completo (GDD §4)
     sub_locations=("Catedral rota", "Plaza"),
     key_npcs=("Aldric",),
 )

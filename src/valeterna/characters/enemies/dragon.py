@@ -33,13 +33,16 @@ class Dragon(Enemy):
     def __init__(self):
         # Jefe final: vida masiva y mucha evasión ("esquiva volando"), además
         # del aliento de fuego (daño + quemadura, daño a lo largo del tiempo).
+        # Reforzado (v0.15.0-c) para abrir hueco de poder real a los 8
+        # enemigos nuevos de la Ciudadela en Ruinas, que se insertan justo
+        # antes en la cadena de desbloqueo — ver TODO.md.
         super().__init__(
             "Dragón",
             Stats(
-                700,
-                700,
-                45,
-                62,
+                850,
+                850,
+                55,
+                75,
                 14,
                 magic_resist=10,
                 speed=26,
@@ -49,8 +52,8 @@ class Dragon(Enemy):
                 crit_damage=1.8,
                 armor_penetration=6,
             ),
-            gold_min=250,
-            gold_max=320,
+            gold_min=300,
+            gold_max=385,
         )
 
     def perform_turn(self, player) -> None:
@@ -148,7 +151,7 @@ class Dragon(Enemy):
                     "Una única escama pulida engarzada en un colgante de oro.",
                     50,
                     slot="amuleto",
-                    magic_resist=12,
+                    magic_resist=16,
                     defense=3,
                     damage=3,
                 )
