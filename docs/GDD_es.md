@@ -135,7 +135,7 @@ desbloqueo de enemigos que ya usa el combate, según
 | **Ciénaga de los Ahogados** | Pantano anegado | *(10, completa — §4.8)* | Templo hundido, Embarcadero podrido | Oren |
 | **Cañón del Trueno** | Paso de montaña, piedra | *(10, completa — §4.9)* | Mina derrumbada, Puente colgante | Kort |
 | **Torre de los Arcanos / Necrópolis** | Torre de mago + cementerio | *(10, completa — §4.10)* | Biblioteca, Cripta | Sella |
-| **Ciudadela en Ruinas** | La capital arrasada, suelo infernal | Ángel Caído, Demonio | Catedral rota, Plaza | Aldric |
+| **Ciudadela en Ruinas** | La capital arrasada, suelo infernal | *(10, completa — §4.11)* | Catedral rota, Plaza | Aldric |
 | **El Corazón de la Brecha** | El origen — se diseña el último | *(§4)* | — | — |
 
 Tienda / herrería / descanso *(implementado en v0.12.0-c)* / guardado viven en
@@ -414,6 +414,45 @@ descartó — hoy solo tiene efecto en el lado del `Enemy` (reduce a la mitad
 su propia autocuración) y no hace nada al `Player`, así que infligírsela al
 jugador habría sido solo de cara a la galería; se usaron en su lugar
 estados ya funcionales (`sangrado`, `maldicion`).
+
+### 4.11 Ciudadela en Ruinas (10) *(implementado en v0.15.0-c)*
+
+Ángel Caído y Demonio (tiers 1-2, preexistentes) son anteriores a esta
+plantilla; los 8 enemigos nuevos (tiers 3-10) sí la siguen, ligados
+directamente a los diálogos y notas de lore ya existentes de Aldric: los
+ciudadanos que desaparecieron en la catedral (las filas de zapatos que
+dejaron en la Plaza), los mil guardias que perdió, las vidrieras que "aún
+miran de vuelta", y su propia revelación de que los ángeles caídos sirven
+—y los demonios solo temen— a algo sin rostro que de verdad gobierna la
+capital arrasada (el Dragón solo la arrasó).
+
+| Tier | Rango | Nombre | Arquetipo | Distintivo | Inflige | Débil a | Resiste | Inmune a |
+|------|-------|--------|-----------|------------|---------|---------|---------|----------|
+| 1 | estándar | Ángel Caído | apoyo | se cura, golpe sagrado/Juicio Divino | sagrado | oscuridad | sagrado | — |
+| 2 | estándar | Demonio | control | confusión, invoca un demonio menor | fuego | sagrado | oscuridad | — |
+| 3 | estándar | Ciudadano Hueco | bruto | prob. de desarmar al golpear | físico | sagrado | — | — |
+| 4 | estándar | Guardia Caída | bruto | segunda estocada periódica | físico | sagrado | — | — |
+| 5 | **élite** | Serafín Corrupto | apoyo | se cura, maldición leve | oscuridad | sagrado | oscuridad | — |
+| 6 | estándar | Eco de la Guardia | emboscador | emboscada tras la primera derrota | físico | sagrado | — | — |
+| 7 | **élite** | Custodio de Vidrieras | control | confusión, dardo sagrado | sagrado | sagrado | — | — |
+| 8 | estándar | Verdugo Infernal | bruto | vida robada: se cura con parte del daño que inflige, cada golpe | físico | sagrado | — | — |
+| 9 | **élite** | Heraldo del Amo | tanque | proclama inesquivable | físico | sagrado | — | paralizado |
+| 10 | **guardián** | El Sin Rostro | bruto/apoyo | se cura bajo 40 % vida, maldice al golpear con un dardo oscuro | oscuridad | sagrado | oscuridad | — |
+
+**Otro hueco naturalmente ajustado, esta vez sin ser un punto ciego de la
+fórmula**: el poder real de Demonio y el del Dragón (jefe final) dejaban
+solo un ~29% de margen antes de esta sub-fase — no suficiente para 8 tiers
+al mismo ritmo cómodo que el resto de zonas. Misma solución que la Gárgola
+de la Ciénaga: **se reforzó al Dragón** (solo estadísticas — vida, rango de
+ataque, oro; su mecánica de aliento de fuego y sus afinidades no cambian)
+en vez de comprimir el roster nuevo en una subida antinaturalmente plana.
+Los 8 tiers nuevos suben progresivamente desde el poder real de Demonio,
+por debajo del Dragón ya reforzado — ver
+`characters/enemies/ciudadano_hueco.py` y los archivos vecinos para los
+números exactos, y `_KNOWN_OUT_OF_RANGE` en `tests/test_power_budget.py`
+para cuáles de los 8 quedan fuera del rango formal de la zona (solo 6 — los
+dos primeros caben dentro, ya que una zona tan avanzada en la cadena ya
+tiene un techo formal generoso).
 
 ---
 
@@ -870,7 +909,7 @@ cambiar; el GDD es un documento vivo y cualquier cosa de aquí puede cambiar.
 | **v0.13.0** | Diálogo y NPCs | diálogo ramificado con respuestas del jugador · conversaciones únicas vs repetibles · NPCs de Piedrablanca + las 6 regiones actuales · notas de lore + Diario |
 | **v0.14.0** | Bestiario y enemigos I | bestiario progresivo · herramienta de presupuesto de poder (fija la curva de nivel) · Los Yermos + Bosque + Ciénaga rellenados a ~10 cada una (élites hacia el 4-9 + guardián 10) · habilidades de clase de nivel medio atadas a esos enemigos |
 | **v0.15.0** | Enemigos II | Cañón (hecho, §4.9) + Torre/Necrópolis (hecho, §4.10) a ~10 · escalado del botín (únicos + comunes tirados) · drop-scaling entre zonas · más habilidades de clase |
-| **v0.16.0** | Enemigos III | Ciudadela a ~10 · habilidades de clase de hito alto · misiones secundarias de esas regiones |
+| **v0.16.0** | Enemigos III | Ciudadela (hecha, §4.11) · habilidades de clase de hito alto · misiones secundarias de esas regiones |
 | **v0.17.0** | Historia principal | sistema de misiones · questline "La Brecha" (7 actos) enganchada a los NPCs / guardianes existentes · progresión por historia en vez de elegir enemigo |
 | **v0.18.0** | La Arena | modo de oleadas crecientes · recompensas de Arena (títulos + algunas piezas de conjunto + un único difícil) |
 | **más adelante** | Endgame y pulido | roster completo → **ajuste final del Dragón** + El Corazón de la Brecha · rebalanceo completo de la cadena · firma Ed25519 del updater · GIF de gameplay · MVC más limpia · *(ampliación)* combate multi-enemigo · *(muy a largo plazo)* posibles actos nuevos |

@@ -1509,6 +1509,66 @@ el cambio a mitigación multiplicativa.
     sin necesitar nuevas excepciones — los rangos por hueco se calcularon
     a mano antes de escribir cada `drop_item()`).
 
+- [x] **v0.15.0-c: Ciudadela en Ruinas rellenada a 10 enemigos** (GDD
+  §3/§4.11). 8 enemigos nuevos sobre el Ángel Caído y el Demonio ya
+  existentes: Ciudadano Hueco (tier 3, puede desarmar al golpear —
+  pánico ciego, uno de los ciudadanos desaparecidos de la Plaza), Guardia
+  Caída (tier 4, segunda estocada periódica), Serafín Corrupto (tier 5,
+  élite — autocuración + maldición leve, daño oscuridad), Eco de la
+  Guardia (tier 6, emboscada tras la primera derrota, ligado a "yo estaba
+  de guardia en la puerta, y viví" de Aldric), Custodio de Vidrieras
+  (tier 7, élite — confusión + dardo sagrado, ligado a "las vidrieras aún
+  miran de vuelta"), Verdugo Infernal (tier 8, vida robada), Heraldo del
+  Amo (tier 9, élite — proclama inevitable) y El Sin Rostro (tier 10,
+  **guardián**, abre El Corazón de la Brecha — autocuración bajo 40% vida
+  + maldición al golpear con un dardo oscuro). Todo ligado a los diálogos
+  y notas de lore de Aldric ya existentes: los ciudadanos que
+  desaparecieron en la catedral (las filas de zapatos abandonados en la
+  Plaza), los mil guardias que perdió, y su propia revelación de que "los
+  ángeles caídos le sirven, los demonios solo lo temen" — El Sin Rostro es
+  ese amo sin nombre, no el Dragón, que solo arrasó la ciudad.
+  - **Problema de diseño distinto al de la Ciénaga/Cañón**: aquí el hueco
+    no era un punto ciego de la fórmula, sino un hueco natural demasiado
+    ajustado — el poder real de Demonio (~812.965) y el del Dragón (jefe
+    final, ~1.051.596 antes de esta sub-fase) solo dejaban un ~29% de
+    margen, insuficiente para 8 tiers a un ritmo cómodo (6-9%/tier como en
+    el resto de zonas). Se planteó al usuario antes de implementar y
+    confirmó la misma solución que con Gárgola en la Ciénaga.
+  - **Dragón reforzado** (`characters/enemies/dragon.py`, solo números —
+    su mecánica de aliento de fuego y sus afinidades no cambian): vida
+    700→850, ataque 45-62→55-75, oro 250-320→300-385; poder real
+    ~1.051.596 → ~1.551.420.
+  - Cada tier nuevo se dimensionó para superar el poder real del enlace
+    anterior de la cadena, con una progresión de Demonio (~812.965) →
+    Ciudadano Hueco (~869.044) → Guardia Caída (~931.364) → Serafín
+    Corrupto (~994.681) → Eco de la Guardia (~1.064.447) → Custodio de
+    Vidrieras (~1.141.594) → Verdugo Infernal (~1.220.600) → Heraldo del
+    Amo (~1.305.640) → El Sin Rostro (~1.396.350), todo por debajo del
+    Dragón ya reforzado. Solo los últimos 6 (Serafín Corrupto en
+    adelante) caen fuera del rango formal de la zona en
+    `tests/test_power_budget.py::_KNOWN_OUT_OF_RANGE` — los dos primeros
+    caben dentro, ya que el techo formal de una zona tan avanzada en la
+    cadena es generoso.
+  - Cadena de desbloqueo: `Demonio → Ciudadano Hueco → Guardia Caída →
+    Serafín Corrupto → Eco de la Guardia → Custodio de Vidrieras →
+    Verdugo Infernal → Heraldo del Amo → El Sin Rostro → Dragón` (fin de
+    la cadena, sin cambios).
+  - El Sin Rostro es el sexto enemigo marcado `ENCOUNTER_KIND="guardian"`
+    (tras El Carnicero, El Enraizado, El Anegado, El Decimoquinto y El
+    Archivista), con su propia frase de encuentro y provocaciones.
+  - Tests: `tests/test_ciudadela_10.py` (mecánicas de los 8 enemigos
+    nuevos + progresión de poder estrictamente creciente incluyendo a
+    Demonio y el Dragón reforzado), `tests/test_new_enemies.py` (cadena
+    de desbloqueo actualizada), `tests/test_power_budget.py` (excepciones
+    documentadas), `tests/test_armor_progression.py` (los 8 enemigos
+    añadidos a `CHAIN`; hicieron falta dos ajustes para no romper la
+    progresión de hueco: el peto de la Guardia Caída de 20 a 24 frente al
+    Demonio, y el amuleto del Dragón de 12 a 16 frente a El Sin Rostro —
+    corregidos en los propios objetos, no con excepciones).
+  - **Con esto, todas las zonas del mapa salvo El Corazón de la Brecha
+    (que el propio GDD deja "diseñada al final", solo con el Dragón)
+    están completas a 10 enemigos.**
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena

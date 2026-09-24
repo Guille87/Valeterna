@@ -71,7 +71,15 @@ ENEMY_PROGRESSION = {
     "Guardián del Tomo Prohibido": "El Archivista",
     "El Archivista": "Ángel Caído",  # guardián de la Torre: abre la Ciudadela en Ruinas
     "Ángel Caído": "Demonio",
-    "Demonio": "Dragón",
+    "Demonio": "Ciudadano Hueco",
+    "Ciudadano Hueco": "Guardia Caída",
+    "Guardia Caída": "Serafín Corrupto",
+    "Serafín Corrupto": "Eco de la Guardia",
+    "Eco de la Guardia": "Custodio de Vidrieras",
+    "Custodio de Vidrieras": "Verdugo Infernal",
+    "Verdugo Infernal": "Heraldo del Amo",
+    "Heraldo del Amo": "El Sin Rostro",
+    "El Sin Rostro": "Dragón",  # guardián de la Ciudadela: abre El Corazón de la Brecha
     "Dragón": None,  # Jefe final de la cadena
 }
 
