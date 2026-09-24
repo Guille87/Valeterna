@@ -77,8 +77,8 @@ class ChispaDelPuntal(Enemy):
         if random.random() <= 0.1:
             items.append(
                 Weapon(
-                    "Filo de Tormenta",
-                    "El metal conserva la carga del mineral con el que se forjó.",
+                    "Esquirla de Tormenta",
+                    "Un fragmento de la propia chispa, cristalizado; sigue crepitando con la misma carga.",
                     32,
                     21,
                     element="rayo",

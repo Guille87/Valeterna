@@ -140,12 +140,11 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 
 | # | Zona | Tier | Enemigo | Objeto | Tipo | Stats | Probabilidad |
 |---|------|------|---------|--------|------|-------|--------------:|
-| 1 | Los Yermos | 1 | Goblin | Espada Goblin | arma | Daño: 4 | 10% |
+| 1 | Los Yermos | 1 | Goblin | Espada Goblin | arma | Daño: 2 | 10% |
 | 1 | Los Yermos | 1 | Goblin | Poción de Salud | HealingPotion | Restaura 20 HP | 80% |
 | 1 | Los Yermos | 1 | Goblin | Colmillo de Goblin | Material | Un colmillo curvo y afilado, típico de estas criaturas. | 25% |
 | 2 | Los Yermos | 2 | Rata Gigante | Poción de Salud | HealingPotion | Restaura 20 HP | 70% |
 | 2 | Los Yermos | 2 | Rata Gigante | Cola de Rata | Material | Correosa y resistente, casi imposible de cortar. | 25% |
-| 2 | Los Yermos | 2 | Rata Gigante | Daga Oxidada | arma | Daño: 4 | 10% |
 | 2 | Los Yermos | 2 | Rata Gigante | Botas de Piel de Rata | armadura · botas | Velocidad: +1 | 8% |
 | 3 | Los Yermos | 3 | Goblin Montaraz | Poción de Salud | HealingPotion | Restaura 20 HP | 60% |
 | 3 | Los Yermos | 3 | Goblin Montaraz | Punta de Flecha | Material | Tallada en pedernal, todavía manchada de sangre seca. | 30% |
@@ -154,7 +153,6 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 4 | Los Yermos | 4 | Huargo | Poción de Salud | HealingPotion | Restaura 20 HP | 70% |
 | 4 | Los Yermos | 4 | Huargo | Colmillo de Huargo | Material | Un colmillo curvo, todavía caliente de la caza. | 30% |
 | 4 | Los Yermos | 4 | Huargo | Garras de Huargo | arma | Daño: 7 | 10% |
-| 4 | Los Yermos | 4 | Huargo | Colmillo Venenoso | arma | Daño: 6 (Veneno) · inflige veneno 25% | 8% |
 | 4 | Los Yermos | 4 | Huargo | Botas de Huargo | armadura · botas | Velocidad: +2 | 8% |
 | 4 | Los Yermos | 4 | Huargo | Cinturón de Manada | armadura · cinturon | Armadura: 2 \| Velocidad: +2 | 8% |
 | 5 | Los Yermos | 5 | Chamán Goblin | Poción de Salud | HealingPotion | Restaura 20 HP | 55% |
@@ -212,7 +210,6 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 16 | Bosque de los Susurros | 6 | Oso Espectral | Cráneo de Oso Espectral | armadura · casco | Vida: +20 | 8% |
 | 17 | Bosque de los Susurros | 7 | Enjambre de Polillas Pálidas | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
 | 17 | Bosque de los Susurros | 7 | Enjambre de Polillas Pálidas | Polvo de Ala Pálida | Material | Fino como la ceniza; sigue posándose mucho después de recogerlo. | 30% |
-| 17 | Bosque de los Susurros | 7 | Enjambre de Polillas Pálidas | Daga de Polvo de Ala | arma | Daño: 15 (Veneno) · inflige veneno 25% | 10% |
 | 17 | Bosque de los Susurros | 7 | Enjambre de Polillas Pálidas | Guanteletes de Polvo de Ala | armadura · guantes | Daño Crítico: +5% | 8% |
 | 18 | Bosque de los Susurros | 8 | Lobo Umbrío | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
 | 18 | Bosque de los Susurros | 8 | Lobo Umbrío | Pelaje Umbrío | Material | Absorbe la luz en vez de reflejarla; sigue frío mucho después de la caza. | 30% |
@@ -281,7 +278,7 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 32 | Cañón del Trueno | 2 | Gólem de Piedra | Hombreras de Gólem | armadura · hombreras | Armadura: 4 \| Precisión: +4 | 8% |
 | 32 | Cañón del Trueno | 2 | Gólem de Piedra | Botas de Gólem | armadura · botas | Armadura: 3 \| Vida: +10 \| Velocidad: +1 | 8% |
 | 33 | Cañón del Trueno | 3 | Minero Poseído | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
-| 33 | Cañón del Trueno | 3 | Minero Poseído | Pico Roto | Material | El mango está astillado, pero la punta sigue firme. | 30% |
+| 33 | Cañón del Trueno | 3 | Minero Poseído | Guante de Minero | Material | Rígido y ennegrecido; todavía conserva la forma de la mano. | 30% |
 | 33 | Cañón del Trueno | 3 | Minero Poseído | Pico de Minero | arma | Daño: 21 | 10% |
 | 33 | Cañón del Trueno | 3 | Minero Poseído | Casco de Minero | armadura · casco | Vida: +28 | 8% |
 | 34 | Cañón del Trueno | 4 | Murciélago de Tormenta | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
@@ -290,7 +287,7 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 34 | Cañón del Trueno | 4 | Murciélago de Tormenta | Perneras de Ala | armadura · perneras | Evasión: +5 | 8% |
 | 35 | Cañón del Trueno | 5 | Chispa del Puntal | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
 | 35 | Cañón del Trueno | 5 | Chispa del Puntal | Mineral de Tormenta | Material | Sigue caliente y crepita cuando lo sostienes. | 30% |
-| 35 | Cañón del Trueno | 5 | Chispa del Puntal | Filo de Tormenta | arma | Daño: 21 (Rayo) · inflige parálisis 25% | 10% |
+| 35 | Cañón del Trueno | 5 | Chispa del Puntal | Esquirla de Tormenta | arma | Daño: 21 (Rayo) · inflige parálisis 25% | 10% |
 | 35 | Cañón del Trueno | 5 | Chispa del Puntal | Brazales de Tormenta | armadura · brazales | Prob.Crítico: +5% | 8% |
 | 36 | Cañón del Trueno | 6 | Aparición de la Cuadrilla | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
 | 36 | Cañón del Trueno | 6 | Aparición de la Cuadrilla | Retal de Cuadrilla | Material | Un jirón de ropa de mina; todavía huele a polvo de roca. | 30% |
@@ -301,7 +298,7 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 37 | Cañón del Trueno | 7 | Verdugo de la Mina | Mazo de Galería | arma | Daño: 24 | 8% |
 | 37 | Cañón del Trueno | 7 | Verdugo de la Mina | Cinturón de Galería | armadura · cinturon | Armadura: 16 \| Vida: +25 | 8% |
 | 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | Poción de Salud | HealingPotion | Restaura 20 HP | 55% |
-| 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | Cuerno Retorcido | Material | Se curva en un ángulo que ningún cuerno sano tomaría. | 30% |
+| 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | Pezuña Corrupta | Material | Se astilla en el borde, como si hubiera pisado algo que no era piedra. | 30% |
 | 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | Cuerno Afilado | arma | Daño: 25 | 8% |
 | 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | Botas de Cabra | armadura · botas | Velocidad: +4 | 8% |
 | 39 | Cañón del Trueno | 9 | Heraldo de la Tormenta | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |

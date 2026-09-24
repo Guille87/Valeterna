@@ -2,7 +2,7 @@ import random
 
 from valeterna.characters.enemies.enemy_base import Enemy
 from valeterna.characters.stats import Stats, resolve_hit
-from valeterna.items.equipment import Armor, Weapon
+from valeterna.items.equipment import Armor
 from valeterna.items.materials import Material
 from valeterna.items.potions import HealingPotion
 from valeterna.ui import console
@@ -66,8 +66,6 @@ class RataGigante(Enemy):
             items.append(
                 Material("Cola de Rata", "Correosa y resistente, casi imposible de cortar.", 2, rarity="Común")
             )
-        if random.random() <= 0.1:
-            items.append(Weapon("Daga Oxidada", "Arrancada de algún viajero que no tuvo tanta suerte.", 6, 4))
         if random.random() <= 0.08:
             items.append(
                 Armor(

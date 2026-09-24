@@ -2,7 +2,7 @@ import random
 
 from valeterna.characters.enemies.enemy_base import Enemy
 from valeterna.characters.stats import Stats, resolve_hit
-from valeterna.items.equipment import Armor, Weapon
+from valeterna.items.equipment import Armor
 from valeterna.items.materials import Material
 from valeterna.items.potions import HealingPotion
 from valeterna.ui import console
@@ -89,16 +89,6 @@ class EnjambrePolillas(Enemy):
                     "Fino como la ceniza; sigue posándose mucho después de recogerlo.",
                     8,
                     rarity="Poco común",
-                )
-            )
-        if random.random() <= 0.1:
-            items.append(
-                Weapon(
-                    "Daga de Polvo de Ala",
-                    "El filo está recubierto de un polvo que irrita cualquier herida.",
-                    24,
-                    15,
-                    element="veneno",
                 )
             )
         if random.random() <= 0.08:

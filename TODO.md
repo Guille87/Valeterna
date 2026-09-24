@@ -1649,6 +1649,22 @@ solo anotados aquí**:
   - `tests/test_weapon_progression.py` (nuevo) fija esta regla igual que
     `test_armor_progression.py` fija la de armaduras, agrupando por
     (zona, elemento) en vez de por la cadena completa.
+  - **Segunda pasada, coherencia temática de los drops** (pedida aparte por
+    el usuario tras ver la tabla): además de que el *poder* no baje, el
+    *tipo* de objeto tiene que tener sentido para el enemigo — no todos
+    tienen por qué soltar arma. Corregido: Rata Gigante y Enjambre de
+    Polillas Pálidas dejan de soltar un arma "forjada" que no encaja con lo
+    que son (un roedor y un enjambre de polillas no empuñan una daga real);
+    Chispa del Puntal cambia el nombre/descripción de su arma de "forjada"
+    a un fragmento cristalizado de sí misma (misma daño/elemento); Huargo
+    deja de soltar directamente "Colmillo Venenoso" porque ya existía la
+    receta de herrería "Daga Envenenada" que usa su propio material
+    ("Colmillo de Huargo") — sobraba el duplicado; Cabra Montés Corrupta y
+    Minero Poseído renombran su *material* (no el arma) para no repetir la
+    misma parte del cuerpo dos veces ("Cuerno Retorcido"→"Pezuña Corrupta",
+    "Pico Roto"→"Guante de Minero"). También se bajó el daño de la primera
+    arma del juego (Espada Goblin) de 4 a 2, para que equiparla desde el
+    principio no dispare de golpe el daño mínimo/máximo del jugador.
 
 **Antes de implementar nada de esto**, hace falta planificar en qué orden
 se aborda cada frente (algunos son prerrequisito de otros — p. ej. medir
