@@ -80,7 +80,7 @@ class MurcielagoDeTormenta(Enemy):
             )
         if random.random() <= 0.1:
             items.append(
-                Weapon("Garra de Murciélago", "Curvada y ligera; apenas se nota hasta que ya ha cortado.", 25, 17)
+                Weapon("Garra de Murciélago", "Curvada y ligera; apenas se nota hasta que ya ha cortado.", 32, 22)
             )
         if random.random() <= 0.08:
             items.append(

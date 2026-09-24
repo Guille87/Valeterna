@@ -72,7 +72,7 @@ class CabraMontesCorrupta(Enemy):
             )
         if random.random() <= 0.08:
             items.append(
-                Weapon("Cuerno Afilado", "Pulido en la punta, como si algo lo hubiera afilado a propósito.", 34, 23)
+                Weapon("Cuerno Afilado", "Pulido en la punta, como si algo lo hubiera afilado a propósito.", 37, 25)
             )
         if random.random() <= 0.08:
             items.append(

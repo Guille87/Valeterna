@@ -67,7 +67,7 @@ class RataGigante(Enemy):
                 Material("Cola de Rata", "Correosa y resistente, casi imposible de cortar.", 2, rarity="Común")
             )
         if random.random() <= 0.1:
-            items.append(Weapon("Daga Oxidada", "Arrancada de algún viajero que no tuvo tanta suerte.", 5, 3))
+            items.append(Weapon("Daga Oxidada", "Arrancada de algún viajero que no tuvo tanta suerte.", 6, 4))
         if random.random() <= 0.08:
             items.append(
                 Armor(

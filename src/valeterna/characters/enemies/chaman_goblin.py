@@ -108,7 +108,7 @@ class ChamanGoblin(Enemy):
                 )
             )
         if random.random() <= 0.1:
-            items.append(Weapon("Cayado Goblin", "Un palo nudoso rematado con un cráneo pequeño.", 8, 5))
+            items.append(Weapon("Cayado Goblin", "Un palo nudoso rematado con un cráneo pequeño.", 11, 8))
         if random.random() <= 0.08:
             items.append(
                 Armor(

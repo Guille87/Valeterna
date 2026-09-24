@@ -1620,19 +1620,35 @@ solo anotados aquí**:
   demasiado rápido..." — ver v0.14.0-e) sigue en pie y se hace en la misma
   pasada que los dos puntos de arriba (equipo dropeado + curva de XP), ya
   que son la misma pieza de diseño.
-- [ ] **Revisión completa de los drops de arma/armadura de los 61 enemigos**:
-  hay casos de un enemigo de tier más bajo dentro de la misma zona que suelta
-  un objeto mejor que el de un tier más alto (inversión de calidad, no solo
-  de poder — distinto del punto de más arriba sobre "cuánto poder da el
-  equipo en relación al nivel", esto es específicamente sobre comparar
-  objetos entre sí dentro de la misma zona/hueco y detectar cuáles están mal
-  ordenados). Hace falta pasar enemigo por enemigo (los 61) y comprobar que
-  cada drop tiene sentido frente a los drops vecinos de su misma zona, no
-  solo frente a la cadena completa (que es lo que ya cubre
-  `tests/test_armor_progression.py`). Como apoyo para esta revisión (y para
-  las demás), sería útil mantener siempre a mano una **tabla actualizada de
-  los 61 enemigos** (zona, tier, stats clave, drops, elemento/mecánica) en
-  vez de tener que releer cada archivo de enemigo o `CLAUDE.md` cada vez.
+- [x] **Revisión completa de los drops de arma/armadura de los 61 enemigos**
+  (inversión de calidad **dentro de la misma zona**, distinto del punto de
+  más arriba sobre "cuánto poder da el equipo en relación al nivel", que
+  sigue pendiente). **Hecho** (rama `docs/tabla-enemigos`):
+  - `tools/generate_enemy_table.py` genera `docs/design/enemigos.md` (tres
+    tablas: stats de combate, afinidades/mecánicas y drops, con la
+    desviación de cada enemigo sobre su objetivo formal de poder) a partir
+    del código real — se vuelve a ejecutar tras cualquier cambio en vez de
+    mantenerse a mano.
+  - Las armaduras ya estaban limpias (`tests/test_armor_progression.py` ya
+    lo garantizaba a lo largo de toda la cadena, que es un superconjunto de
+    "dentro de zona" porque el orden de la cadena es justo la concatenación
+    de zonas). El hueco real estaba en las **armas**: no había ningún test
+    que comprobara que `Weapon.damage` no bajase entre tiers de una misma
+    zona (agrupando por elemento, incluido "sin elemento" = arma física).
+  - Encontradas y corregidas 6 inversiones reales dentro de zona (subiendo
+    el número del enemigo de tier más bajo, no documentando una excepción,
+    mismo criterio que ya se usa para contenido propio): Rata Gigante,
+    Chamán Goblin y Salteador (Los Yermos); Druida Corrupto (Bosque de los
+    Susurros); Murciélago de Tormenta y Cabra Montés Corrupta (Cañón del
+    Trueno). Las bajadas que solo se daban **entre zonas distintas** (p. ej.
+    el arma con la que abre una zona siendo más floja que la que cerraba la
+    zona anterior — Sanguijuela Colosal, Gárgola, Chamán del Cieno, Ángel
+    Caído) se dejaron sin tocar a propósito: el propio diseño ya reinicia el
+    poder de cada zona más abajo (`characters/power_budget.py`), así que no
+    es la misma inversión que preocupaba al usuario ("de la misma zona").
+  - `tests/test_weapon_progression.py` (nuevo) fija esta regla igual que
+    `test_armor_progression.py` fija la de armaduras, agrupando por
+    (zona, elemento) en vez de por la cadena completa.
 
 **Antes de implementar nada de esto**, hace falta planificar en qué orden
 se aborda cada frente (algunos son prerrequisito de otros — p. ej. medir

@@ -145,7 +145,7 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 1 | Los Yermos | 1 | Goblin | Colmillo de Goblin | Material | Un colmillo curvo y afilado, típico de estas criaturas. | 25% |
 | 2 | Los Yermos | 2 | Rata Gigante | Poción de Salud | HealingPotion | Restaura 20 HP | 70% |
 | 2 | Los Yermos | 2 | Rata Gigante | Cola de Rata | Material | Correosa y resistente, casi imposible de cortar. | 25% |
-| 2 | Los Yermos | 2 | Rata Gigante | Daga Oxidada | arma | Daño: 3 | 10% |
+| 2 | Los Yermos | 2 | Rata Gigante | Daga Oxidada | arma | Daño: 4 | 10% |
 | 2 | Los Yermos | 2 | Rata Gigante | Botas de Piel de Rata | armadura · botas | Velocidad: +1 | 8% |
 | 3 | Los Yermos | 3 | Goblin Montaraz | Poción de Salud | HealingPotion | Restaura 20 HP | 60% |
 | 3 | Los Yermos | 3 | Goblin Montaraz | Punta de Flecha | Material | Tallada en pedernal, todavía manchada de sangre seca. | 30% |
@@ -159,7 +159,7 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 4 | Los Yermos | 4 | Huargo | Cinturón de Manada | armadura · cinturon | Armadura: 2 \| Velocidad: +2 | 8% |
 | 5 | Los Yermos | 5 | Chamán Goblin | Poción de Salud | HealingPotion | Restaura 20 HP | 55% |
 | 5 | Los Yermos | 5 | Chamán Goblin | Huesos de Augur | Material | Pequeños huesos tallados con símbolos que nadie más sabe leer. | 30% |
-| 5 | Los Yermos | 5 | Chamán Goblin | Cayado Goblin | arma | Daño: 5 | 10% |
+| 5 | Los Yermos | 5 | Chamán Goblin | Cayado Goblin | arma | Daño: 8 | 10% |
 | 5 | Los Yermos | 5 | Chamán Goblin | Amuleto de Hueso | armadura · amuleto | Res.Mágica: 2 | 8% |
 | 6 | Los Yermos | 6 | Esqueleto | Casco de Hueso | armadura · casco | Vida: +15 \| Prob.Crítico: +3% | 10% |
 | 6 | Los Yermos | 6 | Esqueleto | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
@@ -173,7 +173,7 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 7 | Los Yermos | 7 | Bandido | Capucha de Ladrón | armadura · casco | Vida: +18 \| Prob.Crítico: +4% | 8% |
 | 8 | Los Yermos | 8 | Salteador | Poción de Salud | HealingPotion | Restaura 20 HP | 55% |
 | 8 | Los Yermos | 8 | Salteador | Bolsa Remendada | Material | Cosida con retales de otras tantas víctimas. | 30% |
-| 8 | Los Yermos | 8 | Salteador | Dagas Gemelas | arma | Daño: 7 | 10% |
+| 8 | Los Yermos | 8 | Salteador | Dagas Gemelas | arma | Daño: 10 | 10% |
 | 8 | Los Yermos | 8 | Salteador | Guantes de Saltador | armadura · guantes | Daño Crítico: +13% | 8% |
 | 8 | Los Yermos | 8 | Salteador | Perneras Ligeras | armadura · perneras | Evasión: +3 | 8% |
 | 9 | Los Yermos | 9 | Ogro del Yermo | Poción de Salud | HealingPotion | Restaura 20 HP | 55% |
@@ -204,7 +204,7 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 14 | Bosque de los Susurros | 4 | Araña Tejesombras | Perneras de Tejedora | armadura · perneras | Evasión: +3 | 8% |
 | 15 | Bosque de los Susurros | 5 | Druida Corrupto | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
 | 15 | Bosque de los Susurros | 5 | Druida Corrupto | Savia Corrupta | Material | Negra y espesa; huele a tierra removida y a algo más. | 30% |
-| 15 | Bosque de los Susurros | 5 | Druida Corrupto | Vara Retorcida | arma | Daño: 14 | 10% |
+| 15 | Bosque de los Susurros | 5 | Druida Corrupto | Vara Retorcida | arma | Daño: 17 | 10% |
 | 15 | Bosque de los Susurros | 5 | Druida Corrupto | Amuleto de Corteza | armadura · amuleto | Res.Mágica: 4 | 8% |
 | 16 | Bosque de los Susurros | 6 | Oso Espectral | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
 | 16 | Bosque de los Susurros | 6 | Oso Espectral | Pelaje Espectral | Material | Frío al tacto incluso cuando no hay nada que tocar. | 30% |
@@ -286,7 +286,7 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 33 | Cañón del Trueno | 3 | Minero Poseído | Casco de Minero | armadura · casco | Vida: +28 | 8% |
 | 34 | Cañón del Trueno | 4 | Murciélago de Tormenta | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
 | 34 | Cañón del Trueno | 4 | Murciélago de Tormenta | Ala de Tormenta | Material | Fina como el papel, pero sigue crepitando al tacto. | 30% |
-| 34 | Cañón del Trueno | 4 | Murciélago de Tormenta | Garra de Murciélago | arma | Daño: 17 | 10% |
+| 34 | Cañón del Trueno | 4 | Murciélago de Tormenta | Garra de Murciélago | arma | Daño: 22 | 10% |
 | 34 | Cañón del Trueno | 4 | Murciélago de Tormenta | Perneras de Ala | armadura · perneras | Evasión: +5 | 8% |
 | 35 | Cañón del Trueno | 5 | Chispa del Puntal | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
 | 35 | Cañón del Trueno | 5 | Chispa del Puntal | Mineral de Tormenta | Material | Sigue caliente y crepita cuando lo sostienes. | 30% |
@@ -302,7 +302,7 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 37 | Cañón del Trueno | 7 | Verdugo de la Mina | Cinturón de Galería | armadura · cinturon | Armadura: 16 \| Vida: +25 | 8% |
 | 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | Poción de Salud | HealingPotion | Restaura 20 HP | 55% |
 | 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | Cuerno Retorcido | Material | Se curva en un ángulo que ningún cuerno sano tomaría. | 30% |
-| 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | Cuerno Afilado | arma | Daño: 23 | 8% |
+| 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | Cuerno Afilado | arma | Daño: 25 | 8% |
 | 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | Botas de Cabra | armadura · botas | Velocidad: +4 | 8% |
 | 39 | Cañón del Trueno | 9 | Heraldo de la Tormenta | Poción de Salud | HealingPotion | Restaura 20 HP | 50% |
 | 39 | Cañón del Trueno | 9 | Heraldo de la Tormenta | Mineral Bendecido por la Brecha | Material | Late con una carga que no es del todo eléctrica. | 30% |

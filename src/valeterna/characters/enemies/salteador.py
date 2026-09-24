@@ -93,7 +93,7 @@ class Salteador(Enemy):
         if random.random() <= 0.3:
             items.append(Material("Bolsa Remendada", "Cosida con retales de otras tantas víctimas.", 4, rarity="Común"))
         if random.random() <= 0.1:
-            items.append(Weapon("Dagas Gemelas", "Un par de dagas idénticas, afiladas por los dos lados.", 10, 7))
+            items.append(Weapon("Dagas Gemelas", "Un par de dagas idénticas, afiladas por los dos lados.", 13, 10))
         if random.random() <= 0.08:
             items.append(
                 Armor(
