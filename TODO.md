@@ -1620,6 +1620,19 @@ solo anotados aquí**:
   demasiado rápido..." — ver v0.14.0-e) sigue en pie y se hace en la misma
   pasada que los dos puntos de arriba (equipo dropeado + curva de XP), ya
   que son la misma pieza de diseño.
+- [ ] **Revisión completa de los drops de arma/armadura de los 61 enemigos**:
+  hay casos de un enemigo de tier más bajo dentro de la misma zona que suelta
+  un objeto mejor que el de un tier más alto (inversión de calidad, no solo
+  de poder — distinto del punto de más arriba sobre "cuánto poder da el
+  equipo en relación al nivel", esto es específicamente sobre comparar
+  objetos entre sí dentro de la misma zona/hueco y detectar cuáles están mal
+  ordenados). Hace falta pasar enemigo por enemigo (los 61) y comprobar que
+  cada drop tiene sentido frente a los drops vecinos de su misma zona, no
+  solo frente a la cadena completa (que es lo que ya cubre
+  `tests/test_armor_progression.py`). Como apoyo para esta revisión (y para
+  las demás), sería útil mantener siempre a mano una **tabla actualizada de
+  los 61 enemigos** (zona, tier, stats clave, drops, elemento/mecánica) en
+  vez de tener que releer cada archivo de enemigo o `CLAUDE.md` cada vez.
 
 **Antes de implementar nada de esto**, hace falta planificar en qué orden
 se aborda cada frente (algunos son prerrequisito de otros — p. ej. medir
