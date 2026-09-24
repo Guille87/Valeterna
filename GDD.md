@@ -128,7 +128,7 @@ migration and `is_zone_reachable()`'s live check.
 | **Ciénaga de los Ahogados** | Drowned marsh | *(10, complete — §4.8)* | Templo hundido, Embarcadero podrido | Oren |
 | **Cañón del Trueno** | Mountain pass, stone | *(10, complete — §4.9)* | Mina derrumbada, Puente colgante | Kort |
 | **Torre de los Arcanos / Necrópolis** | Mage tower + graveyard | *(10, complete — §4.10)* | Biblioteca, Cripta | Sella |
-| **Ciudadela en Ruinas** | The razed capital, infernal ground | Ángel Caído, Demonio | Catedral rota, Plaza | Aldric |
+| **Ciudadela en Ruinas** | The razed capital, infernal ground | *(10, complete — §4.11)* | Catedral rota, Plaza | Aldric |
 | **El Corazón de la Brecha** | The origin — designed last | *(§4)* | — | — |
 
 Shop / forge / rest *(implemented in v0.12.0-c)* / save live in Piedrablanca's
@@ -389,6 +389,44 @@ these enemies but dropped — it only has an effect on the `Enemy` side today
 (halves an enemy's own self-heal) and does nothing to the `Player`, so
 inflicting it on the player would be flavor-only; already-functional
 statuses (`sangrado`, `maldicion`) were used instead.
+
+### 4.11 Ciudadela en Ruinas (10) *(implemented in v0.15.0-c)*
+
+Ángel Caído and Demonio (tiers 1-2, pre-existing) predate this template; the
+8 new enemies (tiers 3-10) follow it, tied directly into Aldric's
+pre-existing dialogue and lore notes: the citizens who vanished at the
+cathedral (rows of shoes left behind in the Plaza), the thousand guards he
+lost, the stained-glass windows that "still watch back", and his own
+revelation that fallen angels serve — and demons merely fear — an unseen
+ruler that actually governs the ruined capital (the Dragón only razed it).
+
+| Tier | Rank | Name | Archetype | Signature | Deals | Weak to | Resists | Immune to |
+|------|------|------|-----------|-----------|-------|---------|---------|-----------|
+| 1 | standard | Ángel Caído | support | self-heal, holy strike/Juicio Divino | sagrado | oscuridad | sagrado | — |
+| 2 | standard | Demonio | control | confusion special attack, summons a lesser demon | fuego | sagrado | oscuridad | — |
+| 3 | standard | Ciudadano Hueco | bruiser | on-hit disarm chance | físico | sagrado | — | — |
+| 4 | standard | Guardia Caída | bruiser | periodic second sword strike | físico | sagrado | — | — |
+| 5 | **elite** | Serafín Corrupto | support | self-heal, minor curse | oscuridad | sagrado | oscuridad | — |
+| 6 | standard | Eco de la Guardia | ambusher | ambushes after first defeat | físico | sagrado | — | — |
+| 7 | **elite** | Custodio de Vidrieras | control | confusion special attack, holy bolt | sagrado | sagrado | — | — |
+| 8 | standard | Verdugo Infernal | bruiser | life drain: heals for a share of the damage it deals, every hit | físico | sagrado | — | — |
+| 9 | **elite** | Heraldo del Amo | tank | unavoidable proclamation strike | físico | sagrado | — | paralizado |
+| 10 | **guardian** | El Sin Rostro | bruiser/support | self-heal below 40 % HP, curses on hit via a dark bolt | oscuridad | sagrado | oscuridad | — |
+
+**Another naturally tight gap, this time not a formula blind spot**:
+Demonio's real power and the Dragón's (final boss) left only ~29% of
+headroom before this sub-phase — not enough for 8 tiers at the same
+comfortable pace as the other zones. Same solution as the Ciénaga's
+Gárgola: **the Dragón was reinforced** (stats only — HP, attack range,
+gold; its fire-breath mechanic and affinities are untouched) rather than
+compressing the new roster into an unnaturally flat climb. The 8 new tiers
+climb progressively from Demonio's real power, comfortably below the
+reinforced Dragón — see `characters/enemies/ciudadano_hueco.py` and the
+neighbouring files for the exact numbers, and
+`tests/test_power_budget.py`'s `_KNOWN_OUT_OF_RANGE` for which of the 8
+land outside the zone's formal range (only 6 of them — the first two fit
+inside it, since a zone this far down the chain already has a generous
+formal ceiling).
 
 ---
 
@@ -819,7 +857,7 @@ is a living document and any of this can change.
 | **v0.13.0** | Dialogue & NPCs | branching dialogue with player choices · one-time vs repeatable conversations · NPCs for Piedrablanca + the 6 existing regions · lore notes + Diario |
 | **v0.14.0** | Bestiary & enemies I | progressive bestiary · power-budget tool (sets the level curve) · Los Yermos + Bosque + Ciénaga fleshed to ~10 each (elites 4-9-ish + guardian 10) · mid-progression class skills tied to those enemies |
 | **v0.15.0** | Enemies II | Cañón (done, §4.9) + Torre/Necrópolis (done, §4.10) to ~10 · loot scaling (uniques + rolled commons) · cross-zone drop-scaling · more class skills |
-| **v0.16.0** | Enemies III | Ciudadela to ~10 · high-milestone class skills · side quests for those regions |
+| **v0.16.0** | Enemies III | Ciudadela (done, §4.11) · high-milestone class skills · side quests for those regions |
 | **v0.17.0** | Main story | quest system · "La Brecha" questline (7 acts) wired to the existing NPCs / guardians · progression by story instead of picking an enemy |
 | **v0.18.0** | The Arena | escalating-wave mode · Arena rewards (titles + some set pieces + a hard-to-get unique) |
 | **later** | Endgame & polish | full roster → **Dragón final tuning** + El Corazón de la Brecha · full chain rebalance · Ed25519 updater signature · gameplay GIF · cleaner MVC · *(stretch)* multi-enemy combat · *(very long term)* possible extra acts |

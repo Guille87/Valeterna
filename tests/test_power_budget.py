@@ -186,6 +186,26 @@ _KNOWN_OUT_OF_RANGE = {
     "Carroñero de Cripta",
     "Guardián del Tomo Prohibido",
     "El Archivista",
+    # Ciudadela en Ruinas (v0.15.0-c): esta vez el enlace roto no es un punto
+    # ciego de la fórmula, sino un hueco natural demasiado ajustado — el
+    # poder real de Demonio (~812.965) y el del Dragón (jefe final,
+    # ~1.051.596 antes de esta sub-fase) solo dejaban un ~29% de margen,
+    # nada para 8 tiers progresivos a un ritmo cómodo. Se reforzó al Dragón
+    # (solo estadísticas — vida, ataque, oro; ni su aliento de fuego ni sus
+    # afinidades cambian — real ~1.051.596 → ~1.551.420) en vez de comprimir
+    # el roster nuevo en una subida antinaturalmente plana, y los 8 tiers se
+    # dimensionaron para superar progresivamente el poder real de Demonio
+    # (~869.044 → ~1.396.350), por debajo del Dragón ya reforzado. Los dos
+    # primeros (Ciudadano Hueco, Guardia Caída) sí caben dentro del rango
+    # formal de la zona — el techo formal de una zona tan avanzada es
+    # generoso — así que no hace falta documentarlos como excepción; los
+    # 6 siguientes sí lo superan.
+    "Serafín Corrupto",
+    "Eco de la Guardia",
+    "Custodio de Vidrieras",
+    "Verdugo Infernal",
+    "Heraldo del Amo",
+    "El Sin Rostro",
 }
 
 
