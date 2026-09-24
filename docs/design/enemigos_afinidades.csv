@@ -1,0 +1,62 @@
+#,Zona,Tier,Nombre,Elementos infligidos,Debilidades,Resistencias,Inmune (elemento),Inmune (estado),Estados que inflige,Mecánica
+1,Los Yermos,1,Goblin,—,—,—,—,—,—,Emboscada: puede atacarte por sorpresa antes de empezar el combate.
+2,Los Yermos,2,Rata Gigante,—,fuego,—,—,—,veneno,Mordisco rápido: puede envenenar con cada ataque.
+3,Los Yermos,3,Goblin Montaraz,—,fuego,—,—,—,sangrado,Flechas certeras: sus disparos pueden abrirte una herida que sangra.
+4,Los Yermos,4,Huargo,—,—,—,—,—,—,Mordisco de manada: a veces otro lobo se suma al ataque con un mordisco extra.
+5,Los Yermos,5,Chamán Goblin,oscuridad,sagrado,oscuridad,—,—,maldicion,Bendición oscura: se cura cuando está malherido y puede maldecir tu armadura.
+6,Los Yermos,6,Esqueleto,—,sagrado,veneno,—,"sangrado, veneno",—,"Reanimación: la primera vez que cae, se reensambla con la mitad de su vida."
+7,Los Yermos,7,Bandido,—,veneno,—,—,—,desarmado,Emboscada y desarme: ataca desde las sombras y puede anular el bonus de tu arma durante 2 turnos.
+8,Los Yermos,8,Salteador,—,—,—,—,—,—,"Doble golpe y manos largas: a veces golpea dos veces seguidas, otras veces prefiere robarte el oro."
+9,Los Yermos,9,Ogro del Yermo,—,fuego,—,—,paralizado,aturdido,Golpe aplastante: un mazazo más fuerte de lo normal que puede dejarte aturdido.
+10,Los Yermos,10,El Carnicero,—,sagrado,veneno,—,—,sangrado,Furia: por debajo del 40% de vida sus golpes pegan más fuerte y sangran más a menudo.
+11,Bosque de los Susurros,1,Orco,—,—,veneno,—,—,—,"Furia cíclica: 3 turnos de calma y 3 de furia; enfurecido, sus golpes hacen el doble de daño."
+12,Bosque de los Susurros,2,Espíritu Vengativo,—,sagrado,—,veneno,"sangrado, veneno",maldicion,Maldición: a veces te maldice y reduce tu armadura durante 3 turnos.
+13,Bosque de los Susurros,3,Troll,—,fuego,—,—,—,—,Regeneración: recupera vida al final de cada turno.
+14,Bosque de los Susurros,4,Araña Tejesombras,—,fuego,—,—,—,veneno,Mordisco venenoso: su picadura puede envenenarte con cada golpe.
+15,Bosque de los Susurros,5,Druida Corrupto,oscuridad,sagrado,oscuridad,—,—,maldicion,Corrupción viva: se cura cuando está malherido y puede maldecir tu armadura.
+16,Bosque de los Susurros,6,Oso Espectral,—,sagrado,—,veneno,veneno,—,Zarpazo vampírico: se cura con parte del daño que inflige.
+17,Bosque de los Susurros,7,Enjambre de Polillas Pálidas,—,fuego,—,—,sangrado,veneno,"Enjambre: a veces otra polilla se suma al ataque, y su polvo puede envenenar."
+18,Bosque de los Susurros,8,Lobo Umbrío,—,—,—,—,—,—,"Acecho: si ya lo has vencido antes, puede emboscarte de nuevo al empezar el combate."
+19,Bosque de los Susurros,9,Ent Corrompido,—,fuego,—,—,paralizado,—,Golpe de raíces: de vez en cuando ataca con un golpe imposible de esquivar.
+20,Bosque de los Susurros,10,El Enraizado,oscuridad,sagrado,"oscuridad, veneno",—,—,maldicion,"El Bosque Atado: maldice con cada golpe certero, y se cura mientras el altar siga alimentándolo."
+21,Ciénaga de los Ahogados,1,Sanguijuela Colosal,—,fuego,—,veneno,veneno,—,Mordisco sanguijuela: se cura con parte del daño que inflige.
+22,Ciénaga de los Ahogados,2,Espantajo Anegado,—,—,—,—,—,sangrado,Zarpazo de cañas: sus bordes afilados pueden abrir una herida que sigue sangrando.
+23,Ciénaga de los Ahogados,3,Ahogado Errante,—,sagrado,—,—,—,—,"Vuelve del agua: si ya lo has vencido antes, puede emboscarte de nuevo al empezar el combate."
+24,Ciénaga de los Ahogados,4,Chamán del Cieno,oscuridad,sagrado,oscuridad,—,—,maldicion,Corrupción del cieno: se cura cuando está malherido y puede maldecir tu armadura.
+25,Ciénaga de los Ahogados,5,Cangrejo Acorazado,—,—,—,—,—,—,Tenaza implacable: de vez en cuando cierra la pinza con una fuerza imposible de esquivar.
+26,Ciénaga de los Ahogados,6,Serpiente de Fango,—,fuego,—,—,—,veneno,"Doble mordisco: a veces ataca dos veces seguidas, y su veneno es de los más fuertes de la ciénaga."
+27,Ciénaga de los Ahogados,7,Sacerdote Ahogado,oscuridad,sagrado,oscuridad,—,—,confusion,Cántico ahogado: puede confundirte además de golpearte con magia oscura.
+28,Ciénaga de los Ahogados,8,Horror de Profundidad,—,—,—,—,—,aturdido,Coletazo aturdidor: un golpe más fuerte de lo normal que puede dejarte aturdido.
+29,Ciénaga de los Ahogados,9,Guardián del Templo Hundido,—,sagrado,—,—,paralizado,—,Golpe de piedra y coral: de vez en cuando ataca con un golpe imposible de esquivar.
+30,Ciénaga de los Ahogados,10,El Anegado,oscuridad,sagrado,oscuridad,veneno,veneno,maldicion,"El Cieno Despierto: se cura mientras el agua le siga alimentando, y maldice con cada golpe certero."
+31,Cañón del Trueno,1,Gárgola,—,arcano,—,veneno,veneno,—,Embestida: cada 3 turnos carga con todo su peso y golpea un 80 % más fuerte.
+32,Cañón del Trueno,2,Gólem de Piedra,—,hielo,—,rayo,paralizado,—,Terremoto: de vez en cuando golpea el suelo y su ataque es imposible de esquivar.
+33,Cañón del Trueno,3,Minero Poseído,—,sagrado,—,—,—,sangrado,Picoazo: los golpes de su pico pueden dejar una herida que sigue sangrando.
+34,Cañón del Trueno,4,Murciélago de Tormenta,—,—,—,—,—,—,Revoloteo: a veces ataca dos veces seguidas antes de que puedas reaccionar.
+35,Cañón del Trueno,5,Chispa del Puntal,rayo,hielo,—,rayo,paralizado,paralizado,Descarga: su golpe conduce electricidad y puede dejarte paralizado.
+36,Cañón del Trueno,6,Aparición de la Cuadrilla,—,—,—,—,—,—,"Vuelve a levantarse: si ya la has vencido antes, puede emboscarte de nuevo al empezar el combate."
+37,Cañón del Trueno,7,Verdugo de la Mina,—,sagrado,—,—,paralizado,—,"Derrumbe: de vez en cuando hace ceder el techo sobre ti, un golpe imposible de esquivar."
+38,Cañón del Trueno,8,Cabra Montés Corrupta,—,—,—,—,—,aturdido,Topetazo: un golpe más fuerte de lo normal que puede dejarte aturdido.
+39,Cañón del Trueno,9,Heraldo de la Tormenta,rayo,sagrado,rayo,—,—,maldicion,Sermón de la Brecha: se cura con el propio mineral y puede maldecir tu armadura con un rayo.
+40,Cañón del Trueno,10,El Decimoquinto,rayo,sagrado,rayo,—,—,paralizado,El Nombre Sin Terminar: se cura con la carga del mineral y descarga rayos que pueden paralizar.
+41,Torre de los Arcanos / Necrópolis,1,Mago,"fuego, hielo, rayo, veneno",—,arcano,—,—,"congelado, paralizado, quemado, veneno","Hechizos tácticos: elige el que aún no sufras (veneno, rayo, ventisca) o lanza bolas de fuego, y se cura si está muy herido."
+42,Torre de los Arcanos / Necrópolis,2,Nigromante,oscuridad,sagrado,—,oscuridad,marchito,—,Invocación: de vez en cuando alza un esqueleto que te ataca al instante.
+43,Torre de los Arcanos / Necrópolis,3,Tomo Viviente,—,fuego,—,—,—,sangrado,Corte de página: sus bordes pueden dejar una herida que sigue sangrando.
+44,Torre de los Arcanos / Necrópolis,4,Guardián Osario,—,sagrado,—,—,—,—,Púas de hueso: a veces ataca dos veces seguidas antes de que puedas reaccionar.
+45,Torre de los Arcanos / Necrópolis,5,Custodio Arcano,arcano,hielo,—,veneno,veneno,—,Escudo de estudio: se repara con energía arcana y lanza dardos de la misma magia.
+46,Torre de los Arcanos / Necrópolis,6,Espectro de la Guardia,—,sagrado,—,—,—,—,"Guardia eterna: si ya lo has vencido antes, puede emboscarte de nuevo al empezar el combate."
+47,Torre de los Arcanos / Necrópolis,7,Bibliotecario Errante,arcano,sagrado,arcano,—,—,confusion,Lectura en voz alta: puede confundirte además de golpearte con magia arcana.
+48,Torre de los Arcanos / Necrópolis,8,Carroñero de Cripta,—,sagrado,veneno,—,—,—,Mordisco carroñero: se cura con parte del daño que inflige.
+49,Torre de los Arcanos / Necrópolis,9,Guardián del Tomo Prohibido,—,sagrado,—,—,paralizado,—,Onda de sello: de vez en cuando libera una onda arcana imposible de esquivar.
+50,Torre de los Arcanos / Necrópolis,10,El Archivista,arcano,sagrado,arcano,—,—,maldicion,El Tomo Que Faltaba: se cura con energía arcana y puede maldecir tu armadura al golpear.
+51,Ciudadela en Ruinas,1,Ángel Caído,sagrado,oscuridad,sagrado,—,—,—,"Juicio Divino: de vez en cuando lanza un golpe sagrado un 60 % más fuerte, y se cura cuando está malherido."
+52,Ciudadela en Ruinas,2,Demonio,fuego,sagrado,oscuridad,—,—,confusion,"Grieta infernal: puede invocar a un demonio menor o confundirte, reduciendo tu evasión durante 3 turnos."
+53,Ciudadela en Ruinas,3,Ciudadano Hueco,—,sagrado,—,—,—,desarmado,Pánico ciego: puede arrancarte el arma de las manos al golpear.
+54,Ciudadela en Ruinas,4,Guardia Caída,—,sagrado,—,—,—,—,Estocada doble: a veces ataca dos veces seguidas antes de que puedas reaccionar.
+55,Ciudadela en Ruinas,5,Serafín Corrupto,oscuridad,sagrado,oscuridad,—,—,maldicion,Gracia invertida: se cura con luz vuelta del revés y puede maldecir tu armadura.
+56,Ciudadela en Ruinas,6,Eco de la Guardia,—,—,—,—,—,—,"Puesto eterno: si ya lo has vencido antes, puede emboscarte de nuevo al empezar el combate."
+57,Ciudadela en Ruinas,7,Custodio de Vidrieras,sagrado,sagrado,—,—,—,confusion,Mirada de cristal: puede confundirte además de golpearte con luz astillada.
+58,Ciudadela en Ruinas,8,Verdugo Infernal,—,sagrado,—,—,—,—,Cobro de sangre: se cura con parte del daño que inflige.
+59,Ciudadela en Ruinas,9,Heraldo del Amo,—,sagrado,—,—,paralizado,—,Proclama: de vez en cuando pronuncia una sentencia imposible de esquivar.
+60,Ciudadela en Ruinas,10,El Sin Rostro,oscuridad,sagrado,oscuridad,—,—,maldicion,El Que Gobierna: se cura de la propia ruina que administra y maldice con cada golpe certero.
+61,El Corazón de la Brecha,1,Dragón,fuego,hielo,—,fuego,quemado,quemado,Aliento de fuego: de vez en cuando incendia el suelo bajo tus pies y puede dejarte quemado.

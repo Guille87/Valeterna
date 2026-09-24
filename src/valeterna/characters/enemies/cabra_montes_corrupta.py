@@ -67,12 +67,15 @@ class CabraMontesCorrupta(Enemy):
         if random.random() <= 0.3:
             items.append(
                 Material(
-                    "Cuerno Retorcido", "Se curva en un ángulo que ningún cuerno sano tomaría.", 22, rarity="Poco común"
+                    "Pezuña Corrupta",
+                    "Se astilla en el borde, como si hubiera pisado algo que no era piedra.",
+                    22,
+                    rarity="Poco común",
                 )
             )
         if random.random() <= 0.08:
             items.append(
-                Weapon("Cuerno Afilado", "Pulido en la punta, como si algo lo hubiera afilado a propósito.", 34, 23)
+                Weapon("Cuerno Afilado", "Pulido en la punta, como si algo lo hubiera afilado a propósito.", 37, 25)
             )
         if random.random() <= 0.08:
             items.append(

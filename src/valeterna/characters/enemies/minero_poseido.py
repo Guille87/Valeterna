@@ -73,7 +73,12 @@ class MineroPoseido(Enemy):
             items.append(HealingPotion("Poción de Salud", "Restaura 20 HP", 2, 20))
         if random.random() <= 0.3:
             items.append(
-                Material("Pico Roto", "El mango está astillado, pero la punta sigue firme.", 18, rarity="Poco común")
+                Material(
+                    "Guante de Minero",
+                    "Rígido y ennegrecido; todavía conserva la forma de la mano.",
+                    18,
+                    rarity="Poco común",
+                )
             )
         if random.random() <= 0.1:
             items.append(

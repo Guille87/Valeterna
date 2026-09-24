@@ -1,0 +1,258 @@
+#,Zona,Tier,Enemigo,Objeto,Tipo,Stats,Probabilidad,Categoría
+1,Los Yermos,1,Goblin,Espada Goblin,arma,Daño: 2,10%,arma
+1,Los Yermos,1,Goblin,Poción de Salud,poción,Restaura 20 HP,80%,pocion
+1,Los Yermos,1,Goblin,Colmillo de Goblin,material,"Un colmillo curvo y afilado, típico de estas criaturas.",25%,material
+2,Los Yermos,2,Rata Gigante,Poción de Salud,poción,Restaura 20 HP,70%,pocion
+2,Los Yermos,2,Rata Gigante,Cola de Rata,material,"Correosa y resistente, casi imposible de cortar.",25%,material
+2,Los Yermos,2,Rata Gigante,Botas de Piel de Rata,armadura · botas,Velocidad: +1,8%,armadura
+3,Los Yermos,3,Goblin Montaraz,Poción de Salud,poción,Restaura 20 HP,60%,pocion
+3,Los Yermos,3,Goblin Montaraz,Punta de Flecha,material,"Tallada en pedernal, todavía manchada de sangre seca.",30%,material
+3,Los Yermos,3,Goblin Montaraz,Arco Corto,arma,Daño: 4,10%,arma
+3,Los Yermos,3,Goblin Montaraz,Hombreras de Cazador,armadura · hombreras,Precisión: +2,8%,armadura
+4,Los Yermos,4,Huargo,Poción de Salud,poción,Restaura 20 HP,70%,pocion
+4,Los Yermos,4,Huargo,Colmillo de Huargo,material,"Un colmillo curvo, todavía caliente de la caza.",30%,material
+4,Los Yermos,4,Huargo,Garras de Huargo,arma,Daño: 7,10%,arma
+4,Los Yermos,4,Huargo,Botas de Huargo,armadura · botas,Velocidad: +2,8%,armadura
+4,Los Yermos,4,Huargo,Cinturón de Manada,armadura · cinturon,Armadura: 2 | Velocidad: +2,8%,armadura
+5,Los Yermos,5,Chamán Goblin,Poción de Salud,poción,Restaura 20 HP,55%,pocion
+5,Los Yermos,5,Chamán Goblin,Huesos de Augur,material,Pequeños huesos tallados con símbolos que nadie más sabe leer.,30%,material
+5,Los Yermos,5,Chamán Goblin,Cayado Goblin,arma,Daño: 8,10%,arma
+5,Los Yermos,5,Chamán Goblin,Amuleto de Hueso,armadura · amuleto,Res.Mágica: 2,8%,armadura
+6,Los Yermos,6,Esqueleto,Casco de Hueso,armadura · casco,Vida: +15 | Prob.Crítico: +3%,10%,armadura
+6,Los Yermos,6,Esqueleto,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+6,Los Yermos,6,Esqueleto,Fragmento de Hueso,material,Un resto óseo todavía impregnado de magia residual.,25%,material
+6,Los Yermos,6,Esqueleto,Guantes Óseos,armadura · guantes,Armadura: 2 | Daño Crítico: +10%,8%,armadura
+7,Los Yermos,7,Bandido,Poción de Salud,poción,Restaura 20 HP,60%,pocion
+7,Los Yermos,7,Bandido,Capa de Sombras,material,Tela oscura que parece absorber la luz.,25%,material
+7,Los Yermos,7,Bandido,Daga Robada,arma,Daño: 9,10%,arma
+7,Los Yermos,7,Bandido,Guantes de Ladrón,armadura · guantes,Prob.Crítico: +4% | Daño Crítico: +12%,8%,armadura
+7,Los Yermos,7,Bandido,Perneras de Bandido,armadura · perneras,Velocidad: +2 | Evasión: +2,8%,armadura
+7,Los Yermos,7,Bandido,Capucha de Ladrón,armadura · casco,Vida: +18 | Prob.Crítico: +4%,8%,armadura
+8,Los Yermos,8,Salteador,Poción de Salud,poción,Restaura 20 HP,55%,pocion
+8,Los Yermos,8,Salteador,Bolsa Remendada,material,Cosida con retales de otras tantas víctimas.,30%,material
+8,Los Yermos,8,Salteador,Dagas Gemelas,arma,Daño: 10,10%,arma
+8,Los Yermos,8,Salteador,Guantes de Saltador,armadura · guantes,Daño Crítico: +13%,8%,armadura
+8,Los Yermos,8,Salteador,Perneras Ligeras,armadura · perneras,Evasión: +3,8%,armadura
+9,Los Yermos,9,Ogro del Yermo,Poción de Salud,poción,Restaura 20 HP,55%,pocion
+9,Los Yermos,9,Ogro del Yermo,Piel de Ogro,material,Gruesa y correosa; cuesta encontrar un cuchillo que la atraviese.,30%,material
+9,Los Yermos,9,Ogro del Yermo,Yelmo de Ogro,armadura · casco,Vida: +22,8%,armadura
+9,Los Yermos,9,Ogro del Yermo,Cinturón Trenzado,armadura · cinturon,Armadura: 3,8%,armadura
+10,Los Yermos,10,El Carnicero,Poción de Salud,poción,Restaura 20 HP,60%,pocion
+10,Los Yermos,10,El Carnicero,Hueso de Carnicero,material,Astillado y afilado como si lo hubiese hecho a propósito.,30%,material
+10,Los Yermos,10,El Carnicero,Peto del Carnicero,armadura · peto,Armadura: 6 | Vida: +15,10%,armadura
+10,Los Yermos,10,El Carnicero,Amuleto de Sangre,armadura · amuleto,Res.Mágica: 3,8%,armadura
+11,Bosque de los Susurros,1,Orco,Hacha de Batalla,arma,Daño: 12,10%,arma
+11,Bosque de los Susurros,1,Orco,Poción de Fuerza,poción,Aumenta el ataque temporalmente,60%,pocion
+11,Bosque de los Susurros,1,Orco,Peto de Orco,armadura · peto,Armadura: 7 | Vida: +20,8%,armadura
+11,Bosque de los Susurros,1,Orco,Colmillo de Orco,material,"Un colmillo enorme, todavía manchado de sangre seca.",20%,material
+11,Bosque de los Susurros,1,Orco,Espada Flamígera,arma,Daño: 10 (Fuego) · inflige quemadura 25%,8%,arma
+11,Bosque de los Susurros,1,Orco,Brazales de Guerra,armadura · brazales,Prob.Crítico: +3% | Daño: +3,8%,armadura
+12,Bosque de los Susurros,2,Espíritu Vengativo,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+12,Bosque de los Susurros,2,Espíritu Vengativo,Esencia Espectral,material,Un jirón de energía fantasmal que se resiste a disiparse.,30%,material
+12,Bosque de los Susurros,2,Espíritu Vengativo,Daga Espectral,arma,Daño: 14,10%,arma
+12,Bosque de los Susurros,2,Espíritu Vengativo,Brazales Espectrales,armadura · brazales,Res.Mágica: 4 | Prob.Crítico: +4%,8%,armadura
+13,Bosque de los Susurros,3,Troll,Maza de Piedra,arma,Daño: 17,8%,arma
+13,Bosque de los Susurros,3,Troll,Poción de Regeneración,poción,Un brebaje verde que burbujea. Cura 10 HP durante 3 turnos.,70%,pocion
+13,Bosque de los Susurros,3,Troll,Piel de Troll,material,Una piel gruesa y rugosa que parece pulsar con vida propia. Muy valiosa para un sastre.,5%,material
+13,Bosque de los Susurros,3,Troll,Hombreras de Troll,armadura · hombreras,Armadura: 3 | Regeneración: +2 HP/turno | Precisión: +3,8%,armadura
+14,Bosque de los Susurros,4,Araña Tejesombras,Poción de Salud,poción,Restaura 20 HP,55%,pocion
+14,Bosque de los Susurros,4,Araña Tejesombras,Seda de Tejesombras,material,"Un hilo negro, ligero pero casi imposible de romper.",30%,material
+14,Bosque de los Susurros,4,Araña Tejesombras,Colmillo de Tejesombras,arma,Daño: 12 (Veneno) · inflige veneno 25%,10%,arma
+14,Bosque de los Susurros,4,Araña Tejesombras,Perneras de Tejedora,armadura · perneras,Evasión: +3,8%,armadura
+15,Bosque de los Susurros,5,Druida Corrupto,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+15,Bosque de los Susurros,5,Druida Corrupto,Savia Corrupta,material,Negra y espesa; huele a tierra removida y a algo más.,30%,material
+15,Bosque de los Susurros,5,Druida Corrupto,Vara Retorcida,arma,Daño: 17,10%,arma
+15,Bosque de los Susurros,5,Druida Corrupto,Amuleto de Corteza,armadura · amuleto,Res.Mágica: 4,8%,armadura
+16,Bosque de los Susurros,6,Oso Espectral,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+16,Bosque de los Susurros,6,Oso Espectral,Pelaje Espectral,material,Frío al tacto incluso cuando no hay nada que tocar.,30%,material
+16,Bosque de los Susurros,6,Oso Espectral,Garra Espectral,arma,Daño: 17,10%,arma
+16,Bosque de los Susurros,6,Oso Espectral,Cráneo de Oso Espectral,armadura · casco,Vida: +20,8%,armadura
+17,Bosque de los Susurros,7,Enjambre de Polillas Pálidas,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+17,Bosque de los Susurros,7,Enjambre de Polillas Pálidas,Polvo de Ala Pálida,material,Fino como la ceniza; sigue posándose mucho después de recogerlo.,30%,material
+17,Bosque de los Susurros,7,Enjambre de Polillas Pálidas,Guanteletes de Polvo de Ala,armadura · guantes,Daño Crítico: +5%,8%,armadura
+18,Bosque de los Susurros,8,Lobo Umbrío,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+18,Bosque de los Susurros,8,Lobo Umbrío,Pelaje Umbrío,material,Absorbe la luz en vez de reflejarla; sigue frío mucho después de la caza.,30%,material
+18,Bosque de los Susurros,8,Lobo Umbrío,Colmillos de Sombra,arma,Daño: 18,10%,arma
+18,Bosque de los Susurros,8,Lobo Umbrío,Botas de Sombra,armadura · botas,Velocidad: +2,8%,armadura
+19,Bosque de los Susurros,9,Ent Corrompido,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+19,Bosque de los Susurros,9,Ent Corrompido,Corteza Podrida,material,"Negra por dentro, dura como el hierro por fuera.",30%,material
+19,Bosque de los Susurros,9,Ent Corrompido,Rama de Guerra,arma,Daño: 20,8%,arma
+19,Bosque de los Susurros,9,Ent Corrompido,Placa de Corteza,armadura · peto,Armadura: 8 | Vida: +20,8%,armadura
+19,Bosque de los Susurros,9,Ent Corrompido,Ramas Nudosas,armadura · hombreras,Armadura: 3 | Precisión: +5,8%,armadura
+20,Bosque de los Susurros,10,El Enraizado,Poción de Salud,poción,Restaura 20 HP,60%,pocion
+20,Bosque de los Susurros,10,El Enraizado,Raíz Atada,material,Sigue retorciéndose muy despacio incluso arrancada del suelo.,30%,material
+20,Bosque de los Susurros,10,El Enraizado,Cetro Enraizado,arma,Daño: 23 (Oscuridad) · inflige marchitamiento 25%,10%,arma
+20,Bosque de los Susurros,10,El Enraizado,Cinturón de Raíces,armadura · cinturon,Armadura: 6 | Vida: +20,8%,armadura
+20,Bosque de los Susurros,10,El Enraizado,Anillo del Enraizado,armadura · anillo,Daño Crítico: +8%,8%,armadura
+21,Ciénaga de los Ahogados,1,Sanguijuela Colosal,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+21,Ciénaga de los Ahogados,1,Sanguijuela Colosal,Piel de Sanguijuela,material,Elástica y viscosa; resbala entre los dedos.,30%,material
+21,Ciénaga de los Ahogados,1,Sanguijuela Colosal,Colmillo de Sanguijuela,arma,Daño: 12,10%,arma
+21,Ciénaga de los Ahogados,1,Sanguijuela Colosal,Guanteletes de Sanguijuela,armadura · guantes,Daño Crítico: +6%,8%,armadura
+22,Ciénaga de los Ahogados,2,Espantajo Anegado,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+22,Ciénaga de los Ahogados,2,Espantajo Anegado,Fibra Anegada,material,"Cuerda vegetal empapada; no se pudre, solo se endurece.",30%,material
+22,Ciénaga de los Ahogados,2,Espantajo Anegado,Garra de Cañas,arma,Daño: 13,10%,arma
+22,Ciénaga de los Ahogados,2,Espantajo Anegado,Perneras de Junco,armadura · perneras,Evasión: +4,8%,armadura
+23,Ciénaga de los Ahogados,3,Ahogado Errante,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+23,Ciénaga de los Ahogados,3,Ahogado Errante,Trapo Empapado,material,"Nunca llega a secarse del todo, sin importar cuánto pase.",30%,material
+23,Ciénaga de los Ahogados,3,Ahogado Errante,Puño Ahogado,arma,Daño: 14,10%,arma
+23,Ciénaga de los Ahogados,3,Ahogado Errante,Yelmo Hinchado,armadura · casco,Vida: +22,8%,armadura
+24,Ciénaga de los Ahogados,4,Chamán del Cieno,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+24,Ciénaga de los Ahogados,4,Chamán del Cieno,Cieno Negro,material,Denso y tibio incluso lejos del agua. No debería estarlo.,30%,material
+24,Ciénaga de los Ahogados,4,Chamán del Cieno,Vara del Cieno,arma,Daño: 15 (Oscuridad) · inflige marchitamiento 25%,10%,arma
+24,Ciénaga de los Ahogados,4,Chamán del Cieno,Amuleto de Barro Negro,armadura · amuleto,Res.Mágica: 5,8%,armadura
+25,Ciénaga de los Ahogados,5,Cangrejo Acorazado,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+25,Ciénaga de los Ahogados,5,Cangrejo Acorazado,Caparazón de Cangrejo,material,Grueso y curvo; sigue siendo duro mucho después de la muerte.,30%,material
+25,Ciénaga de los Ahogados,5,Cangrejo Acorazado,Tenaza Cercenadora,arma,Daño: 17,8%,arma
+25,Ciénaga de los Ahogados,5,Cangrejo Acorazado,Placa de Caparazón,armadura · peto,Armadura: 10 | Vida: +15,8%,armadura
+26,Ciénaga de los Ahogados,6,Serpiente de Fango,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+26,Ciénaga de los Ahogados,6,Serpiente de Fango,Escama de Fango,material,Cubierta de barro seco que no acaba de desprenderse.,30%,material
+26,Ciénaga de los Ahogados,6,Serpiente de Fango,Colmillo de Fango,arma,Daño: 14 (Veneno) · inflige veneno 25%,10%,arma
+26,Ciénaga de los Ahogados,6,Serpiente de Fango,Botas de Escama,armadura · botas,Velocidad: +3,8%,armadura
+27,Ciénaga de los Ahogados,7,Sacerdote Ahogado,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+27,Ciénaga de los Ahogados,7,Sacerdote Ahogado,Reliquia Ahogada,material,"Un colgante de templo, ennegrecido por años bajo el agua.",30%,material
+27,Ciénaga de los Ahogados,7,Sacerdote Ahogado,Báculo Ahogado,arma,Daño: 17 (Oscuridad) · inflige marchitamiento 25%,10%,arma
+27,Ciénaga de los Ahogados,7,Sacerdote Ahogado,Hombreras del Templo,armadura · hombreras,Res.Mágica: 2 | Precisión: +6,8%,armadura
+28,Ciénaga de los Ahogados,8,Horror de Profundidad,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+28,Ciénaga de los Ahogados,8,Horror de Profundidad,Carne de Profundidad,material,Pálida y fría; no debería seguir moviéndose fuera del agua.,30%,material
+28,Ciénaga de los Ahogados,8,Horror de Profundidad,Garra de Profundidad,arma,Daño: 18,8%,arma
+28,Ciénaga de los Ahogados,8,Horror de Profundidad,Cinturón de Profundidad,armadura · cinturon,Armadura: 7 | Vida: +15,8%,armadura
+29,Ciénaga de los Ahogados,9,Guardián del Templo Hundido,Poción de Salud,poción,Restaura 20 HP,55%,pocion
+29,Ciénaga de los Ahogados,9,Guardián del Templo Hundido,Fragmento de Coral Negro,material,"Duro como la piedra, ramificado como algo vivo.",30%,material
+29,Ciénaga de los Ahogados,9,Guardián del Templo Hundido,Puño de Coral,arma,Daño: 20,8%,arma
+29,Ciénaga de los Ahogados,9,Guardián del Templo Hundido,Placa de Coral Negro,armadura · peto,Armadura: 13 | Vida: +20,8%,armadura
+30,Ciénaga de los Ahogados,10,El Anegado,Poción de Salud,poción,Restaura 20 HP,60%,pocion
+30,Ciénaga de los Ahogados,10,El Anegado,Legado del Anegado,material,Sigue tibio mucho después de sacarlo del agua. No debería.,30%,material
+30,Ciénaga de los Ahogados,10,El Anegado,Cetro del Anegado,arma,Daño: 24 (Oscuridad) · inflige marchitamiento 25%,10%,arma
+30,Ciénaga de los Ahogados,10,El Anegado,Anillo del Cieno,armadura · anillo,Daño Crítico: +9%,8%,armadura
+31,Cañón del Trueno,1,Gárgola,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+31,Cañón del Trueno,1,Gárgola,Fragmento de Gárgola,material,Un trozo de piedra tallada que sigue pesando como si estuviera viva.,25%,material
+31,Cañón del Trueno,1,Gárgola,Placa de Gárgola,armadura · peto,Armadura: 16 | Vida: +25,8%,armadura
+31,Cañón del Trueno,1,Gárgola,Puño de Piedra,arma,Daño: 19,8%,arma
+31,Cañón del Trueno,1,Gárgola,Garra de Tormenta,arma,Daño: 15 (Rayo) · inflige parálisis 25%,6%,arma
+32,Cañón del Trueno,2,Gólem de Piedra,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+32,Cañón del Trueno,2,Gólem de Piedra,Núcleo de Gólem,material,Un núcleo de piedra pulida que aún retiene calor.,25%,material
+32,Cañón del Trueno,2,Gólem de Piedra,Coraza de Gólem,armadura · peto,Armadura: 22 | Vida: +30,8%,armadura
+32,Cañón del Trueno,2,Gólem de Piedra,Mazo de Gólem,arma,Daño: 21,8%,arma
+32,Cañón del Trueno,2,Gólem de Piedra,Cinturón de Roca,armadura · cinturon,Armadura: 4 | Vida: +20,8%,armadura
+32,Cañón del Trueno,2,Gólem de Piedra,Hombreras de Gólem,armadura · hombreras,Armadura: 4 | Precisión: +4,8%,armadura
+32,Cañón del Trueno,2,Gólem de Piedra,Botas de Gólem,armadura · botas,Armadura: 3 | Vida: +10 | Velocidad: +1,8%,armadura
+33,Cañón del Trueno,3,Minero Poseído,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+33,Cañón del Trueno,3,Minero Poseído,Guante de Minero,material,Rígido y ennegrecido; todavía conserva la forma de la mano.,30%,material
+33,Cañón del Trueno,3,Minero Poseído,Pico de Minero,arma,Daño: 21,10%,arma
+33,Cañón del Trueno,3,Minero Poseído,Casco de Minero,armadura · casco,Vida: +28,8%,armadura
+34,Cañón del Trueno,4,Murciélago de Tormenta,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+34,Cañón del Trueno,4,Murciélago de Tormenta,Ala de Tormenta,material,"Fina como el papel, pero sigue crepitando al tacto.",30%,material
+34,Cañón del Trueno,4,Murciélago de Tormenta,Garra de Murciélago,arma,Daño: 22,10%,arma
+34,Cañón del Trueno,4,Murciélago de Tormenta,Perneras de Ala,armadura · perneras,Evasión: +5,8%,armadura
+35,Cañón del Trueno,5,Chispa del Puntal,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+35,Cañón del Trueno,5,Chispa del Puntal,Mineral de Tormenta,material,Sigue caliente y crepita cuando lo sostienes.,30%,material
+35,Cañón del Trueno,5,Chispa del Puntal,Esquirla de Tormenta,arma,Daño: 21 (Rayo) · inflige parálisis 25%,10%,arma
+35,Cañón del Trueno,5,Chispa del Puntal,Brazales de Tormenta,armadura · brazales,Prob.Crítico: +5%,8%,armadura
+36,Cañón del Trueno,6,Aparición de la Cuadrilla,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+36,Cañón del Trueno,6,Aparición de la Cuadrilla,Retal de Cuadrilla,material,Un jirón de ropa de mina; todavía huele a polvo de roca.,30%,material
+36,Cañón del Trueno,6,Aparición de la Cuadrilla,Barra de Mina,arma,Daño: 22,10%,arma
+36,Cañón del Trueno,6,Aparición de la Cuadrilla,Guantes de Cuadrilla,armadura · guantes,Daño Crítico: +10%,8%,armadura
+37,Cañón del Trueno,7,Verdugo de la Mina,Poción de Salud,poción,Restaura 20 HP,55%,pocion
+37,Cañón del Trueno,7,Verdugo de la Mina,Roca Amalgamada,material,Roca y hueso fundidos en una sola pieza; pesa más de lo que debería.,30%,material
+37,Cañón del Trueno,7,Verdugo de la Mina,Mazo de Galería,arma,Daño: 24,8%,arma
+37,Cañón del Trueno,7,Verdugo de la Mina,Cinturón de Galería,armadura · cinturon,Armadura: 16 | Vida: +25,8%,armadura
+38,Cañón del Trueno,8,Cabra Montés Corrupta,Poción de Salud,poción,Restaura 20 HP,55%,pocion
+38,Cañón del Trueno,8,Cabra Montés Corrupta,Pezuña Corrupta,material,"Se astilla en el borde, como si hubiera pisado algo que no era piedra.",30%,material
+38,Cañón del Trueno,8,Cabra Montés Corrupta,Cuerno Afilado,arma,Daño: 25,8%,arma
+38,Cañón del Trueno,8,Cabra Montés Corrupta,Botas de Cabra,armadura · botas,Velocidad: +4,8%,armadura
+39,Cañón del Trueno,9,Heraldo de la Tormenta,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+39,Cañón del Trueno,9,Heraldo de la Tormenta,Mineral Bendecido por la Brecha,material,Late con una carga que no es del todo eléctrica.,30%,material
+39,Cañón del Trueno,9,Heraldo de la Tormenta,Vara de Tormenta,arma,Daño: 24 (Rayo) · inflige parálisis 25%,10%,arma
+39,Cañón del Trueno,9,Heraldo de la Tormenta,Amuleto de Mineral,armadura · amuleto,Res.Mágica: 7,8%,armadura
+40,Cañón del Trueno,10,El Decimoquinto,Poción de Salud,poción,Restaura 20 HP,60%,pocion
+40,Cañón del Trueno,10,El Decimoquinto,Nombre a Medio Grabar,material,Un fragmento de puntal con una sola letra tallada: una K.,30%,material
+40,Cañón del Trueno,10,El Decimoquinto,Cuchillo Detenido,arma,Daño: 26 (Rayo) · inflige parálisis 25%,10%,arma
+40,Cañón del Trueno,10,El Decimoquinto,Anillo del Decimoquinto,armadura · anillo,Daño Crítico: +10%,8%,armadura
+41,Torre de los Arcanos / Necrópolis,1,Mago,Bastón Arcano,arma,Daño: 23,8%,arma
+41,Torre de los Arcanos / Necrópolis,1,Mago,Túnica Arcana,armadura · peto,Armadura: 9 | Vida: +25 | Res.Mágica: 6,8%,armadura
+41,Torre de los Arcanos / Necrópolis,1,Mago,Esencia Arcana,material,"Energía mágica condensada, inestable pero muy valiosa.",10%,material
+41,Torre de los Arcanos / Necrópolis,1,Mago,Anillo Arcano,armadura · anillo,Res.Mágica: 4 | Prob.Crítico: +3% | Daño Crítico: +10%,10%,armadura
+42,Torre de los Arcanos / Necrópolis,2,Nigromante,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+42,Torre de los Arcanos / Necrópolis,2,Nigromante,Polvo de Hueso Negro,material,Ceniza ósea impregnada de magia oscura.,30%,material
+42,Torre de los Arcanos / Necrópolis,2,Nigromante,Manto del Nigromante,armadura · amuleto,Res.Mágica: 10 | Prob.Crítico: +5%,8%,armadura
+42,Torre de los Arcanos / Necrópolis,2,Nigromante,Cetro de Huesos,arma,Daño: 25,8%,arma
+42,Torre de los Arcanos / Necrópolis,2,Nigromante,Cetro de Escarcha,arma,Daño: 21 (Hielo) · inflige congelación 25%,6%,arma
+43,Torre de los Arcanos / Necrópolis,3,Tomo Viviente,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+43,Torre de los Arcanos / Necrópolis,3,Tomo Viviente,Página Suelta,material,Las letras se reordenan solas si la miras demasiado tiempo.,30%,material
+43,Torre de los Arcanos / Necrópolis,3,Tomo Viviente,Filo de Tapa Dura,arma,Daño: 25,10%,arma
+43,Torre de los Arcanos / Necrópolis,3,Tomo Viviente,Yelmo de Cuero Viejo,armadura · casco,Vida: +30,8%,armadura
+44,Torre de los Arcanos / Necrópolis,4,Guardián Osario,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+44,Torre de los Arcanos / Necrópolis,4,Guardián Osario,Hueso Ensamblado,material,Encaja con otros huesos como si nunca hubiera sido de nadie en particular.,30%,material
+44,Torre de los Arcanos / Necrópolis,4,Guardián Osario,Lanza de Fémures,arma,Daño: 26,8%,arma
+44,Torre de los Arcanos / Necrópolis,4,Guardián Osario,Peto de Osario,armadura · peto,Armadura: 14 | Vida: +20,8%,armadura
+45,Torre de los Arcanos / Necrópolis,5,Custodio Arcano,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+45,Torre de los Arcanos / Necrópolis,5,Custodio Arcano,Runa Suspendida,material,Sigue girando muy despacio incluso separada del constructo.,30%,material
+45,Torre de los Arcanos / Necrópolis,5,Custodio Arcano,Vara de Estudio,arma,Daño: 27 (Arcano) · inflige fractura mágica 25%,10%,arma
+45,Torre de los Arcanos / Necrópolis,5,Custodio Arcano,Brazales de Custodio,armadura · brazales,Prob.Crítico: +6%,8%,armadura
+46,Torre de los Arcanos / Necrópolis,6,Espectro de la Guardia,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+46,Torre de los Arcanos / Necrópolis,6,Espectro de la Guardia,Jirón Espectral,material,Frío al tacto y ligero como si no pesara del todo.,30%,material
+46,Torre de los Arcanos / Necrópolis,6,Espectro de la Guardia,Lanza de Guardia,arma,Daño: 28,10%,arma
+46,Torre de los Arcanos / Necrópolis,6,Espectro de la Guardia,Hombreras de Guardia,armadura · hombreras,Precisión: +7,8%,armadura
+47,Torre de los Arcanos / Necrópolis,7,Bibliotecario Errante,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+47,Torre de los Arcanos / Necrópolis,7,Bibliotecario Errante,Ficha de Préstamo,material,El título está raspado; no hace falta leerlo para sentirlo mirar.,30%,material
+47,Torre de los Arcanos / Necrópolis,7,Bibliotecario Errante,Puntero de Latón,arma,Daño: 29 (Arcano) · inflige fractura mágica 25%,10%,arma
+47,Torre de los Arcanos / Necrópolis,7,Bibliotecario Errante,Anillo del Archivo,armadura · anillo,Daño Crítico: +11%,8%,armadura
+48,Torre de los Arcanos / Necrópolis,8,Carroñero de Cripta,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+48,Torre de los Arcanos / Necrópolis,8,Carroñero de Cripta,Colmillo Carroñero,material,Amarillento y curvo; huele a tierra por mucho que se limpie.,30%,material
+48,Torre de los Arcanos / Necrópolis,8,Carroñero de Cripta,Garra de Cripta,arma,Daño: 28,10%,arma
+48,Torre de los Arcanos / Necrópolis,8,Carroñero de Cripta,Botas de Carroñero,armadura · botas,Velocidad: +5,8%,armadura
+49,Torre de los Arcanos / Necrópolis,9,Guardián del Tomo Prohibido,Poción de Salud,poción,Restaura 20 HP,55%,pocion
+49,Torre de los Arcanos / Necrópolis,9,Guardián del Tomo Prohibido,Fragmento de Sello,material,"Un trozo de aire endurecido, tallado con un símbolo incompleto.",30%,material
+49,Torre de los Arcanos / Necrópolis,9,Guardián del Tomo Prohibido,Mazo del Sello,arma,Daño: 30,8%,arma
+49,Torre de los Arcanos / Necrópolis,9,Guardián del Tomo Prohibido,Cinturón del Sello,armadura · cinturon,Armadura: 18 | Vida: +25,8%,armadura
+50,Torre de los Arcanos / Necrópolis,10,El Archivista,Poción de Salud,poción,Restaura 20 HP,60%,pocion
+50,Torre de los Arcanos / Necrópolis,10,El Archivista,Hoja del Tomo que Faltaba,material,"Una sola página, arrancada a propósito del resto del libro.",30%,material
+50,Torre de los Arcanos / Necrópolis,10,El Archivista,Pluma del Archivista,arma,Daño: 31 (Arcano) · inflige fractura mágica 25%,10%,arma
+50,Torre de los Arcanos / Necrópolis,10,El Archivista,Amuleto del Archivista,armadura · amuleto,Res.Mágica: 11,8%,armadura
+51,Ciudadela en Ruinas,1,Ángel Caído,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+51,Ciudadela en Ruinas,1,Ángel Caído,Pluma Corrupta,material,Una pluma blanca manchada de un negro que no debería existir.,30%,material
+51,Ciudadela en Ruinas,1,Ángel Caído,Aureola Rota,armadura · casco,Armadura: 10 | Vida: +35 | Res.Mágica: 8,8%,armadura
+51,Ciudadela en Ruinas,1,Ángel Caído,Espada Sagrada Corrupta,arma,Daño: 27,8%,arma
+51,Ciudadela en Ruinas,1,Ángel Caído,Anillo de Juicio,armadura · anillo,Res.Mágica: 3 | Daño Crítico: +14% | Daño: +4,10%,armadura
+52,Ciudadela en Ruinas,2,Demonio,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+52,Ciudadela en Ruinas,2,Demonio,Ceniza Infernal,material,Restos calcinados que aún arden sin consumirse.,30%,material
+52,Ciudadela en Ruinas,2,Demonio,Coraza Demoníaca,armadura · peto,Armadura: 23 | Vida: +30 | Res.Mágica: 6,8%,armadura
+52,Ciudadela en Ruinas,2,Demonio,Garra Infernal,arma,Daño: 29 (Fuego) · inflige quemadura 25%,8%,arma
+52,Ciudadela en Ruinas,2,Demonio,Perneras Infernales,armadura · perneras,Armadura: 10 | Res.Mágica: 4 | Evasión: +6,8%,armadura
+53,Ciudadela en Ruinas,3,Ciudadano Hueco,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+53,Ciudadela en Ruinas,3,Ciudadano Hueco,Zapato Abandonado,material,"No es de tu talla, ni de la de nadie que vaya a volver a por él.",30%,material
+53,Ciudadela en Ruinas,3,Ciudadano Hueco,Puño Hueco,arma,Daño: 32,10%,arma
+53,Ciudadela en Ruinas,3,Ciudadano Hueco,Perneras de Ciudadano,armadura · perneras,Evasión: +6,8%,armadura
+54,Ciudadela en Ruinas,4,Guardia Caída,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+54,Ciudadela en Ruinas,4,Guardia Caída,Placa Oxidada,material,"El blasón sigue ahí, aunque ya nadie recuerde a qué casa pertenecía.",30%,material
+54,Ciudadela en Ruinas,4,Guardia Caída,Espada de Guardia,arma,Daño: 33,10%,arma
+54,Ciudadela en Ruinas,4,Guardia Caída,Peto de Guardia Caída,armadura · peto,Armadura: 24 | Vida: +30,8%,armadura
+55,Ciudadela en Ruinas,5,Serafín Corrupto,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+55,Ciudadela en Ruinas,5,Serafín Corrupto,Pluma Invertida,material,"Blanca por un lado, negra por el otro; no se decide.",30%,material
+55,Ciudadela en Ruinas,5,Serafín Corrupto,Filo de Gracia Invertida,arma,Daño: 34 (Oscuridad) · inflige marchitamiento 25%,10%,arma
+55,Ciudadela en Ruinas,5,Serafín Corrupto,Amuleto de Serafín,armadura · amuleto,Res.Mágica: 13,8%,armadura
+56,Ciudadela en Ruinas,6,Eco de la Guardia,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+56,Ciudadela en Ruinas,6,Eco de la Guardia,Insignia de Guardia,material,"El esmalte se ha ido, pero el metal de debajo sigue firme.",30%,material
+56,Ciudadela en Ruinas,6,Eco de la Guardia,Alabarda de Puesto,arma,Daño: 35,10%,arma
+56,Ciudadela en Ruinas,6,Eco de la Guardia,Botas de Puesto,armadura · botas,Velocidad: +6,8%,armadura
+57,Ciudadela en Ruinas,7,Custodio de Vidrieras,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+57,Ciudadela en Ruinas,7,Custodio de Vidrieras,Fragmento de Vidriera,material,"El color cambia según el ángulo, y a veces según quien lo sostenga.",30%,material
+57,Ciudadela en Ruinas,7,Custodio de Vidrieras,Filo de Cristal Sagrado,arma,Daño: 35 (Sagrado) · inflige consagración 25%,10%,arma
+57,Ciudadela en Ruinas,7,Custodio de Vidrieras,Anillo de Vidriera,armadura · anillo,Daño Crítico: +15%,8%,armadura
+58,Ciudadela en Ruinas,8,Verdugo Infernal,Poción de Salud,poción,Restaura 20 HP,50%,pocion
+58,Ciudadela en Ruinas,8,Verdugo Infernal,Eslabón al Rojo,material,Sigue caliente mucho después de arrancarlo de la cadena.,30%,material
+58,Ciudadela en Ruinas,8,Verdugo Infernal,Cadena de Cobro,arma,Daño: 36,10%,arma
+58,Ciudadela en Ruinas,8,Verdugo Infernal,Guanteletes de Verdugo,armadura · guantes,Daño Crítico: +12%,8%,armadura
+59,Ciudadela en Ruinas,9,Heraldo del Amo,Poción de Salud,poción,Restaura 20 HP,55%,pocion
+59,Ciudadela en Ruinas,9,Heraldo del Amo,Eco de Proclama,material,Sigue vibrando en el aire mucho después de haberse pronunciado.,30%,material
+59,Ciudadela en Ruinas,9,Heraldo del Amo,Cetro del Heraldo,arma,Daño: 37,8%,arma
+59,Ciudadela en Ruinas,9,Heraldo del Amo,Hombreras de Heraldo,armadura · hombreras,Precisión: +8,8%,armadura
+60,Ciudadela en Ruinas,10,El Sin Rostro,Poción de Salud,poción,Restaura 20 HP,60%,pocion
+60,Ciudadela en Ruinas,10,El Sin Rostro,Fragmento Sin Rostro,material,No tiene forma fija; cambia cada vez que dejas de mirarlo.,30%,material
+60,Ciudadela en Ruinas,10,El Sin Rostro,Cetro Sin Rostro,arma,Daño: 38 (Oscuridad) · inflige marchitamiento 25%,10%,arma
+60,Ciudadela en Ruinas,10,El Sin Rostro,Amuleto Sin Rostro,armadura · amuleto,Res.Mágica: 15,8%,armadura
+61,El Corazón de la Brecha,1,Dragón,Poción de Salud,poción,Restaura 20 HP,60%,pocion
+61,El Corazón de la Brecha,1,Dragón,Escama de Dragón,material,"Una escama del tamaño de un escudo, todavía caliente.",35%,material
+61,El Corazón de la Brecha,1,Dragón,Coraza de Escamas de Dragón,armadura · peto,Armadura: 24 | Vida: +40 | Res.Mágica: 8,8%,armadura
+61,El Corazón de la Brecha,1,Dragón,Colmillo de Dragón,arma,Daño: 32 (Fuego) · inflige quemadura 25%,10%,arma
+61,El Corazón de la Brecha,1,Dragón,Amuleto de Escama de Dragón,armadura · amuleto,Armadura: 3 | Res.Mágica: 16 | Daño: +3,8%,armadura

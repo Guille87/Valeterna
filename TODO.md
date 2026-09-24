@@ -1620,6 +1620,51 @@ solo anotados aquí**:
   demasiado rápido..." — ver v0.14.0-e) sigue en pie y se hace en la misma
   pasada que los dos puntos de arriba (equipo dropeado + curva de XP), ya
   que son la misma pieza de diseño.
+- [x] **Revisión completa de los drops de arma/armadura de los 61 enemigos**
+  (inversión de calidad **dentro de la misma zona**, distinto del punto de
+  más arriba sobre "cuánto poder da el equipo en relación al nivel", que
+  sigue pendiente). **Hecho** (rama `docs/tabla-enemigos`):
+  - `tools/generate_enemy_table.py` genera `docs/design/enemigos.md` (tres
+    tablas: stats de combate, afinidades/mecánicas y drops, con la
+    desviación de cada enemigo sobre su objetivo formal de poder) a partir
+    del código real — se vuelve a ejecutar tras cualquier cambio en vez de
+    mantenerse a mano.
+  - Las armaduras ya estaban limpias (`tests/test_armor_progression.py` ya
+    lo garantizaba a lo largo de toda la cadena, que es un superconjunto de
+    "dentro de zona" porque el orden de la cadena es justo la concatenación
+    de zonas). El hueco real estaba en las **armas**: no había ningún test
+    que comprobara que `Weapon.damage` no bajase entre tiers de una misma
+    zona (agrupando por elemento, incluido "sin elemento" = arma física).
+  - Encontradas y corregidas 6 inversiones reales dentro de zona (subiendo
+    el número del enemigo de tier más bajo, no documentando una excepción,
+    mismo criterio que ya se usa para contenido propio): Rata Gigante,
+    Chamán Goblin y Salteador (Los Yermos); Druida Corrupto (Bosque de los
+    Susurros); Murciélago de Tormenta y Cabra Montés Corrupta (Cañón del
+    Trueno). Las bajadas que solo se daban **entre zonas distintas** (p. ej.
+    el arma con la que abre una zona siendo más floja que la que cerraba la
+    zona anterior — Sanguijuela Colosal, Gárgola, Chamán del Cieno, Ángel
+    Caído) se dejaron sin tocar a propósito: el propio diseño ya reinicia el
+    poder de cada zona más abajo (`characters/power_budget.py`), así que no
+    es la misma inversión que preocupaba al usuario ("de la misma zona").
+  - `tests/test_weapon_progression.py` (nuevo) fija esta regla igual que
+    `test_armor_progression.py` fija la de armaduras, agrupando por
+    (zona, elemento) en vez de por la cadena completa.
+  - **Segunda pasada, coherencia temática de los drops** (pedida aparte por
+    el usuario tras ver la tabla): además de que el *poder* no baje, el
+    *tipo* de objeto tiene que tener sentido para el enemigo — no todos
+    tienen por qué soltar arma. Corregido: Rata Gigante y Enjambre de
+    Polillas Pálidas dejan de soltar un arma "forjada" que no encaja con lo
+    que son (un roedor y un enjambre de polillas no empuñan una daga real);
+    Chispa del Puntal cambia el nombre/descripción de su arma de "forjada"
+    a un fragmento cristalizado de sí misma (misma daño/elemento); Huargo
+    deja de soltar directamente "Colmillo Venenoso" porque ya existía la
+    receta de herrería "Daga Envenenada" que usa su propio material
+    ("Colmillo de Huargo") — sobraba el duplicado; Cabra Montés Corrupta y
+    Minero Poseído renombran su *material* (no el arma) para no repetir la
+    misma parte del cuerpo dos veces ("Cuerno Retorcido"→"Pezuña Corrupta",
+    "Pico Roto"→"Guante de Minero"). También se bajó el daño de la primera
+    arma del juego (Espada Goblin) de 4 a 2, para que equiparla desde el
+    principio no dispare de golpe el daño mínimo/máximo del jugador.
 
 **Antes de implementar nada de esto**, hace falta planificar en qué orden
 se aborda cada frente (algunos son prerrequisito de otros — p. ej. medir

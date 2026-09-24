@@ -56,16 +56,6 @@ class Huargo(Enemy):
             )
         if random.random() <= 0.08:
             items.append(
-                Weapon(
-                    "Colmillo Venenoso",
-                    "Arrancado del propio lobo; sigue goteando un veneno espeso.",
-                    14,
-                    6,
-                    element="veneno",
-                )
-            )
-        if random.random() <= 0.08:
-            items.append(
                 Armor(
                     "Botas de Huargo",
                     "Cosidas con las patas del propio lobo; todavía conservan su agilidad.",

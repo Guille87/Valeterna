@@ -66,7 +66,7 @@ class Goblin(Enemy):
     def drop_item(self) -> list:
         items = []
         if random.random() <= 0.1:
-            items.append(Weapon("Espada Goblin", "Una hoja mellada y cubierta de herrumbre que aún corta", 5, 4))
+            items.append(Weapon("Espada Goblin", "Una hoja mellada y cubierta de herrumbre que aún corta", 5, 2))
         if random.random() <= 0.8:
             items.append(HealingPotion("Poción de Salud", "Restaura 20 HP", 2, 20))
         if random.random() <= 0.25:

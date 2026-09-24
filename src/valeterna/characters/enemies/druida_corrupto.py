@@ -107,7 +107,7 @@ class DruidaCorrupto(Enemy):
                 Material("Savia Corrupta", "Negra y espesa; huele a tierra removida y a algo más.", 8, rarity="Común")
             )
         if random.random() <= 0.1:
-            items.append(Weapon("Vara Retorcida", "Una rama torcida sobre sí misma varias veces.", 22, 14))
+            items.append(Weapon("Vara Retorcida", "Una rama torcida sobre sí misma varias veces.", 25, 17))
         if random.random() <= 0.08:
             items.append(
                 Armor(
