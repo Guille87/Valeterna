@@ -1569,6 +1569,66 @@ el cambio a mitigación multiplicativa.
     (que el propio GDD deja "diseñada al final", solo con el Dragón)
     están completas a 10 enemigos.**
 
+## Pendiente (post v0.15.0-c, con el roster ya completo): revisión general antes de seguir con el ROADMAP
+
+Ahora que las 7 zonas pobladas están a 10 enemigos, toca una pasada de
+revisión y rebalanceo antes de seguir añadiendo contenido nuevo del
+ROADMAP. Cuatro frentes pedidos por el usuario, todavía **sin implementar,
+solo anotados aquí**:
+
+- [ ] **Revisar nombres y habilidades de los enemigos de cada zona para que
+  no se repitan entre zonas.** Con 61 enemigos y un menú limitado de
+  mecánicas reutilizables (autocuración+maldición, vida robada, emboscada,
+  golpe inevitable, segundo golpe, on-hit status...), varias zonas han
+  acabado con combinaciones muy similares (p. ej. varios "se autocura +
+  maldice + dardo elemental" seguidos: Chamán del Cieno, Heraldo de la
+  Tormenta, Custodio Arcano/El Archivista, Serafín Corrupto/El Sin Rostro).
+  Hace falta pasar zona por zona y diferenciar más los nombres (evitar
+  patrones repetidos tipo "Guardián de/del X" o "X Corrupto/a") y las
+  mecánicas dentro de una misma zona y entre zonas vecinas.
+- [ ] **Revisar el poder que da al jugador el equipo dropeado por los
+  enemigos** (arma y/o armadura), en relación con el nivel al que se
+  consigue. Ligado directamente al punto de más abajo sobre el poder del
+  jugador: hay que medir con datos reales cuánto sube el poder real del
+  jugador solo por equiparse un drop, no solo por subir de nivel.
+- [ ] **Subir mucho la XP que dan los enemigos entre sí, y subir mucho el
+  salto de XP necesaria entre niveles del jugador**, para que no compense
+  quedarse "granjeando" (farmeando) enemigos de nivel bajo para subir de
+  nivel sin avanzar de zona. Se aplicará a **todos** los enemigos, no solo
+  a los nuevos. Afecta a `Player._required_xp_for_level` / `required_xp()`
+  y al `gold`/XP que otorga cada `Enemy` — coordinar con el punto de abajo
+  sobre el poder del jugador, ya que son la misma curva vista desde dos
+  ángulos (cuánto cuesta subir vs. cuánto se gana al subir).
+- [ ] **Más variantes de pociones de curación, con más HP y pensadas para
+  usarse en pelea de verdad**, no que el jugador solo ataque sin parar:
+  - Súper Poción (+50), Híper Poción (+100 o +200), Poción Máxima /
+    Elixir (cura la vida entera) — nombres exactos por decidir, pero la
+    idea es una progresión clara de potencia sobre la actual "Poción de
+    Salud" (+20).
+  - **Separar lo que hace hoy el Antídoto** (cura absolutamente cualquier
+    estado alterado, ver `items/potions/antidote_potion.py::CURABLE`) en
+    variantes que curen **un solo** elemento/estado cada una (p. ej. una
+    solo para veneno, otra solo para quemado/combustión, otra solo para
+    congelado/parálisis...), y crear una poción nueva, con **otro nombre**
+    (no "Antídoto"), que siga curando todos los estados a la vez como hace
+    el Antídoto actual hoy.
+  - Objetivo declarado por el usuario: que estos objetos sean una
+    herramienta táctica real en combate, no un recurso menor frente a
+    "atacar y atacar".
+- [ ] **El rebalanceo de poder del jugador ya anotado más arriba** (sección
+  "Pendiente de discutir con más profundidad: el poder del jugador crece
+  demasiado rápido..." — ver v0.14.0-e) sigue en pie y se hace en la misma
+  pasada que los dos puntos de arriba (equipo dropeado + curva de XP), ya
+  que son la misma pieza de diseño.
+
+**Antes de implementar nada de esto**, hace falta planificar en qué orden
+se aborda cada frente (algunos son prerrequisito de otros — p. ej. medir
+el poder real del equipo actual antes de decidir cuánto rebalancear la
+curva de XP) y cómo encaja con el resto del ROADMAP (`ROADMAP.md`), que
+sigue con la fase "Enemies III" (habilidades de clase de hito alto,
+misiones secundarias) y "Main story" tras esto. Pendiente de acordar con
+el usuario un plan de orden concreto antes de empezar a tocar código.
+
 ## Pulido final (casi lo último antes de 1.0)
 
 - [ ] **Más sonidos de ataque por clase / elemento.** Hoy todo ataque suena
