@@ -13,7 +13,12 @@ class EnjambrePolillas(Enemy):
     SIGNATURE = "Enjambre: a veces otra polilla se suma al ataque, y su polvo puede envenenar."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset({"veneno"})
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "El aire se espesa de golpe: un Enjambre de Polillas Pálidas te ha encontrado en la oscuridad."
+    TAUNT_LINES = (
+        "El polvo ya está en tu piel. Solo hace falta que vuelva a arder.",
+        "Somos cientos. Tú solo tienes dos manos.",
+    )
 
     # Tier 7 del Bosque (segundo élite): el fuego dispersa al enjambre entero
     # de un solo golpe; sin sangre que perder, no puede sangrar.

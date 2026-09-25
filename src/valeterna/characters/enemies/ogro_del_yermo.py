@@ -13,7 +13,12 @@ class OgroDelYermo(Enemy):
     SIGNATURE = "Golpe aplastante: un mazazo más fuerte de lo normal que puede dejarte aturdido."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset({"aturdido"})
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "El suelo tiembla: un Ogro del Yermo se acerca, y no parece de buen humor."
+    TAUNT_LINES = (
+        "La última vez ya te dejé aturdido. Hoy no seré tan blando.",
+        "Sigues en pie. Eso tiene fácil arreglo.",
+    )
 
     # Su corpachón no distingue una descarga de otra: no se le puede aturdir.
     WEAKNESSES = frozenset({"fuego"})

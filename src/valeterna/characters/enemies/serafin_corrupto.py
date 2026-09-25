@@ -13,7 +13,12 @@ class SerafinCorrupto(Enemy):
     SIGNATURE = "Gracia invertida: se cura con luz vuelta del revés y puede maldecir tu armadura."
     ELEMENTS_DEALT = frozenset({"oscuridad"})
     INFLICTS = frozenset({"maldicion"})
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "Un resplandor equivocado cruza la Catedral rota. Un Serafín Corrupto despliega alas que ya no deberían ser suyas."
+    TAUNT_LINES = (
+        "Mis alas ya no son las tuyas para juzgar.",
+        "Serví antes de la Brecha. Serviré después de ti.",
+    )
 
     # Tier 5 de la Ciudadela (primer élite): lo sagrado de verdad todavía
     # reconoce la impostura y la castiga; su propia corrupción lo protege

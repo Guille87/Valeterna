@@ -15,7 +15,12 @@ class BibliotecarioErrante(Enemy):
     SIGNATURE = "Lectura en voz alta: puede confundirte además de golpearte con magia arcana."
     ELEMENTS_DEALT = frozenset({"arcano"})
     INFLICTS = frozenset({"confusion"})
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "Una figura encorvada pasa las páginas de un libro que ya no tiene dueño. Un Bibliotecario Errante alza la vista."
+    TAUNT_LINES = (
+        "Ya leíste esta página. Termina igual de mal.",
+        "Algunas frases contestan. La tuya ya lo hizo.",
+    )
 
     # Tier 7 de la Torre (segundo élite): sirve al mismo canal que el
     # Custodio Arcano, con las mismas afinidades de estudioso.

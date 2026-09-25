@@ -15,8 +15,13 @@ class GuardianDelTomoProhibido(Enemy):
     SIGNATURE = "Onda de sello: de vez en cuando libera una onda arcana imposible de esquivar."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = (
         "El aire tiembla alrededor de un estante vacío. El Guardián del Tomo Prohibido se materializa ante ti."
+    )
+    TAUNT_LINES = (
+        "El sello ya te alcanzó una vez.",
+        "Nadie me puso aquí a propósito. Pero aquí sigo, para ti.",
     )
 
     # Tier 9 de la Torre (tercer élite): protege un sello, no un cuerpo, así

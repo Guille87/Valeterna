@@ -13,7 +13,12 @@ class CustodioArcano(Enemy):
     SIGNATURE = "Escudo de estudio: se repara con energía arcana y lanza dardos de la misma magia."
     ELEMENTS_DEALT = frozenset({"arcano"})
     INFLICTS = frozenset()
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "Runas suspendidas en el aire giran hacia ti. Un Custodio Arcano despierta de su vigilia."
+    TAUNT_LINES = (
+        "Las runas ya te vieron caer una vez.",
+        "Sigo aquí desde antes de que nadie recordara qué vigilo. Y seguiré.",
+    )
 
     # Tier 5 de la Torre (primer élite): un constructo tejido de energía
     # arcana, sin cuerpo que envenenar; el hielo, en cambio, congela el

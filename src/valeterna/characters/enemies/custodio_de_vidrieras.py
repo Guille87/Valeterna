@@ -15,7 +15,12 @@ class CustodioDeVidrieras(Enemy):
     SIGNATURE = "Mirada de cristal: puede confundirte además de golpearte con luz astillada."
     ELEMENTS_DEALT = frozenset({"sagrado"})
     INFLICTS = frozenset({"confusion"})
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "Los fragmentos de una vidriera rota flotan y se recomponen en una silueta. Un Custodio de Vidrieras te mira de vuelta."
+    TAUNT_LINES = (
+        "Ya te miré de vuelta una vez. Sigo mirando.",
+        "El cristal no olvida la forma de tu derrota.",
+    )
 
     # Tier 7 de la Ciudadela (segundo élite): nacido de un vitral sagrado
     # profanado, pero sagrado al fin y al cabo.

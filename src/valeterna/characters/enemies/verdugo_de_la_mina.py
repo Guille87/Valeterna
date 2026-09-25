@@ -13,7 +13,12 @@ class VerdugoDeLaMina(Enemy):
     SIGNATURE = "Derrumbe: de vez en cuando hace ceder el techo sobre ti, un golpe imposible de esquivar."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "El techo de la galería cruje antes de que aparezca. El Verdugo de la Mina llena el túnel entero."
+    TAUNT_LINES = (
+        "El techo ya cedió una vez sobre ti. Puede volver a hacerlo.",
+        "Aquí no distingo tu roca de tu hueso.",
+    )
 
     # Tier 7 del Cañón (segundo élite): no es más que roca y huesos sin
     # descanso, así que lo sagrado es lo único que lo perturba; sin nervios,

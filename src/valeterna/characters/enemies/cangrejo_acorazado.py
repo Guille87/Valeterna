@@ -13,7 +13,12 @@ class CangrejoAcorazado(Enemy):
     SIGNATURE = "Tenaza implacable: de vez en cuando cierra la pinza con una fuerza imposible de esquivar."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "El barro se abre y un Cangrejo Acorazado emerge, tan ancho como el propio camino."
+    TAUNT_LINES = (
+        "Mi caparazón ya aguantó todo lo que le lanzaste.",
+        "No hace falta huir de nada. Tampoco de ti.",
+    )
 
     def __init__(self):
         super().__init__(

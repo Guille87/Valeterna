@@ -12,61 +12,61 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 | 2 | Los Yermos | 2 | Rata Gigante | normal | 6088 | +55% | 36 | 8-14 | 15 | 5%/150% | 1 | 0 | 6 | 4 | 0 | 0 | 0 | 5-8 |
 | 3 | Los Yermos | 3 | Goblin Montaraz | normal | 6855 | +39% | 55 | 9-13 | 11 | 6%/150% | 2 | 0 | 9 | 3 | 0 | 0 | 0 | 5-7 |
 | 4 | Los Yermos | 4 | Huargo | normal | 9354 | +52% | 52 | 11-16 | 13 | 5%/150% | 1 | 0 | 6 | 4 | 0 | 0 | 0 | 6-9 |
-| 5 | Los Yermos | 5 | Chamán Goblin | normal | 11241 | +46% | 73 | 9-14 | 13 | 6%/150% | 2 | 4 | 9 | 5 | 0 | 0 | 0 | 13-17 |
+| 5 | Los Yermos | 5 | Chamán Goblin | elite | 11241 | +46% | 73 | 9-14 | 13 | 6%/150% | 2 | 4 | 9 | 5 | 0 | 0 | 0 | 13-17 |
 | 6 | Los Yermos | 6 | Esqueleto | normal | 10553 | +10% | 78 | 13-20 | 8 | 5%/150% | 5 | 2 | 8 | 2 | 0 | 0 | 0 | 10-14 |
-| 7 | Los Yermos | 7 | Bandido | normal | 30452 | +153% | 114 | 17-25 | 12 | 10%/160% | 5 | 0 | 10 | 6 | 2 | 0 | 0 | 16-22 |
+| 7 | Los Yermos | 7 | Bandido | elite | 30452 | +153% | 114 | 17-25 | 12 | 10%/160% | 5 | 0 | 10 | 6 | 2 | 0 | 0 | 16-22 |
 | 8 | Los Yermos | 8 | Salteador | normal | 26203 | +74% | 106 | 16-24 | 12 | 6%/150% | 3 | 0 | 9 | 4 | 2 | 0 | 0 | 20-26 |
-| 9 | Los Yermos | 9 | Ogro del Yermo | normal | 29917 | +59% | 141 | 19-27 | 9 | 5%/150% | 5 | 0 | 8 | 1 | 4 | 0 | 0 | 30-38 |
+| 9 | Los Yermos | 9 | Ogro del Yermo | elite | 29917 | +59% | 141 | 19-27 | 9 | 5%/150% | 5 | 0 | 8 | 1 | 4 | 0 | 0 | 30-38 |
 | 10 | Los Yermos | 10 | El Carnicero | guardian | 40426 | +72% | 170 | 24-34 | 8 | 5%/150% | 6 | 2 | 9 | 2 | 5 | 0 | 0 | 45-58 |
 | 11 | Bosque de los Susurros | 1 | Orco | normal | 45062 | +581% | 201 | 20-27 | 9 | 8%/175% | 6 | 1 | 10 | 3 | 3 | 0 | 0 | 21-29 |
 | 12 | Bosque de los Susurros | 2 | Espíritu Vengativo | normal | 82938 | +903% | 210 | 18-26 | 17 | 8%/170% | 3 | 2 | 10 | 9 | 8 | 0 | 0 | 30-40 |
 | 13 | Bosque de los Susurros | 3 | Troll | normal | 71162 | +588% | 342 | 16-25 | 10 | 3%/150% | 4 | 1 | 3 | 0 | 0 | 0 | 10 | 42-58 |
 | 14 | Bosque de los Susurros | 4 | Araña Tejesombras | normal | 86619 | +570% | 219 | 21-27 | 16 | 6%/150% | 3 | 0 | 11 | 8 | 2 | 0 | 0 | 60-75 |
-| 15 | Bosque de los Susurros | 5 | Druida Corrupto | normal | 95640 | +492% | 260 | 23-31 | 13 | 8%/160% | 4 | 6 | 12 | 5 | 0 | 3 | 0 | 80-100 |
+| 15 | Bosque de los Susurros | 5 | Druida Corrupto | elite | 95640 | +492% | 260 | 23-31 | 13 | 8%/160% | 4 | 6 | 12 | 5 | 0 | 3 | 0 | 80-100 |
 | 16 | Bosque de los Susurros | 6 | Oso Espectral | normal | 116403 | +477% | 356 | 25-33 | 11 | 5%/150% | 6 | 3 | 9 | 2 | 4 | 0 | 0 | 95-120 |
-| 17 | Bosque de los Susurros | 7 | Enjambre de Polillas Pálidas | normal | 147472 | +484% | 301 | 23-32 | 17 | 8%/160% | 3 | 1 | 12 | 10 | 1 | 0 | 0 | 115-145 |
+| 17 | Bosque de los Susurros | 7 | Enjambre de Polillas Pálidas | elite | 147472 | +484% | 301 | 23-32 | 17 | 8%/160% | 3 | 1 | 12 | 10 | 1 | 0 | 0 | 115-145 |
 | 18 | Bosque de los Susurros | 8 | Lobo Umbrío | normal | 152040 | +382% | 368 | 26-35 | 13 | 7%/160% | 5 | 1 | 11 | 7 | 3 | 0 | 0 | 130-165 |
-| 19 | Bosque de los Susurros | 9 | Ent Corrompido | normal | 187489 | +376% | 591 | 33-44 | 8 | 5%/160% | 16 | 4 | 8 | 0 | 6 | 0 | 0 | 155-195 |
+| 19 | Bosque de los Susurros | 9 | Ent Corrompido | elite | 187489 | +376% | 591 | 33-44 | 8 | 5%/160% | 16 | 4 | 8 | 0 | 6 | 0 | 0 | 155-195 |
 | 20 | Bosque de los Susurros | 10 | El Enraizado | guardian | 211032 | +328% | 452 | 34-47 | 11 | 8%/160% | 9 | 8 | 11 | 4 | 4 | 5 | 0 | 190-240 |
 | 21 | Ciénaga de los Ahogados | 1 | Sanguijuela Colosal | normal | 118818 | +755% | 460 | 15-21 | 14 | 5%/150% | 10 | 2 | 9 | 6 | 3 | 0 | 0 | 150-190 |
 | 22 | Ciénaga de los Ahogados | 2 | Espantajo Anegado | normal | 127076 | +632% | 525 | 20-27 | 10 | 6%/150% | 13 | 1 | 8 | 2 | 4 | 0 | 0 | 160-200 |
 | 23 | Ciénaga de los Ahogados | 3 | Ahogado Errante | normal | 135960 | +526% | 480 | 21-29 | 11 | 6%/150% | 12 | 2 | 9 | 3 | 4 | 0 | 0 | 170-210 |
 | 24 | Ciénaga de los Ahogados | 4 | Chamán del Cieno | normal | 145724 | +437% | 515 | 19-26 | 12 | 8%/160% | 10 | 7 | 12 | 5 | 0 | 4 | 0 | 180-220 |
-| 25 | Ciénaga de los Ahogados | 5 | Cangrejo Acorazado | normal | 155697 | +359% | 775 | 24-32 | 7 | 5%/150% | 20 | 3 | 7 | 0 | 6 | 0 | 0 | 190-230 |
+| 25 | Ciénaga de los Ahogados | 5 | Cangrejo Acorazado | elite | 155697 | +359% | 775 | 24-32 | 7 | 5%/150% | 20 | 3 | 7 | 0 | 6 | 0 | 0 | 190-230 |
 | 26 | Ciénaga de los Ahogados | 6 | Serpiente de Fango | normal | 166894 | +294% | 500 | 18-25 | 15 | 7%/150% | 11 | 1 | 11 | 8 | 3 | 0 | 0 | 195-235 |
-| 27 | Ciénaga de los Ahogados | 7 | Sacerdote Ahogado | normal | 178202 | +236% | 545 | 22-30 | 12 | 8%/160% | 12 | 8 | 13 | 5 | 0 | 5 | 0 | 200-240 |
+| 27 | Ciénaga de los Ahogados | 7 | Sacerdote Ahogado | elite | 178202 | +236% | 545 | 22-30 | 12 | 8%/160% | 12 | 8 | 13 | 5 | 0 | 5 | 0 | 200-240 |
 | 28 | Ciénaga de los Ahogados | 8 | Horror de Profundidad | normal | 188008 | +184% | 595 | 26-35 | 10 | 6%/160% | 15 | 2 | 9 | 3 | 5 | 0 | 0 | 205-245 |
-| 29 | Ciénaga de los Ahogados | 9 | Guardián del Templo Hundido | normal | 196923 | +138% | 640 | 28-38 | 9 | 6%/160% | 22 | 6 | 9 | 0 | 7 | 0 | 0 | 210-250 |
+| 29 | Ciénaga de los Ahogados | 9 | Guardián del Templo Hundido | elite | 196923 | +138% | 640 | 28-38 | 9 | 6%/160% | 22 | 6 | 9 | 0 | 7 | 0 | 0 | 210-250 |
 | 30 | Ciénaga de los Ahogados | 10 | El Anegado | guardian | 205746 | +99% | 605 | 25-34 | 11 | 8%/160% | 18 | 9 | 12 | 4 | 5 | 6 | 0 | 220-260 |
 | 31 | Cañón del Trueno | 1 | Gárgola | normal | 214245 | +634% | 575 | 34-46 | 9 | 5%/170% | 18 | 4 | 8 | 0 | 10 | 0 | 0 | 110-145 |
-| 32 | Cañón del Trueno | 2 | Gólem de Piedra | elite | 266976 | +632% | 450 | 42-54 | 12 | 5%/160% | 20 | 4 | 8 | 0 | 12 | 0 | 0 | 90-120 |
+| 32 | Cañón del Trueno | 2 | Gólem de Piedra | normal | 266976 | +632% | 450 | 42-54 | 12 | 5%/160% | 20 | 4 | 8 | 0 | 12 | 0 | 0 | 90-120 |
 | 33 | Cañón del Trueno | 3 | Minero Poseído | normal | 290598 | +538% | 850 | 28-38 | 10 | 6%/160% | 17 | 2 | 9 | 1 | 5 | 0 | 0 | 225-270 |
 | 34 | Cañón del Trueno | 4 | Murciélago de Tormenta | normal | 313897 | +451% | 640 | 22-30 | 18 | 8%/160% | 10 | 1 | 13 | 11 | 2 | 0 | 0 | 240-290 |
-| 35 | Cañón del Trueno | 5 | Chispa del Puntal | normal | 338989 | +376% | 715 | 30-40 | 13 | 7%/160% | 8 | 3 | 13 | 6 | 6 | 0 | 0 | 260-310 |
+| 35 | Cañón del Trueno | 5 | Chispa del Puntal | elite | 338989 | +376% | 715 | 30-40 | 13 | 7%/160% | 8 | 3 | 13 | 6 | 6 | 0 | 0 | 260-310 |
 | 36 | Cañón del Trueno | 6 | Aparición de la Cuadrilla | normal | 365384 | +310% | 855 | 32-43 | 11 | 6%/160% | 12 | 4 | 10 | 4 | 5 | 0 | 0 | 280-335 |
-| 37 | Cañón del Trueno | 7 | Verdugo de la Mina | normal | 393378 | +253% | 1085 | 38-50 | 8 | 5%/160% | 26 | 5 | 9 | 0 | 8 | 0 | 0 | 305-365 |
+| 37 | Cañón del Trueno | 7 | Verdugo de la Mina | elite | 393378 | +253% | 1085 | 38-50 | 8 | 5%/160% | 26 | 5 | 9 | 0 | 8 | 0 | 0 | 305-365 |
 | 38 | Cañón del Trueno | 8 | Cabra Montés Corrupta | normal | 426075 | +206% | 770 | 28-38 | 16 | 8%/160% | 14 | 2 | 12 | 7 | 4 | 0 | 0 | 290-345 |
-| 39 | Cañón del Trueno | 9 | Heraldo de la Tormenta | normal | 460747 | +165% | 860 | 36-48 | 12 | 9%/170% | 14 | 9 | 14 | 6 | 6 | 0 | 0 | 320-380 |
+| 39 | Cañón del Trueno | 9 | Heraldo de la Tormenta | elite | 460747 | +165% | 860 | 36-48 | 12 | 9%/170% | 14 | 9 | 14 | 6 | 6 | 0 | 0 | 320-380 |
 | 40 | Cañón del Trueno | 10 | El Decimoquinto | guardian | 497484 | +129% | 975 | 34-46 | 12 | 9%/170% | 20 | 10 | 13 | 5 | 7 | 4 | 0 | 340-405 |
-| 41 | Torre de los Arcanos / Necrópolis | 1 | Mago | elite | 80400 | +31% | 400 | 10-15 | 15 | 12%/160% | 6 | 15 | 12 | 10 | 0 | 4 | 0 | 85-115 |
-| 42 | Torre de los Arcanos / Necrópolis | 2 | Nigromante | elite | 431944 | +464% | 320 | 48-64 | 23 | 8%/160% | 6 | 10 | 12 | 6 | 0 | 8 | 0 | 110-145 |
+| 41 | Torre de los Arcanos / Necrópolis | 1 | Mago | normal | 80400 | +31% | 400 | 10-15 | 15 | 12%/160% | 6 | 15 | 12 | 10 | 0 | 4 | 0 | 85-115 |
+| 42 | Torre de los Arcanos / Necrópolis | 2 | Nigromante | normal | 431944 | +464% | 320 | 48-64 | 23 | 8%/160% | 6 | 10 | 12 | 6 | 0 | 8 | 0 | 110-145 |
 | 43 | Torre de los Arcanos / Necrópolis | 3 | Tomo Viviente | normal | 467728 | +389% | 855 | 32-43 | 14 | 7%/160% | 14 | 6 | 12 | 8 | 4 | 0 | 0 | 360-430 |
 | 44 | Torre de los Arcanos / Necrópolis | 4 | Guardián Osario | normal | 504334 | +322% | 1170 | 40-53 | 9 | 5%/160% | 18 | 4 | 10 | 1 | 6 | 0 | 0 | 380-450 |
-| 45 | Torre de los Arcanos / Necrópolis | 5 | Custodio Arcano | normal | 544326 | +264% | 1065 | 38-50 | 11 | 8%/170% | 12 | 12 | 13 | 5 | 0 | 6 | 0 | 400-475 |
+| 45 | Torre de los Arcanos / Necrópolis | 5 | Custodio Arcano | elite | 544326 | +264% | 1065 | 38-50 | 11 | 8%/170% | 12 | 12 | 13 | 5 | 0 | 6 | 0 | 400-475 |
 | 46 | Torre de los Arcanos / Necrópolis | 6 | Espectro de la Guardia | normal | 588845 | +215% | 1035 | 36-48 | 13 | 7%/160% | 10 | 8 | 11 | 6 | 5 | 0 | 0 | 420-500 |
-| 47 | Torre de los Arcanos / Necrópolis | 7 | Bibliotecario Errante | normal | 635504 | +172% | 1060 | 40-54 | 12 | 9%/170% | 14 | 10 | 15 | 6 | 0 | 7 | 0 | 440-525 |
+| 47 | Torre de los Arcanos / Necrópolis | 7 | Bibliotecario Errante | elite | 635504 | +172% | 1060 | 40-54 | 12 | 9%/170% | 14 | 10 | 15 | 6 | 0 | 7 | 0 | 440-525 |
 | 48 | Torre de los Arcanos / Necrópolis | 8 | Carroñero de Cripta | normal | 683760 | +134% | 1100 | 34-46 | 15 | 6%/160% | 12 | 5 | 12 | 7 | 6 | 0 | 0 | 460-550 |
-| 49 | Torre de los Arcanos / Necrópolis | 9 | Guardián del Tomo Prohibido | normal | 740240 | +103% | 1695 | 46-60 | 8 | 5%/160% | 24 | 10 | 11 | 0 | 9 | 0 | 0 | 480-575 |
+| 49 | Torre de los Arcanos / Necrópolis | 9 | Guardián del Tomo Prohibido | elite | 740240 | +103% | 1695 | 46-60 | 8 | 5%/160% | 24 | 10 | 11 | 0 | 9 | 0 | 0 | 480-575 |
 | 50 | Torre de los Arcanos / Necrópolis | 10 | El Archivista | guardian | 800056 | +75% | 1280 | 42-56 | 12 | 9%/170% | 16 | 14 | 14 | 6 | 0 | 8 | 0 | 510-610 |
-| 51 | Ciudadela en Ruinas | 1 | Ángel Caído | elite | 393461 | +206% | 380 | 44-60 | 19 | 8%/160% | 8 | 12 | 14 | 10 | 0 | 8 | 0 | 140-180 |
-| 52 | Ciudadela en Ruinas | 2 | Demonio | elite | 812965 | +406% | 420 | 58-76 | 27 | 10%/170% | 10 | 10 | 13 | 8 | 20 | 6 | 0 | 160-210 |
+| 51 | Ciudadela en Ruinas | 1 | Ángel Caído | normal | 393461 | +206% | 380 | 44-60 | 19 | 8%/160% | 8 | 12 | 14 | 10 | 0 | 8 | 0 | 140-180 |
+| 52 | Ciudadela en Ruinas | 2 | Demonio | normal | 812965 | +406% | 420 | 58-76 | 27 | 10%/170% | 10 | 10 | 13 | 8 | 20 | 6 | 0 | 160-210 |
 | 53 | Ciudadela en Ruinas | 3 | Ciudadano Hueco | normal | 869044 | +332% | 1365 | 40-54 | 13 | 7%/160% | 16 | 6 | 11 | 5 | 6 | 0 | 0 | 550-655 |
 | 54 | Ciudadela en Ruinas | 4 | Guardia Caída | normal | 931364 | +271% | 1550 | 50-66 | 10 | 6%/160% | 20 | 7 | 12 | 2 | 7 | 0 | 0 | 580-690 |
-| 55 | Ciudadela en Ruinas | 5 | Serafín Corrupto | normal | 994681 | +217% | 1405 | 48-63 | 12 | 9%/170% | 18 | 16 | 15 | 8 | 0 | 9 | 0 | 610-725 |
+| 55 | Ciudadela en Ruinas | 5 | Serafín Corrupto | elite | 994681 | +217% | 1405 | 48-63 | 12 | 9%/170% | 18 | 16 | 15 | 8 | 0 | 9 | 0 | 610-725 |
 | 56 | Ciudadela en Ruinas | 6 | Eco de la Guardia | normal | 1064447 | +171% | 1535 | 52-69 | 11 | 7%/160% | 14 | 9 | 13 | 6 | 7 | 0 | 0 | 640-765 |
-| 57 | Ciudadela en Ruinas | 7 | Custodio de Vidrieras | normal | 1141594 | +133% | 1415 | 50-66 | 13 | 10%/170% | 20 | 14 | 16 | 7 | 0 | 9 | 0 | 670-800 |
+| 57 | Ciudadela en Ruinas | 7 | Custodio de Vidrieras | elite | 1141594 | +133% | 1415 | 50-66 | 13 | 10%/170% | 20 | 14 | 16 | 7 | 0 | 9 | 0 | 670-800 |
 | 58 | Ciudadela en Ruinas | 8 | Verdugo Infernal | normal | 1220600 | +99% | 1555 | 46-61 | 14 | 8%/160% | 18 | 10 | 14 | 6 | 8 | 0 | 0 | 700-835 |
-| 59 | Ciudadela en Ruinas | 9 | Heraldo del Amo | normal | 1305640 | +70% | 2090 | 58-76 | 9 | 6%/160% | 24 | 13 | 13 | 0 | 9 | 0 | 0 | 730-870 |
+| 59 | Ciudadela en Ruinas | 9 | Heraldo del Amo | elite | 1305640 | +70% | 2090 | 58-76 | 9 | 6%/160% | 24 | 13 | 13 | 0 | 9 | 0 | 0 | 730-870 |
 | 60 | Ciudadela en Ruinas | 10 | El Sin Rostro | guardian | 1396350 | +46% | 1740 | 54-71 | 12 | 10%/170% | 20 | 18 | 15 | 7 | 8 | 10 | 0 | 760-910 |
 | 61 | El Corazón de la Brecha | 1 | Dragón | guardian | 1551420 | +474% | 850 | 55-75 | 26 | 10%/180% | 14 | 10 | 14 | 6 | 6 | 0 | 0 | 300-385 |
 

@@ -13,7 +13,12 @@ class SacerdoteAhogado(Enemy):
     SIGNATURE = "Cántico ahogado: puede confundirte además de golpearte con magia oscura."
     ELEMENTS_DEALT = frozenset({"oscuridad"})
     INFLICTS = frozenset({"confusion"})
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "Un cántico gorgoteante sube desde el agua turbia. Un Sacerdote Ahogado emerge, aún rezando."
+    TAUNT_LINES = (
+        "El cántico no termina solo porque tú caigas.",
+        "Ya rezaba por tu derrota antes de que llegaras.",
+    )
 
     # Tier 7 de la Ciénaga (segundo élite): sirve a lo mismo que el Chamán del
     # Cieno, con las mismas afinidades.

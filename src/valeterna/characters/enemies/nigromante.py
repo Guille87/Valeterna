@@ -13,14 +13,9 @@ class Nigromante(Enemy):
     SIGNATURE = "Invocación: de vez en cuando alza un esqueleto que te ataca al instante."
     ELEMENTS_DEALT = frozenset({"oscuridad"})
     INFLICTS = frozenset()
-    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = (
         "Las sombras a tu alrededor se alargan más de lo que deberían. "
         "El Nigromante te sonríe con una boca que no debería sonreír."
-    )
-    TAUNT_LINES = (
-        "Los muertos no olvidan una derrota. Y tú ya eres casi de los míos.",
-        "Vuelves a intentarlo. Qué generoso, dejarme divertirme otra vez.",
     )
 
     # Nigromante clásico: lo sagrado es su némesis; la oscuridad es su propio
