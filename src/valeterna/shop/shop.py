@@ -6,6 +6,7 @@ from valeterna.items.potions.healing_potion import HealingPotion
 from valeterna.items.potions.potion_base import Potion
 from valeterna.items.potions.regen_potion import RegenPotion
 from valeterna.ui import console
+from valeterna.world.map import ZONE_ORDER
 
 
 def _gold(amount) -> str:
@@ -58,6 +59,100 @@ class ShopItem:
 
 
 class Shop:
+    # Equipo adicional que se desbloquea al visitar cada zona (además del
+    # catálogo base, siempre disponible desde Piedrablanca). Cada pieza se
+    # queda deliberadamente por debajo del primer drop real de esa zona (ver
+    # docs/design/enemigos_drops.csv) — es un colchón de emergencia si no ha
+    # caído nada mejor todavía, no un atajo para saltarse la progresión.
+    # Los Yermos no tiene escalón propio: su nivel ya lo cubre el catálogo
+    # base (Espada de Hierro / Armadura de Cuero).
+    _ZONE_GEAR: dict[str, list[tuple]] = {
+        "bosque_de_los_susurros": [
+            (Weapon("Espada de Acero", "Una hoja fabricada en serie, sin filo excepcional pero fiable.", 20, 7), 40),
+            (
+                Armor(
+                    "Peto de Cuero Reforzado",
+                    "Cuero grueso con refuerzos metálicos.",
+                    20,
+                    slot="peto",
+                    defense=4,
+                    max_health=12,
+                ),
+                40,
+            ),
+        ],
+        "cienaga_de_los_ahogados": [
+            (Weapon("Espada Larga", "Más alcance que una espada corta, y un filo bien cuidado.", 30, 10), 70),
+            (
+                Armor(
+                    "Peto de Placas",
+                    "Placas remachadas sobre cota de malla.",
+                    30,
+                    slot="peto",
+                    defense=6,
+                    max_health=16,
+                ),
+                70,
+            ),
+        ],
+        "canon_del_trueno": [
+            (Weapon("Mandoble", "Requiere las dos manos, pero el golpe compensa el peso.", 45, 14), 110),
+            (
+                Armor(
+                    "Peto Acorazado",
+                    "Metal grueso, pensado para aguantar más que para lucirse.",
+                    45,
+                    slot="peto",
+                    defense=9,
+                    max_health=20,
+                ),
+                110,
+            ),
+        ],
+        "torre_de_los_arcanos": [
+            (Weapon("Espada Encantada", "Un herrero de la Torre grabó runas menores en el filo.", 65, 18), 160),
+            (
+                Armor(
+                    "Peto Grabado",
+                    "Runas menores repartidas por toda la coraza.",
+                    65,
+                    slot="peto",
+                    defense=11,
+                    max_health=24,
+                ),
+                160,
+            ),
+        ],
+        "ciudadela_en_ruinas": [
+            (Weapon("Espada de Campeón", "Forjada para alguien que ya no la necesitó.", 90, 22), 220),
+            (
+                Armor(
+                    "Peto de Campeón",
+                    "Perteneció a alguien que resistió más de lo esperado.",
+                    90,
+                    slot="peto",
+                    defense=14,
+                    max_health=28,
+                ),
+                220,
+            ),
+        ],
+        "corazon_de_la_brecha": [
+            (Weapon("Espada Legendaria", "El último encargo de un herrero que ya no forja.", 120, 26), 300),
+            (
+                Armor(
+                    "Peto Legendario",
+                    "La última armadura que un herrero se atrevió a firmar.",
+                    120,
+                    slot="peto",
+                    defense=17,
+                    max_health=32,
+                ),
+                300,
+            ),
+        ],
+    }
+
     def __init__(self):
         self.catalog = [
             ShopItem(HealingPotion("Poción de Salud", "Restaura 20 HP", 2, 20), buy_price=5),
@@ -77,14 +172,28 @@ class Shop:
                 buy_price=15,
             ),
             ShopItem(
-                Weapon("Espada de Hierro", "Una espada bien forjada, superior a las improvisadas", 10, damage=6),
-                buy_price=25,
+                Weapon("Espada de Hierro", "Una espada bien forjada, superior a las improvisadas", 6, damage=2),
+                buy_price=15,
             ),
             ShopItem(
-                Armor("Armadura de Cuero", "Protección ligera pero fiable", 10, slot="peto", defense=4, max_health=10),
-                buy_price=25,
+                Armor("Armadura de Cuero", "Protección ligera pero fiable", 6, slot="peto", defense=2, max_health=5),
+                buy_price=15,
             ),
         ]
+        self.zone_gear = {
+            zone_id: [ShopItem(template, buy_price=price) for template, price in entries]
+            for zone_id, entries in self._ZONE_GEAR.items()
+        }
+
+    def _visible_items(self, player) -> list:
+        """Catálogo base + el escalón de cada zona ya visitada, en el orden del
+        mapa (no en el orden en que se visitaron)."""
+        visited = player.mundo.get("zonas_visitadas", [])
+        items = list(self.catalog)
+        for zone_id in ZONE_ORDER:
+            if zone_id in visited:
+                items.extend(self.zone_gear.get(zone_id, []))
+        return items
 
     def open(self, player) -> None:
         """Punto de entrada del menú interactivo de la tienda."""
@@ -106,28 +215,29 @@ class Shop:
                 console.error("Opción no válida.")
 
     def _buy_menu(self, player) -> None:
-        if not self.catalog:
+        items = self._visible_items(player)
+        if not items:
             print("No hay objetos en venta.")
             return
 
         print(console.colorize("\n--- OBJETOS EN VENTA ---", console.Fore.CYAN, bright=True))
-        for idx, shop_item in enumerate(self.catalog, 1):
+        for idx, shop_item in enumerate(items, 1):
             print(f"{console.colorize(f'{idx}.', console.Fore.CYAN)} {shop_item}")
-        print(f"{console.colorize(f'{len(self.catalog) + 1}.', console.Fore.CYAN)} Volver")
+        print(f"{console.colorize(f'{len(items) + 1}.', console.Fore.CYAN)} Volver")
 
-        choice = console.ask(f"\nElige qué comprar (1-{len(self.catalog) + 1}): ")
+        choice = console.ask(f"\nElige qué comprar (1-{len(items) + 1}): ")
         if not choice.isdigit():
             console.error("Entrada no válida.")
             return
 
         idx = int(choice) - 1
-        if idx == len(self.catalog):
+        if idx == len(items):
             return
-        if not (0 <= idx < len(self.catalog)):
+        if not (0 <= idx < len(items)):
             console.error("Opción fuera de rango.")
             return
 
-        shop_item = self.catalog[idx]
+        shop_item = items[idx]
         if player.inventory.gold < shop_item.buy_price:
             console.error("No tienes suficiente oro ni para una unidad.")
             return

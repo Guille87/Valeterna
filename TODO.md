@@ -1724,27 +1724,34 @@ solo anotados aquí**:
   combate dedicada) **no cambia** — es un criterio independiente que ya
   estaba documentado como tal en `CLAUDE.md`, solo la clasificación de
   "élite" para la frase/provocación de encuentro se desacopla de él.
-- [ ] **Revisión de la tienda de Piedrablanca** (pedido por el usuario tras
-  ver el catálogo): la "Espada de Hierro" (+6 daño por 25 oro) y la
-  "Armadura de Cuero" (defensa 4/vida +10 por 25 oro) dan más poder del
-  que deberían para lo accesibles que son desde el minuto 1 — la primera,
-  en concreto, supera a *cualquier* drop de arma hasta el Salteador (tier 8
-  de Los Yermos). Plan acordado, sin implementar todavía: bajar ambas al
-  nivel de un drop de tier 1 (Espada de Hierro a +2 daño / 15 oro, Armadura
-  de Cuero a defensa 2/vida +5 / 15 oro) y hacer el catálogo progresivo por
-  zona visitada (`player.mundo["zonas_visitadas"]`, ya existe en el
-  guardado) — cada zona nueva alcanzada añade un escalón de objetos algo
-  mejor, siempre por debajo de lo que ya se puede conseguir peleando en esa
-  zona.
+- [x] **Revisión de la tienda de Piedrablanca** (pedido por el usuario tras
+  ver el catálogo). **Hecho** (rama `feature/shop-progression`):
+  - La "Espada de Hierro" (+6 daño por 25 oro) y la "Armadura de Cuero"
+    (defensa 4/vida +10 por 25 oro) daban más poder del que debían para lo
+    accesibles que eran desde el minuto 1 — la espada, en concreto,
+    superaba a *cualquier* drop de arma hasta el Salteador (tier 8 de Los
+    Yermos). Bajadas al nivel de un drop de tier 1: Espada de Hierro a +2
+    daño / 15 oro, Armadura de Cuero a defensa 2/vida +5 / 15 oro.
+  - `shop/shop.py::Shop._ZONE_GEAR`: catálogo progresivo por zona visitada
+    (`player.mundo["zonas_visitadas"]`, ya existía en el guardado, no hizo
+    falta tocar el esquema) — al visitar el Bosque, la Ciénaga, el Cañón,
+    la Torre, la Ciudadela o El Corazón de la Brecha se desbloquea una
+    espada y un peto algo mejores, siempre por debajo del primer drop real
+    de esa zona (ver `docs/design/enemigos_drops.csv`) para que sea un
+    colchón de emergencia, no un atajo mejor que jugar. Los Yermos no tiene
+    escalón propio: su nivel ya lo cubre el catálogo base. `Shop.catalog`
+    se mantiene como la lista base de siempre (compatibilidad con
+    `tests/test_shop.py`, que la usa directamente); el catálogo efectivo
+    que ve el jugador sale de `Shop._visible_items(player)`.
 
 **Progreso**: de los frentes de esta sección, ya están hechos la tabla de
 referencia, la revisión de drops (poder y coherencia), el rebalanceo de
-poder temprano (equipo/nivel) y la reclasificación de élites. Quedan
-pendientes: la revisión de la tienda (en marcha), las variantes de poción
-y la revisión de nombres/habilidades repetidas entre zonas. Cuando se
-cierren esos tres, toca retomar el ROADMAP (`ROADMAP.md`), que sigue con
-la fase "Enemies III" (habilidades de clase de hito alto, misiones
-secundarias) y "Main story" tras esto.
+poder temprano (equipo/nivel), la reclasificación de élites y la revisión
+de la tienda. Quedan pendientes: las variantes de poción y la revisión de
+nombres/habilidades repetidas entre zonas. Cuando se cierren esos dos,
+toca retomar el ROADMAP (`ROADMAP.md`), que sigue con la fase "Enemies
+III" (habilidades de clase de hito alto, misiones secundarias) y "Main
+story" tras esto.
 
 ## Pulido final (casi lo último antes de 1.0)
 
