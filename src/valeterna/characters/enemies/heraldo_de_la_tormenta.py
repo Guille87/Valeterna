@@ -15,8 +15,13 @@ class HeraldoDeLaTormenta(Enemy):
     SIGNATURE = "Sermón de la Brecha: se cura con el propio mineral y puede maldecir tu armadura con un rayo."
     ELEMENTS_DEALT = frozenset({"rayo"})
     INFLICTS = frozenset({"maldicion"})
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = (
         "Una figura envuelta en polvo de mina alza los brazos hacia la tormenta. Un Heraldo de la Tormenta te ha visto."
+    )
+    TAUNT_LINES = (
+        "El sermón no termina hasta que alguien escucha de verdad.",
+        "Ya maldije tu armadura una vez. Hoy no la llevarás mejor.",
     )
 
     # Tier 9 del Cañón (tercer élite): predica lo mismo que corrompió la

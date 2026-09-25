@@ -13,7 +13,12 @@ class ChispaDelPuntal(Enemy):
     SIGNATURE = "Descarga: su golpe conduce electricidad y puede dejarte paralizado."
     ELEMENTS_DEALT = frozenset({"rayo"})
     INFLICTS = frozenset({"paralizado"})
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "El aire chisporrotea antes de que la veas. Una Chispa del Puntal se condensa frente a ti."
+    TAUNT_LINES = (
+        "Ya sentiste mi descarga una vez. Esta vez no sueltas el arma.",
+        "Nunca me he apagado. No empezaré contigo.",
+    )
 
     # Tier 5 del Cañón (primer élite): ya está hecha de rayo puro, así que más
     # rayo no le añade nada; el hielo, en cambio, la apaga de golpe.

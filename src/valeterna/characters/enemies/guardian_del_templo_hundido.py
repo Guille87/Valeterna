@@ -13,9 +13,14 @@ class GuardianDelTemploHundido(Enemy):
     SIGNATURE = "Golpe de piedra y coral: de vez en cuando ataca con un golpe imposible de esquivar."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = (
         "Entre las columnas hundidas, una figura de piedra cubierta de coral se despega de la pared. "
         "El Guardián del Templo Hundido todavía cumple su turno."
+    )
+    TAUNT_LINES = (
+        "Llevo de pie más tiempo del que tú llevas vivo.",
+        "El templo no cae dos veces por la misma mano.",
     )
 
     # Tier 9 de la Ciénaga (tercer élite): un centinela de piedra sagrada

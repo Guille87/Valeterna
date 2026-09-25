@@ -15,14 +15,9 @@ class Demonio(Enemy):
     )
     ELEMENTS_DEALT = frozenset({"fuego"})
     INFLICTS = frozenset({"confusion"})
-    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = (
         "El calor golpea antes que el enemigo. "
         "El Demonio ha trepado desde la Brecha, y trae consigo el olor de lo que hay debajo."
-    )
-    TAUNT_LINES = (
-        "El fuego no olvida a quien ya quemó una vez.",
-        "Vienes a por más. Perfecto. Tenía hambre.",
     )
 
     # Demonio clásico: lo sagrado lo hiere de verdad; la oscuridad es su

@@ -13,6 +13,12 @@ class DruidaCorrupto(Enemy):
     SIGNATURE = "Corrupción viva: se cura cuando está malherido y puede maldecir tu armadura."
     ELEMENTS_DEALT = frozenset({"oscuridad"})
     INFLICTS = frozenset({"maldicion"})
+    ENCOUNTER_KIND = "elite"
+    ENCOUNTER_LINE = "Las ramas se apartan solas. Un Druida Corrupto avanza entre ellas, y el bosque entero calla."
+    TAUNT_LINES = (
+        "La corrupción no se cura. Solo se extiende.",
+        "Ya sentiste mi maldición una vez. Esta será peor.",
+    )
 
     # Tier 5 del Bosque (GDD §4.1: primer élite): domina una magia corrupta,
     # pero lo sagrado todavía puede purgarla.

@@ -15,7 +15,12 @@ class EntCorrompido(Enemy):
     SIGNATURE = "Golpe de raíces: de vez en cuando ataca con un golpe imposible de esquivar."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "El suelo se abre entre las raíces de un tronco enorme. El Ent Corrompido se pone en pie."
+    TAUNT_LINES = (
+        "Las raíces no olvidan dónde caíste la última vez.",
+        "Sigo en pie desde antes de que nacieras. Y seguiré después.",
+    )
 
     # Tier 9 del Bosque (tercer élite): la madera arde bien; sin nervios, no
     # hay parálisis que valga.

@@ -13,7 +13,12 @@ class HeraldoDelAmo(Enemy):
     SIGNATURE = "Proclama: de vez en cuando pronuncia una sentencia imposible de esquivar."
     ELEMENTS_DEALT = frozenset()
     INFLICTS = frozenset()
+    ENCOUNTER_KIND = "elite"
     ENCOUNTER_LINE = "Una voz que no debería tener boca anuncia algo en una lengua que duele escuchar. Un Heraldo del Amo se presenta."
+    TAUNT_LINES = (
+        "Ya pronuncié tu sentencia una vez.",
+        "No hace falta un rostro para recordar el tuyo.",
+    )
 
     # Tier 9 de la Ciudadela (tercer élite): habla en nombre de lo que
     # gobierna, no de un cuerpo; sin nervios, no hay parálisis que valga.

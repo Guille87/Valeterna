@@ -1087,21 +1087,21 @@ def test_announce_encounter_shows_the_line_only_the_first_time(player, monkeypat
 
 
 def test_announce_encounter_elite_taunts_only_after_a_previous_loss(player, monkeypatch, capsys):
-    from valeterna.characters.enemies.mage import Mago
+    from valeterna.characters.enemies.chaman_goblin import ChamanGoblin
 
     monkeypatch.setattr("valeterna.combat.battle.console.ask", lambda *a, **k: "")
 
-    mago = Mago()
-    _announce_encounter(player, mago)  # 1ª vez: la intro
-    assert mago.ENCOUNTER_LINE in capsys.readouterr().out
+    chaman = ChamanGoblin()
+    _announce_encounter(player, chaman)  # 1ª vez: la intro
+    assert chaman.ENCOUNTER_LINE in capsys.readouterr().out
 
-    _announce_encounter(player, mago)  # 2ª vez, sin haber perdido nunca: nada
+    _announce_encounter(player, chaman)  # 2ª vez, sin haber perdido nunca: nada
     assert capsys.readouterr().out == ""
 
-    player.mundo["banderas"].add("perdio_contra_Mago")
-    _announce_encounter(player, mago)  # ya perdiste una vez: ahora sí provoca
+    player.mundo["banderas"].add("perdio_contra_Chamán Goblin")
+    _announce_encounter(player, chaman)  # ya perdiste una vez: ahora sí provoca
     out = capsys.readouterr().out
-    assert any(line in out for line in mago.TAUNT_LINES)
+    assert any(line in out for line in chaman.TAUNT_LINES)
 
 
 def test_announce_encounter_pauses_only_when_it_prints_something(player, monkeypatch):

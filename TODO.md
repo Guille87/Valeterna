@@ -1705,14 +1705,46 @@ solo anotados aquí**:
     "Pico Roto"→"Guante de Minero"). También se bajó el daño de la primera
     arma del juego (Espada Goblin) de 4 a 2, para que equiparla desde el
     principio no dispare de golpe el daño mínimo/máximo del jugador.
+- [x] **Reclasificación de "élite" por posición de tier, no por caso
+  especial heredado** (rama `balance/elite-by-tier`, pedido por el usuario
+  al ver que la tabla no marcaba como élite a los enemigos que ocupan el
+  tier 5/7/9 de cada zona). Antes de v0.16.0, `ENCOUNTER_KIND = "elite"`
+  era exactamente `audio/resource_manager.py::HARD_BATTLE_ENEMIES` (Gólem
+  de Piedra, Mago, Nigromante, Ángel Caído, Demonio) — un criterio heredado
+  de cuando solo existían los 14 enemigos originales. Con los 61 ya
+  completos, el criterio pasa a ser puramente posicional: **cualquier
+  enemigo en el tier 5, 7 o 9 de una zona poblada es élite**, sin importar
+  si coincide con esos 5 o no. Resultado: los 5 originales pierden
+  `ENCOUNTER_KIND="elite"` (pasan a `"normal"`, pierden `TAUNT_LINES` pero
+  conservan su `ENCOUNTER_LINE`) y se añaden 18 nuevos (los 3 de tier
+  5/7/9 de cada una de las 6 zonas con tiers ya fijados — Los Yermos,
+  Bosque, Ciénaga, Cañón, Torre, Ciudadela — con `ENCOUNTER_LINE` ya
+  existente donde lo había, y `TAUNT_LINES` nuevas escritas a mano para
+  cada uno). `audio/resource_manager.py::HARD_BATTLE_ENEMIES` (música de
+  combate dedicada) **no cambia** — es un criterio independiente que ya
+  estaba documentado como tal en `CLAUDE.md`, solo la clasificación de
+  "élite" para la frase/provocación de encuentro se desacopla de él.
+- [ ] **Revisión de la tienda de Piedrablanca** (pedido por el usuario tras
+  ver el catálogo): la "Espada de Hierro" (+6 daño por 25 oro) y la
+  "Armadura de Cuero" (defensa 4/vida +10 por 25 oro) dan más poder del
+  que deberían para lo accesibles que son desde el minuto 1 — la primera,
+  en concreto, supera a *cualquier* drop de arma hasta el Salteador (tier 8
+  de Los Yermos). Plan acordado, sin implementar todavía: bajar ambas al
+  nivel de un drop de tier 1 (Espada de Hierro a +2 daño / 15 oro, Armadura
+  de Cuero a defensa 2/vida +5 / 15 oro) y hacer el catálogo progresivo por
+  zona visitada (`player.mundo["zonas_visitadas"]`, ya existe en el
+  guardado) — cada zona nueva alcanzada añade un escalón de objetos algo
+  mejor, siempre por debajo de lo que ya se puede conseguir peleando en esa
+  zona.
 
-**Antes de implementar nada de esto**, hace falta planificar en qué orden
-se aborda cada frente (algunos son prerrequisito de otros — p. ej. medir
-el poder real del equipo actual antes de decidir cuánto rebalancear la
-curva de XP) y cómo encaja con el resto del ROADMAP (`ROADMAP.md`), que
-sigue con la fase "Enemies III" (habilidades de clase de hito alto,
-misiones secundarias) y "Main story" tras esto. Pendiente de acordar con
-el usuario un plan de orden concreto antes de empezar a tocar código.
+**Progreso**: de los frentes de esta sección, ya están hechos la tabla de
+referencia, la revisión de drops (poder y coherencia), el rebalanceo de
+poder temprano (equipo/nivel) y la reclasificación de élites. Quedan
+pendientes: la revisión de la tienda (en marcha), las variantes de poción
+y la revisión de nombres/habilidades repetidas entre zonas. Cuando se
+cierren esos tres, toca retomar el ROADMAP (`ROADMAP.md`), que sigue con
+la fase "Enemies III" (habilidades de clase de hito alto, misiones
+secundarias) y "Main story" tras esto.
 
 ## Pulido final (casi lo último antes de 1.0)
 
