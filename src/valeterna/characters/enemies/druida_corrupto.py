@@ -23,10 +23,10 @@ class DruidaCorrupto(Enemy):
         super().__init__(
             "Druida Corrupto",
             Stats(
-                190,
-                190,
-                17,
+                260,
+                260,
                 23,
+                31,
                 4,
                 magic_resist=6,
                 speed=13,

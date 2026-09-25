@@ -206,6 +206,27 @@ _KNOWN_OUT_OF_RANGE = {
     "Verdugo Infernal",
     "Heraldo del Amo",
     "El Sin Rostro",
+    # v0.16.0 (rebalanceo de poder temprano, TODO.md): vida/ataque de los 19
+    # enemigos de Los Yermos y el Bosque de los Susurros (menos Espíritu
+    # Vengativo, que queda pendiente de una revisión aparte) reforzados
+    # ~6-37% para que el jugador no llegue sobrepasado a estas zonas incluso
+    # con el mejor equipo disponible en cada momento — medido con una
+    # herramienta de simulación (power_score() efectivo del jugador vs. del
+    # enemigo a lo largo de la progresión completa, ver TODO.md). Bandido
+    # (élite por diseño, con emboscada + desarme que la fórmula tampoco ve)
+    # se salen del rango formal de la zona tras el refuerzo: Bandido y
+    # Salteador (élite por diseño, con emboscada/desarme/robo de oro que la
+    # fórmula tampoco ve), Ogro del Yermo y El Carnicero (los dos últimos
+    # tiers de la zona, ya cerca del techo formal antes del refuerzo). En el
+    # Bosque, el mismo refuerzo saca también a Troll y Araña Tejesombras del
+    # rango formal — antes eran los dos únicos enemigos de la zona que sí
+    # encajaban, junto con Orco (que sigue encajando).
+    "Bandido",
+    "Salteador",
+    "Ogro del Yermo",
+    "El Carnicero",
+    "Troll",
+    "Araña Tejesombras",
 }
 
 
@@ -225,13 +246,19 @@ def test_every_backbone_enemy_scores_without_error_and_is_documented():
 
 def test_los_yermos_tiered_enemies_are_within_the_design_tolerance_or_documented():
     """Los Yermos es la única zona con tiers ya fijados por el GDD: comprueba la
-    predicción exacta objetivo(zona, tier), no solo el rango [1, 10]. Solo Huargo
-    cae dentro del ±10%; Goblin (+15%, ambigüedad de redondeo de las constantes),
-    Esqueleto (-36%, la reanimación no entra en la fórmula) y Bandido (+44%,
-    emboscada + desarme tampoco) se quedan fuera — documentado, no corregido
-    aquí (ese es el trabajo de rebalanceo aparte que ya sigue TODO.md)."""
+    predicción exacta objetivo(zona, tier), no solo el rango [1, 10].
+
+    Tras el rebalanceo de poder temprano de v0.16.0 (ver TODO.md: vida/ataque
+    de los enemigos de Los Yermos y el Bosque reforzados ~30-40% para que el
+    jugador no llegue sobrepasado a estas zonas), Esqueleto pasa a caer dentro
+    del ±10% (+10%, antes -36%) y Huargo sale de tolerancia (+52%, antes ya
+    era el único que encajaba). Goblin (+27%, antes +15%, ambigüedad de
+    redondeo de las constantes) y Bandido (+153%, antes +44%, emboscada +
+    desarme tampoco entran en la fórmula) se quedan fuera igual que antes,
+    solo que más lejos — documentado, no corregido aquí más allá del
+    rebalanceo ya aplicado."""
     zone_index = _ZONE_INDEX["los_yermos"]
-    within_tolerance = {"Huargo"}
+    within_tolerance = {"Esqueleto"}
 
     for name, tier in _YERMOS_TIERS.items():
         actual = power_score(_get_enemy_instance(name).stats)

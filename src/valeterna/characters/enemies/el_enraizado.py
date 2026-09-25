@@ -38,10 +38,10 @@ class ElEnraizado(Enemy):
         super().__init__(
             "El Enraizado",
             Stats(
-                330,
-                330,
-                25,
+                452,
+                452,
                 34,
+                47,
                 9,
                 magic_resist=8,
                 speed=11,

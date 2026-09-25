@@ -77,7 +77,7 @@ def test_skeleton_dies_on_the_second_lethal_hit():
 
 def test_skeleton_revive_shows_hp_only_when_in_bestiary(capsys):
     Skeleton().take_damage(500, defeated_enemies=["Esqueleto"])
-    assert "ha revivido con 30 HP" in capsys.readouterr().out
+    assert "ha revivido con 39 HP" in capsys.readouterr().out
 
     Skeleton().take_damage(500, defeated_enemies=[])
     assert "??? HP" in capsys.readouterr().out

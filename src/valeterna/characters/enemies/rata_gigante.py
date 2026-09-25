@@ -25,7 +25,7 @@ class RataGigante(Enemy):
         # debía notarse más difícil, no menos — ver TODO.md).
         super().__init__(
             "Rata Gigante",
-            Stats(34, 34, 8, 13, 1, speed=15, precision=6, evasion=4, crit_chance=0.05, crit_damage=1.5),
+            Stats(36, 36, 8, 14, 1, speed=15, precision=6, evasion=4, crit_chance=0.05, crit_damage=1.5),
             gold_min=5,
             gold_max=8,
         )

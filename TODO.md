@@ -1586,19 +1586,57 @@ solo anotados aquí**:
   Hace falta pasar zona por zona y diferenciar más los nombres (evitar
   patrones repetidos tipo "Guardián de/del X" o "X Corrupto/a") y las
   mecánicas dentro de una misma zona y entre zonas vecinas.
-- [ ] **Revisar el poder que da al jugador el equipo dropeado por los
+- [x] **Revisar el poder que da al jugador el equipo dropeado por los
   enemigos** (arma y/o armadura), en relación con el nivel al que se
-  consigue. Ligado directamente al punto de más abajo sobre el poder del
-  jugador: hay que medir con datos reales cuánto sube el poder real del
-  jugador solo por equiparse un drop, no solo por subir de nivel.
-- [ ] **Subir mucho la XP que dan los enemigos entre sí, y subir mucho el
+  consigue. **Hecho** (rama `balance/early-gear-and-growth`):
+  - Construida una herramienta de medición (no forma parte del juego,
+    scripts de un solo uso) que simula la progresión completa del jugador
+    (una vez cada uno de los 61 enemigos, equipando siempre la mejor mejora
+    disponible) y compara su poder efectivo (misma fórmula que
+    `power_score()`, pero con `get_total_*()`) contra el `power_score()` real
+    del enemigo que le toca enfrentar en cada paso.
+  - **Hallazgo**: el ratio jugador/enemigo empezaba altísimo (4-9x en Los
+    Yermos) y bajaba de forma constante hasta ~1.4-1.5x en la recta final —
+    el jugador llegaba muy sobrepasado a las primeras zonas. Una simulación
+    de farmeo puro del Goblin confirmó que la curva de XP **ya** penaliza
+    bien el farmeo (~500 kills para llegar al nivel que la progresión normal
+    alcanza en ~24 combates), así que **no se tocó** — ver el punto de abajo.
+  - **Primer intento (descartado): recortar el equipo/crecimiento del
+    jugador.** Bajaba el daño de arma y el bonus de armadura de los 20
+    enemigos de Los Yermos/Bosque al ~50%, y el ritmo de subida de stats por
+    nivel del jugador ~15%. Funcionaba (mismo ratio objetivo), pero el
+    usuario prefirió no ver los números de su propio equipo/progresión
+    recortados — "me gusta cuando el jugador ve aumentadas sus estadísticas
+    y se siente fuerte".
+  - **Enfoque final: subir el poder de los enemigos en vez de bajar el del
+    jugador.** Matemáticamente equivalente (el ratio que importa es
+    jugador/enemigo), pero el jugador conserva sus números de siempre —
+    equipo, crecimiento por nivel, todo sin tocar — y son los 19 enemigos de
+    Los Yermos y el Bosque de los Susurros (todos menos Espíritu Vengativo,
+    que se deja para una revisión aparte) los que suben vida y rango de
+    ataque a partes iguales, entre un +6% (Goblin, Rata Gigante — el tramo
+    inicial casi no se toca) y un +37% (el tramo final del Bosque). El
+    combate 1 contra el Goblin sigue siendo casi siempre ganable: 99.43% de
+    victorias en una simulación Monte Carlo de 3000 combates (bajó un poco
+    desde el 99.97% original porque el propio Goblin también se refuerza un
+    6%, pero sigue siendo "un porcentaje minúsculo" de derrota, tal y como
+    pidió el usuario).
+  - Efecto secundario documentado en `tests/test_power_budget.py`: al subir
+    el `power_score()` real de estos 19 enemigos, varios salen ahora del
+    rango formal de su zona (Bandido, Salteador, Ogro del Yermo, El
+    Carnicero, Troll, Araña Tejesombras se añaden a `_KNOWN_OUT_OF_RANGE`;
+    Esqueleto pasa a caer dentro del ±10% del tier exacto del GDD en vez de
+    Huargo, que sale de tolerancia).
+- [x] **Subir mucho la XP que dan los enemigos entre sí, y subir mucho el
   salto de XP necesaria entre niveles del jugador**, para que no compense
   quedarse "granjeando" (farmeando) enemigos de nivel bajo para subir de
-  nivel sin avanzar de zona. Se aplicará a **todos** los enemigos, no solo
-  a los nuevos. Afecta a `Player._required_xp_for_level` / `required_xp()`
-  y al `gold`/XP que otorga cada `Enemy` — coordinar con el punto de abajo
-  sobre el poder del jugador, ya que son la misma curva vista desde dos
-  ángulos (cuánto cuesta subir vs. cuánto se gana al subir).
+  nivel sin avanzar de zona. **Evaluado, sin cambios** (ver el punto de
+  arriba): la simulación de farmeo puro del Goblin mostró que la curva de
+  XP actual ya penaliza bien esto (~500 kills para llegar al nivel que la
+  progresión normal alcanza en ~24 combates), así que subirla más solo
+  ralentizaría el juego jugado con normalidad sin arreglar el problema
+  real, que resultó ser el poder relativo de los enemigos tempranos (ya
+  corregido, ver arriba).
 - [ ] **Más variantes de pociones de curación, con más HP y pensadas para
   usarse en pelea de verdad**, no que el jugador solo ataque sin parar:
   - Súper Poción (+50), Híper Poción (+100 o +200), Poción Máxima /
@@ -1615,15 +1653,17 @@ solo anotados aquí**:
   - Objetivo declarado por el usuario: que estos objetos sean una
     herramienta táctica real en combate, no un recurso menor frente a
     "atacar y atacar".
-- [ ] **El rebalanceo de poder del jugador ya anotado más arriba** (sección
+- [x] **El rebalanceo de poder del jugador ya anotado más arriba** (sección
   "Pendiente de discutir con más profundidad: el poder del jugador crece
-  demasiado rápido..." — ver v0.14.0-e) sigue en pie y se hace en la misma
-  pasada que los dos puntos de arriba (equipo dropeado + curva de XP), ya
-  que son la misma pieza de diseño.
+  demasiado rápido..." — ver v0.14.0-e). **Hecho** en la misma pasada que el
+  punto de arriba (equipo dropeado) — con el matiz de que el "rebalanceo"
+  no tocó ninguna stat del jugador al final, sino la de los enemigos (ver el
+  punto de arriba para el porqué). La curva de XP entre niveles, en cambio,
+  se evaluó y se decidió no tocarla.
 - [x] **Revisión completa de los drops de arma/armadura de los 61 enemigos**
   (inversión de calidad **dentro de la misma zona**, distinto del punto de
-  más arriba sobre "cuánto poder da el equipo en relación al nivel", que
-  sigue pendiente). **Hecho** (rama `docs/tabla-enemigos`):
+  arriba sobre "cuánto poder da el equipo en relación al nivel", ya hecho
+  también). **Hecho** (rama `docs/tabla-enemigos`):
   - `tools/generate_enemy_table.py` genera `docs/design/enemigos.md` (tres
     tablas: stats de combate, afinidades/mecánicas y drops, con la
     desviación de cada enemigo sobre su objetivo formal de poder) a partir

@@ -31,10 +31,10 @@ class OsoEspectral(Enemy):
         super().__init__(
             "Oso Espectral",
             Stats(
-                260,
-                260,
-                18,
-                24,
+                356,
+                356,
+                25,
+                33,
                 6,
                 magic_resist=3,
                 speed=11,

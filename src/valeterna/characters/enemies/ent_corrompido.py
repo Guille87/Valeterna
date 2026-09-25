@@ -26,10 +26,10 @@ class EntCorrompido(Enemy):
         super().__init__(
             "Ent Corrompido",
             Stats(
-                430,
-                430,
-                24,
-                32,
+                591,
+                591,
+                33,
+                44,
                 16,
                 magic_resist=4,
                 speed=8,
