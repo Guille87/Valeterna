@@ -22,10 +22,10 @@ class Bandido(Enemy):
         super().__init__(
             "Bandido",
             Stats(
-                85,
-                85,
-                13,
-                19,
+                114,
+                114,
+                17,
+                25,
                 5,
                 speed=12,
                 precision=10,

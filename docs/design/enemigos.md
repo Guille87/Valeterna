@@ -8,26 +8,26 @@ Pensada como apoyo para la revisión de nombres/habilidades repetidos, el poder 
 
 | # | Zona | Tier | Nombre | Tipo | Poder real | Desv. objetivo | HP | Ataque | Vel | Crít (%/dmg) | Armadura | Res.Mágica | Precisión | Evasión | Pen.Fís | Pen.Mág | Regen | Oro |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Los Yermos | 1 | Goblin | normal | 4532 | +44% | 40 | 8-12 | 11 | 5%/160% | 2 | 0 | 5 | 3 | 1 | 0 | 0 | 4-6 |
-| 2 | Los Yermos | 2 | Rata Gigante | normal | 5489 | +39% | 34 | 8-13 | 15 | 5%/150% | 1 | 0 | 6 | 4 | 0 | 0 | 0 | 5-8 |
-| 3 | Los Yermos | 3 | Goblin Montaraz | normal | 5166 | +5% | 48 | 8-11 | 11 | 6%/150% | 2 | 0 | 9 | 3 | 0 | 0 | 0 | 5-7 |
-| 4 | Los Yermos | 4 | Huargo | normal | 6156 | +0% | 42 | 9-13 | 13 | 5%/150% | 1 | 0 | 6 | 4 | 0 | 0 | 0 | 6-9 |
-| 5 | Los Yermos | 5 | Chamán Goblin | normal | 6990 | -9% | 58 | 7-11 | 13 | 6%/150% | 2 | 4 | 9 | 5 | 0 | 0 | 0 | 13-17 |
-| 6 | Los Yermos | 6 | Esqueleto | normal | 6150 | -36% | 60 | 10-15 | 8 | 5%/150% | 5 | 2 | 8 | 2 | 0 | 0 | 0 | 10-14 |
-| 7 | Los Yermos | 7 | Bandido | normal | 17299 | +44% | 85 | 13-19 | 12 | 10%/160% | 5 | 0 | 10 | 6 | 2 | 0 | 0 | 16-22 |
-| 8 | Los Yermos | 8 | Salteador | normal | 14832 | -1% | 80 | 12-18 | 12 | 6%/150% | 3 | 0 | 9 | 4 | 2 | 0 | 0 | 20-26 |
-| 9 | Los Yermos | 9 | Ogro del Yermo | normal | 18266 | -3% | 110 | 15-21 | 9 | 5%/150% | 5 | 0 | 8 | 1 | 4 | 0 | 0 | 30-38 |
-| 10 | Los Yermos | 10 | El Carnicero | guardian | 23452 | -0% | 130 | 18-26 | 8 | 5%/150% | 6 | 2 | 9 | 2 | 5 | 0 | 0 | 45-58 |
-| 11 | Bosque de los Susurros | 1 | Orco | normal | 25042 | +279% | 150 | 15-20 | 9 | 8%/175% | 6 | 1 | 10 | 3 | 3 | 0 | 0 | 21-29 |
+| 1 | Los Yermos | 1 | Goblin | normal | 4997 | +59% | 42 | 8-13 | 11 | 5%/160% | 2 | 0 | 5 | 3 | 1 | 0 | 0 | 4-6 |
+| 2 | Los Yermos | 2 | Rata Gigante | normal | 6088 | +55% | 36 | 8-14 | 15 | 5%/150% | 1 | 0 | 6 | 4 | 0 | 0 | 0 | 5-8 |
+| 3 | Los Yermos | 3 | Goblin Montaraz | normal | 6855 | +39% | 55 | 9-13 | 11 | 6%/150% | 2 | 0 | 9 | 3 | 0 | 0 | 0 | 5-7 |
+| 4 | Los Yermos | 4 | Huargo | normal | 9354 | +52% | 52 | 11-16 | 13 | 5%/150% | 1 | 0 | 6 | 4 | 0 | 0 | 0 | 6-9 |
+| 5 | Los Yermos | 5 | Chamán Goblin | normal | 11241 | +46% | 73 | 9-14 | 13 | 6%/150% | 2 | 4 | 9 | 5 | 0 | 0 | 0 | 13-17 |
+| 6 | Los Yermos | 6 | Esqueleto | normal | 10553 | +10% | 78 | 13-20 | 8 | 5%/150% | 5 | 2 | 8 | 2 | 0 | 0 | 0 | 10-14 |
+| 7 | Los Yermos | 7 | Bandido | normal | 30452 | +153% | 114 | 17-25 | 12 | 10%/160% | 5 | 0 | 10 | 6 | 2 | 0 | 0 | 16-22 |
+| 8 | Los Yermos | 8 | Salteador | normal | 26203 | +74% | 106 | 16-24 | 12 | 6%/150% | 3 | 0 | 9 | 4 | 2 | 0 | 0 | 20-26 |
+| 9 | Los Yermos | 9 | Ogro del Yermo | normal | 29917 | +59% | 141 | 19-27 | 9 | 5%/150% | 5 | 0 | 8 | 1 | 4 | 0 | 0 | 30-38 |
+| 10 | Los Yermos | 10 | El Carnicero | guardian | 40426 | +72% | 170 | 24-34 | 8 | 5%/150% | 6 | 2 | 9 | 2 | 5 | 0 | 0 | 45-58 |
+| 11 | Bosque de los Susurros | 1 | Orco | normal | 45062 | +581% | 201 | 20-27 | 9 | 8%/175% | 6 | 1 | 10 | 3 | 3 | 0 | 0 | 21-29 |
 | 12 | Bosque de los Susurros | 2 | Espíritu Vengativo | normal | 82938 | +903% | 210 | 18-26 | 17 | 8%/170% | 3 | 2 | 10 | 9 | 8 | 0 | 0 | 30-40 |
-| 13 | Bosque de los Susurros | 3 | Troll | normal | 38062 | +268% | 250 | 12-18 | 10 | 3%/150% | 4 | 1 | 3 | 0 | 0 | 0 | 10 | 42-58 |
-| 14 | Bosque de los Susurros | 4 | Araña Tejesombras | normal | 46144 | +257% | 160 | 15-20 | 16 | 6%/150% | 3 | 0 | 11 | 8 | 2 | 0 | 0 | 60-75 |
-| 15 | Bosque de los Susurros | 5 | Druida Corrupto | normal | 51771 | +221% | 190 | 17-23 | 13 | 8%/160% | 4 | 6 | 12 | 5 | 0 | 3 | 0 | 80-100 |
-| 16 | Bosque de los Susurros | 6 | Oso Espectral | normal | 61561 | +205% | 260 | 18-24 | 11 | 5%/150% | 6 | 3 | 9 | 2 | 4 | 0 | 0 | 95-120 |
-| 17 | Bosque de los Susurros | 7 | Enjambre de Polillas Pálidas | normal | 78390 | +211% | 220 | 17-23 | 17 | 8%/160% | 3 | 1 | 12 | 10 | 1 | 0 | 0 | 115-145 |
-| 18 | Bosque de los Susurros | 8 | Lobo Umbrío | normal | 82292 | +161% | 270 | 19-26 | 13 | 7%/160% | 5 | 1 | 11 | 7 | 3 | 0 | 0 | 130-165 |
-| 19 | Bosque de los Susurros | 9 | Ent Corrompido | normal | 99210 | +152% | 430 | 24-32 | 8 | 5%/160% | 16 | 4 | 8 | 0 | 6 | 0 | 0 | 155-195 |
-| 20 | Bosque de los Susurros | 10 | El Enraizado | guardian | 112225 | +128% | 330 | 25-34 | 11 | 8%/160% | 9 | 8 | 11 | 4 | 4 | 5 | 0 | 190-240 |
+| 13 | Bosque de los Susurros | 3 | Troll | normal | 71162 | +588% | 342 | 16-25 | 10 | 3%/150% | 4 | 1 | 3 | 0 | 0 | 0 | 10 | 42-58 |
+| 14 | Bosque de los Susurros | 4 | Araña Tejesombras | normal | 86619 | +570% | 219 | 21-27 | 16 | 6%/150% | 3 | 0 | 11 | 8 | 2 | 0 | 0 | 60-75 |
+| 15 | Bosque de los Susurros | 5 | Druida Corrupto | normal | 95640 | +492% | 260 | 23-31 | 13 | 8%/160% | 4 | 6 | 12 | 5 | 0 | 3 | 0 | 80-100 |
+| 16 | Bosque de los Susurros | 6 | Oso Espectral | normal | 116403 | +477% | 356 | 25-33 | 11 | 5%/150% | 6 | 3 | 9 | 2 | 4 | 0 | 0 | 95-120 |
+| 17 | Bosque de los Susurros | 7 | Enjambre de Polillas Pálidas | normal | 147472 | +484% | 301 | 23-32 | 17 | 8%/160% | 3 | 1 | 12 | 10 | 1 | 0 | 0 | 115-145 |
+| 18 | Bosque de los Susurros | 8 | Lobo Umbrío | normal | 152040 | +382% | 368 | 26-35 | 13 | 7%/160% | 5 | 1 | 11 | 7 | 3 | 0 | 0 | 130-165 |
+| 19 | Bosque de los Susurros | 9 | Ent Corrompido | normal | 187489 | +376% | 591 | 33-44 | 8 | 5%/160% | 16 | 4 | 8 | 0 | 6 | 0 | 0 | 155-195 |
+| 20 | Bosque de los Susurros | 10 | El Enraizado | guardian | 211032 | +328% | 452 | 34-47 | 11 | 8%/160% | 9 | 8 | 11 | 4 | 4 | 5 | 0 | 190-240 |
 | 21 | Ciénaga de los Ahogados | 1 | Sanguijuela Colosal | normal | 118818 | +755% | 460 | 15-21 | 14 | 5%/150% | 10 | 2 | 9 | 6 | 3 | 0 | 0 | 150-190 |
 | 22 | Ciénaga de los Ahogados | 2 | Espantajo Anegado | normal | 127076 | +632% | 525 | 20-27 | 10 | 6%/150% | 13 | 1 | 8 | 2 | 4 | 0 | 0 | 160-200 |
 | 23 | Ciénaga de los Ahogados | 3 | Ahogado Errante | normal | 135960 | +526% | 480 | 21-29 | 11 | 6%/150% | 12 | 2 | 9 | 3 | 4 | 0 | 0 | 170-210 |

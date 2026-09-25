@@ -22,10 +22,10 @@ class Orc(Enemy):
         super().__init__(
             "Orco",
             Stats(
-                150,
-                150,
-                15,
+                201,
+                201,
                 20,
+                27,
                 6,
                 magic_resist=1,
                 speed=9,

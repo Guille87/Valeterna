@@ -28,10 +28,10 @@ class Salteador(Enemy):
         super().__init__(
             "Salteador",
             Stats(
-                80,
-                80,
-                12,
-                18,
+                106,
+                106,
+                16,
+                24,
                 3,
                 speed=12,
                 precision=9,

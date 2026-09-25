@@ -26,7 +26,7 @@ class Skeleton(Enemy):
         super().__init__(
             "Esqueleto",
             Stats(
-                60, 60, 10, 15, 5, magic_resist=2, speed=8, precision=8, evasion=2, crit_chance=0.05, crit_damage=1.5
+                78, 78, 13, 20, 5, magic_resist=2, speed=8, precision=8, evasion=2, crit_chance=0.05, crit_damage=1.5
             ),
             gold_min=10,
             gold_max=14,

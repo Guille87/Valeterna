@@ -19,10 +19,10 @@ class LoboUmbrio(Enemy):
         super().__init__(
             "Lobo Umbrío",
             Stats(
-                270,
-                270,
-                19,
+                368,
+                368,
                 26,
+                35,
                 5,
                 magic_resist=1,
                 speed=13,

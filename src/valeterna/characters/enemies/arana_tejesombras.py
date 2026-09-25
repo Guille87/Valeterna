@@ -23,10 +23,10 @@ class AranaTejesombras(Enemy):
         super().__init__(
             "Araña Tejesombras",
             Stats(
-                160,
-                160,
-                15,
-                20,
+                219,
+                219,
+                21,
+                27,
                 3,
                 magic_resist=0,
                 speed=16,

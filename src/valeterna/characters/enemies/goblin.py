@@ -22,10 +22,10 @@ class Goblin(Enemy):
         super().__init__(
             "Goblin",
             Stats(
-                40,
-                40,
+                42,
+                42,
                 8,
-                12,
+                13,
                 2,
                 magic_resist=0,
                 speed=11,

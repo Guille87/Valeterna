@@ -23,7 +23,7 @@ class GoblinMontaraz(Enemy):
         # punto más alto, pero nada excepcional en vida ni armadura.
         super().__init__(
             "Goblin Montaraz",
-            Stats(48, 48, 8, 11, 2, speed=11, precision=9, evasion=3, crit_chance=0.06, crit_damage=1.5),
+            Stats(55, 55, 9, 13, 2, speed=11, precision=9, evasion=3, crit_chance=0.06, crit_damage=1.5),
             gold_min=5,
             gold_max=7,
         )

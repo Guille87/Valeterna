@@ -24,10 +24,10 @@ class EnjambrePolillas(Enemy):
         super().__init__(
             "Enjambre de Polillas Pálidas",
             Stats(
-                220,
-                220,
-                17,
+                301,
+                301,
                 23,
+                32,
                 3,
                 magic_resist=1,
                 speed=17,

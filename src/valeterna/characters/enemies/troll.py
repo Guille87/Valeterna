@@ -22,10 +22,10 @@ class Troll(Enemy):
         super().__init__(
             "Troll",
             Stats(
-                250,
-                250,
-                12,
-                18,
+                342,
+                342,
+                16,
+                25,
                 4,
                 magic_resist=1,
                 speed=10,
