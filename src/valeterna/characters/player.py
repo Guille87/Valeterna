@@ -503,33 +503,53 @@ class Player(Character):
         while self.experience >= self.required_xp():
             self._level_up()
 
+    # v0.16.0 (rebalanceo de poder, TODO.md): la curva de XP ya no es una
+    # fórmula abstracta — es la suma acumulada del oro mínimo garantizado
+    # (`gold_min * 2`) de los 61 enemigos reales, en el orden real de la
+    # cadena (`combat/battle.py::ENEMY_PROGRESSION`). Pedido explícito del
+    # usuario: el nivel del jugador debe reflejar su posición en esa cadena —
+    # al vencer exactamente a los primeros N enemigos (uno cada uno, sin
+    # farmear) el jugador debe quedar en el nivel N+1, ni más ni menos, así
+    # contra el Chamán Goblin (5º enemigo) el nivel no debería superar 5,
+    # contra el Troll de la segunda zona (13º de la cadena) no debería
+    # superar 13, y al llegar al Dragón (61º y último) el nivel debería
+    # rondar 61 — "si el jugador no sube casi de nivel no siente el
+    # progreso". Generada con un script de un solo uso (no forma parte del
+    # repo, ver TODO.md) que recorre `ENEMY_PROGRESSION` sumando
+    # `gold_min * 2` de cada enemigo; se usa el mínimo (no la media) para que
+    # incluso la peor tirada de oro de un enemigo baste para alcanzar el
+    # nivel que le toca — igual que ya garantizaba el antiguo "8 XP fijos"
+    # del nivel 1 (que de hecho coincide exactamente con el primer valor de
+    # esta tabla, `gold_min=4` del Goblin × 2 = 8).
+    #
+    # Por construcción, esto también resuelve "que farmear enemigos débiles
+    # sea cada vez más caro" sin necesidad de una regla aparte: como el
+    # umbral de cada nivel ya refleja el oro de un enemigo real cada vez más
+    # fuerte, seguir matando solo al Goblin exige más y más repeticiones para
+    # alcanzar el mismo nivel que un enemigo de verdad de ese tramo daría de
+    # un solo golpe.
+    _XP_CURVE = [
+        8, 18, 28, 40, 66, 86, 118, 158, 218, 308,
+        350, 410, 494, 614, 774, 964, 1194, 1454, 1764, 2144,
+        2444, 2764, 3104, 3464, 3844, 4234, 4634, 5044, 5464, 5904,
+        6124, 6304, 6754, 7234, 7754, 8314, 8924, 9504, 10144, 10824,
+        10994, 11214, 11934, 12694, 13494, 14334, 15214, 16134, 17094, 18114,
+        18394, 18714, 19814, 20974, 22194, 23474, 24814, 26214, 27674, 29194,
+        29794,
+    ]  # fmt: skip
+
     @staticmethod
     def _required_xp_for_level(level: int) -> int:
         """Umbral de XP acumulada (no un coste que se descuenta, ver
-        gain_experience()) para pasar de `level` al siguiente.
+        gain_experience()) para pasar de `level` al siguiente — `_XP_CURVE`
+        cubre los 61 niveles "de contenido real"; más allá (solo alcanzable
+        farmeando después de limpiar todo el juego) cada nivel extra cuesta
+        1.6x el anterior, cada vez más caro sin tope fijo."""
+        if level <= len(Player._XP_CURVE):
+            return Player._XP_CURVE[level - 1]
 
-        Nivel 1 -> 2 deliberadamente muy barato (8 XP: el mínimo que da
-        incluso el primer Goblin, gold_min=4 * 2): la primera victoria del
-        juego ya sube de nivel siempre.
-
-        Los niveles 2-9 aplican un "descuento" sobre la curva normal de abajo
-        que se va cerrando poco a poco: empieza en ~50% del coste normal en
-        el nivel 2 (98.68 * 0.5 ≈ 49, un punto intermedio calculado a
-        propósito entre los 8 XP del nivel 1 y los 98 XP que pedía la curva
-        original sin suavizar) y llega al 100% en el nivel 10 — subir sigue
-        siendo rápido y gratificante justo después de empezar, y se va
-        ralentizando de forma gradual hasta la curva de siempre en vez de dar
-        un salto brusco de golpe (que es lo que pasaba antes de suavizarlo:
-        nivel 1->2 costaba 8 XP y nivel 2->3 ya pedía 375, un frenazo
-        demasiado repentino).
-        """
-        if level == 1:
-            return 8
-
-        lv = float(level)
-        base_cost = 100 * ((lv - 1) ** 0.95) * lv * (lv + 1) / (6 + lv**2 / 50)
-        damping = min(1.0, 0.5 + (lv - 2) * 0.0625)
-        return int(base_cost * damping)
+        extra_levels = level - len(Player._XP_CURVE)
+        return round(Player._XP_CURVE[-1] * 1.6**extra_levels)
 
     def required_xp(self) -> int:
         """Fórmula de curva de experiencia escalable.

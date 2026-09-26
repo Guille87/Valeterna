@@ -1024,6 +1024,40 @@ def _status_inflicted_message(name: str, status: str) -> str:
     return i18n.t("combat.status_inflicted", name=name, verb=verb)
 
 
+# v0.16.0 (rebalanceo de poder, TODO.md, idea del propio usuario): en vez de
+# complicar la curva de coste por nivel, la XP que da un enemigo se reduce
+# cuanto más por delante vaya el jugador de lo que le "toca" a ese enemigo —
+# así que farmear el mismo enemigo débil una y otra vez deja de servir de
+# nada pasado cierto punto, sin necesidad de bloquear ni limitar el nivel en
+# sí. "Lo que le toca" es su posición en `ENEMY_PROGRESSION` (1-61) + 1 — la
+# misma cuenta que usa `Player._XP_CURVE` para que "vencer exactamente a los
+# primeros N enemigos" deje al jugador en el nivel N+1 (ver TODO.md/player.py).
+_OVERLEVEL_XP_DECAY = 0.60
+_MIN_XP_MULTIPLIER = 0.05
+
+
+def _enemy_chain_position(name: str) -> int | None:
+    """Posición de `name` en `ENEMY_PROGRESSION` (1-61), o `None` si no está
+    en la cadena (no debería pasar con ningún enemigo real)."""
+    for position, key in enumerate(ENEMY_PROGRESSION, start=1):
+        if key == name:
+            return position
+    return None
+
+
+def _xp_multiplier_for_overlevel(player_level: int, enemy_name: str) -> float:
+    """1.0 mientras el jugador no vaya por delante de lo que le "toca" a este
+    enemigo; a partir de ahí, cada nivel de sobra resta `_OVERLEVEL_XP_DECAY`
+    (con un suelo de `_MIN_XP_MULTIPLIER`, nunca 0 del todo)."""
+    position = _enemy_chain_position(enemy_name)
+    if position is None:
+        return 1.0
+    overlevel = player_level - (position + 1)
+    if overlevel <= 0:
+        return 1.0
+    return max(_MIN_XP_MULTIPLIER, 1 - overlevel * _OVERLEVEL_XP_DECAY)
+
+
 def _handle_victory(player, enemy, defeated_enemies: list, unlocked_enemies: list) -> tuple:
     print(f"\n{console.colorize(f'¡VICTORIA! {enemy.name} ha sido derrotado.', console.Fore.YELLOW, bright=True)}")
 
@@ -1048,14 +1082,13 @@ def _handle_victory(player, enemy, defeated_enemies: list, unlocked_enemies: lis
 
     # Experiencia y Nivel
     old_level = player.level
-    xp_gained = gold * 2
+    xp_multiplier = _xp_multiplier_for_overlevel(player.level, enemy.name)
+    xp_gained = round(gold * 2 * xp_multiplier)
     player.gain_experience(xp_gained)
-    print(
-        console.stat_line(
-            f"✨ XP obtenida: +{xp_gained}  (Nivel {player.level}: {player.experience}/{player.required_xp()})",
-            "xp",
-        )
-    )
+    xp_line = f"✨ XP obtenida: +{xp_gained}  (Nivel {player.level}: {player.experience}/{player.required_xp()})"
+    if xp_multiplier < 1.0:
+        xp_line += " (rendimiento reducido: ya vas muy por delante de este enemigo)"
+    print(console.stat_line(xp_line, "xp"))
 
     # Comprobamos si subió de nivel
     player.just_leveled_up = player.level > old_level

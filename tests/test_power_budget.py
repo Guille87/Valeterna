@@ -206,21 +206,25 @@ _KNOWN_OUT_OF_RANGE = {
     "Verdugo Infernal",
     "Heraldo del Amo",
     "El Sin Rostro",
-    # v0.16.0 (rebalanceo de poder temprano, TODO.md): vida/ataque de los 19
-    # enemigos de Los Yermos y el Bosque de los Susurros (menos Espíritu
-    # Vengativo, que queda pendiente de una revisión aparte) reforzados
-    # ~6-37% para que el jugador no llegue sobrepasado a estas zonas incluso
-    # con el mejor equipo disponible en cada momento — medido con una
-    # herramienta de simulación (power_score() efectivo del jugador vs. del
-    # enemigo a lo largo de la progresión completa, ver TODO.md). Bandido
-    # (élite por diseño, con emboscada + desarme que la fórmula tampoco ve)
-    # se salen del rango formal de la zona tras el refuerzo: Bandido y
-    # Salteador (élite por diseño, con emboscada/desarme/robo de oro que la
-    # fórmula tampoco ve), Ogro del Yermo y El Carnicero (los dos últimos
-    # tiers de la zona, ya cerca del techo formal antes del refuerzo). En el
-    # Bosque, el mismo refuerzo saca también a Troll y Araña Tejesombras del
-    # rango formal — antes eran los dos únicos enemigos de la zona que sí
-    # encajaban, junto con Orco (que sigue encajando).
+    # v0.16.0 (rebalanceo de poder temprano, TODO.md): dos pasadas seguidas
+    # sobre Los Yermos y el Bosque de los Susurros (menos Espíritu Vengativo,
+    # pendiente de revisión aparte). La primera (~6-37%) se midió contra el
+    # power_score() del jugador; una segunda pasada, mucho mayor, se calibró
+    # en cambio contra **turnos de combate reales** (`tools/measure_combat_turns.py`):
+    # el usuario reportó matar a los 10 primeros enemigos en 1-3 golpes — la
+    # vida/ataque de Los Yermos suben ahora en una rampa por tier (x1.0→x1.8
+    # de vida, x1.0→x3.2 de ataque desde el Goblin hasta El Carnicero) para
+    # que un combate dure un puñado de turnos de verdad en vez de acabar al
+    # instante. Esto dispara el `power_score()` muy por encima de lo que
+    # `target_score()` esperaría — no es un error, la fórmula de poder no ve
+    # "cuántos turnos dura la pelea", solo vida×velocidad×daño medio; los
+    # rangos formales de la zona quedaron pensados para el otro criterio.
+    # En el Bosque, el refuerzo anterior (más modesto) ya sacaba a Troll y
+    # Araña Tejesombras del rango formal — antes eran los dos únicos
+    # enemigos de la zona que sí encajaban, junto con Orco (que sigue
+    # encajando).
+    "Chamán Goblin",
+    "Esqueleto",
     "Bandido",
     "Salteador",
     "Ogro del Yermo",
@@ -248,17 +252,15 @@ def test_los_yermos_tiered_enemies_are_within_the_design_tolerance_or_documented
     """Los Yermos es la única zona con tiers ya fijados por el GDD: comprueba la
     predicción exacta objetivo(zona, tier), no solo el rango [1, 10].
 
-    Tras el rebalanceo de poder temprano de v0.16.0 (ver TODO.md: vida/ataque
-    de los enemigos de Los Yermos y el Bosque reforzados ~30-40% para que el
-    jugador no llegue sobrepasado a estas zonas), Esqueleto pasa a caer dentro
-    del ±10% (+10%, antes -36%) y Huargo sale de tolerancia (+52%, antes ya
-    era el único que encajaba). Goblin (+27%, antes +15%, ambigüedad de
-    redondeo de las constantes) y Bandido (+153%, antes +44%, emboscada +
-    desarme tampoco entran en la fórmula) se quedan fuera igual que antes,
-    solo que más lejos — documentado, no corregido aquí más allá del
-    rebalanceo ya aplicado."""
+    Tras la segunda pasada de v0.16.0 (calibrada contra turnos de combate
+    reales, no contra `power_score()` — ver `_KNOWN_OUT_OF_RANGE` más arriba
+    y TODO.md), los 4 enemigos con tier fijado por el GDD quedan lejos de la
+    curva formal: Goblin +27%, Huargo +236%, Esqueleto +252%, Bandido +863%.
+    Ninguno cae ya dentro del ±10% (antes lo hacían Huargo y luego
+    Esqueleto, en pasadas anteriores) — documentado, no corregido aquí: el
+    objetivo pasó a ser la sensación de combate, no esta curva formal."""
     zone_index = _ZONE_INDEX["los_yermos"]
-    within_tolerance = {"Esqueleto"}
+    within_tolerance: set[str] = set()
 
     for name, tier in _YERMOS_TIERS.items():
         actual = power_score(_get_enemy_instance(name).stats)

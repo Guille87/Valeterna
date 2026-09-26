@@ -1,14 +1,14 @@
 #,Zona,Tier,Nombre,Tipo,Poder real,Desv. objetivo,HP,Ataque,Vel,Crít (%/dmg),Armadura,Res.Mágica,Precisión,Evasión,Pen.Fís,Pen.Mág,Regen,Oro
 1,Los Yermos,1,Goblin,normal,4997,+59%,42,8-13,11,5%/160%,2,0,5,3,1,0,0,4-6
-2,Los Yermos,2,Rata Gigante,normal,6088,+55%,36,8-14,15,5%/150%,1,0,6,4,0,0,0,5-8
-3,Los Yermos,3,Goblin Montaraz,normal,6855,+39%,55,9-13,11,6%/150%,2,0,9,3,0,0,0,5-7
-4,Los Yermos,4,Huargo,normal,9354,+52%,52,11-16,13,5%/150%,1,0,6,4,0,0,0,6-9
-5,Los Yermos,5,Chamán Goblin,elite,11241,+46%,73,9-14,13,6%/150%,2,4,9,5,0,0,0,13-17
-6,Los Yermos,6,Esqueleto,normal,10553,+10%,78,13-20,8,5%/150%,5,2,8,2,0,0,0,10-14
-7,Los Yermos,7,Bandido,elite,30452,+153%,114,17-25,12,10%/160%,5,0,10,6,2,0,0,16-22
-8,Los Yermos,8,Salteador,normal,26203,+74%,106,16-24,12,6%/150%,3,0,9,4,2,0,0,20-26
-9,Los Yermos,9,Ogro del Yermo,elite,29917,+59%,141,19-27,9,5%/150%,5,0,8,1,4,0,0,30-38
-10,Los Yermos,10,El Carnicero,guardian,40426,+72%,170,24-34,8,5%/150%,6,2,9,2,5,0,0,45-58
+2,Los Yermos,2,Rata Gigante,normal,8095,+106%,39,10-17,15,5%/150%,1,0,6,4,0,0,0,5-8
+3,Los Yermos,3,Goblin Montaraz,normal,11783,+139%,65,13-19,11,6%/150%,2,0,9,3,0,0,0,5-7
+4,Los Yermos,4,Huargo,normal,20667,+236%,66,19-28,13,5%/150%,1,0,6,4,0,0,0,6-9
+5,Los Yermos,5,Chamán Goblin,elite,30489,+296%,99,18-28,13,6%/150%,2,4,9,5,0,0,0,13-17
+6,Los Yermos,6,Esqueleto,normal,33821,+252%,113,29-44,8,5%/150%,5,2,8,2,0,0,0,10-14
+7,Los Yermos,7,Bandido,elite,115752,+863%,175,42-62,12,10%/160%,5,0,10,6,2,0,0,16-22
+8,Los Yermos,8,Salteador,normal,114800,+664%,172,43-65,12,6%/150%,3,0,9,4,2,0,0,20-26
+9,Los Yermos,9,Ogro del Yermo,elite,151179,+705%,241,56-80,9,5%/150%,5,0,8,1,4,0,0,30-38
+10,Los Yermos,10,El Carnicero,guardian,233356,+894%,306,77-109,8,5%/150%,6,2,9,2,5,0,0,45-58
 11,Bosque de los Susurros,1,Orco,normal,45062,+581%,201,20-27,9,8%/175%,6,1,10,3,3,0,0,21-29
 12,Bosque de los Susurros,2,Espíritu Vengativo,normal,82938,+903%,210,18-26,17,8%/170%,3,2,10,9,8,0,0,30-40
 13,Bosque de los Susurros,3,Troll,normal,71162,+588%,342,16-25,10,3%/150%,4,1,3,0,0,0,10,42-58

@@ -31,7 +31,7 @@ class ChamanGoblin(Enemy):
         super().__init__(
             "Chamán Goblin",
             Stats(
-                73, 73, 9, 14, 2, magic_resist=4, speed=13, precision=9, evasion=5, crit_chance=0.06, crit_damage=1.5
+                99, 99, 18, 28, 2, magic_resist=4, speed=13, precision=9, evasion=5, crit_chance=0.06, crit_damage=1.5
             ),
             gold_min=13,
             gold_max=17,

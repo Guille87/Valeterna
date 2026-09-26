@@ -1749,14 +1749,60 @@ solo anotados aquí**:
     `tests/test_shop.py`, que la usa directamente); el catálogo efectivo
     que ve el jugador sale de `Shop._visible_items(player)`.
 
+- [x] **Segunda vuelta al rebalanceo de poder: de "ratio de poder" a "turnos
+  de combate reales", más curva de XP por posición y freno al farmeo**
+  (pedido tras un playtest real del usuario que seguía matando a los 10
+  primeros enemigos "en 1-3 golpes" pese al primer rebalanceo). Tres piezas:
+  1. **Nueva herramienta, `tools/measure_combat_turns.py`**: en vez de
+     comparar `power_score()` (una fórmula abstracta que no distingue "dura
+     2 turnos" de "dura 8"), calcula en valor esperado (con las fórmulas
+     reales de `resolve_hit()`/`apply_mitigation()`, sin tirar dados) cuántos
+     turnos le hace falta al jugador para matar a cada enemigo y al enemigo
+     para matar al jugador, en el momento exacto en que se lo encontraría
+     jugando con normalidad. Sobre esa base, Los Yermos suben vida y ataque
+     en una **rampa por tier** (no un factor fijo): x1.0→x1.8 de vida y
+     x1.0→x3.2 de ataque desde el Goblin hasta El Carnicero — el primer
+     combate sigue siendo casi trivial a propósito, y el último se vuelve un
+     combate de verdad (el jugador tarda ~10 turnos en matarlo, el enemigo
+     podría matar al jugador en ~6). Resultado: `tests/test_power_budget.py`
+     se actualiza otra vez (Chamán Goblin y Esqueleto se suman a
+     `_KNOWN_OUT_OF_RANGE`; ya no hay ningún enemigo con tier fijado por el
+     GDD dentro del ±10% de tolerancia — documentado, el objetivo dejó de
+     ser esa curva formal).
+  2. **`Player._XP_CURVE` — el nivel ahora refleja la posición real en la
+     cadena de 61 enemigos** (pedido explícito del usuario: "si no sube casi
+     de nivel no siente el progreso", pero tampoco quiere un nivel
+     desconectado de dónde está). Se sustituye la fórmula de potencia (una
+     iteración anterior, ya descartada) por una tabla de 61 valores: la suma
+     acumulada del oro mínimo garantizado (`gold_min * 2`) de cada enemigo en
+     el orden real de `ENEMY_PROGRESSION`. Por construcción, vencer
+     exactamente a los primeros N enemigos (uno cada uno) deja al jugador en
+     el nivel N+1 — contra el Chamán Goblin (5º) el nivel no pasa de 5,
+     contra el Dragón (61º y último) ronda 61. Más allá del nivel 61 (todo
+     el juego limpiado), cada nivel extra cuesta x1.6 el anterior, sin tope.
+  3. **Penalización de XP por sobre-nivel** (`combat/battle.py::_xp_multiplier_for_overlevel`,
+     idea del propio usuario: en vez de complicar la curva de coste por
+     nivel o limitar el nivel en sí, que la XP que da un enemigo se reduzca
+     cuanto más por delante vaya el jugador de lo que le "toca" a ese
+     enemigo). Cada nivel de sobra resta un 60% de la XP, con un suelo del
+     5% (nunca 0 del todo). Medido con un playtest real (200 combates: 20
+     seguidos contra cada uno de los 10 enemigos de Los Yermos, el patrón
+     exacto que reportó el usuario) contra `tools/measure_player_power.py`
+     (ya corregido para simular ese mismo patrón en vez de solo "un combate
+     por enemigo"): sin la penalización, ese grindeo llegaba a nivel 34 y
+     ~20x el poder de El Carnicero; con ella, se queda en nivel 14 y ~2.7x
+     — muy cerca del 2.0x de una partida limpia sin grindear nada.
+
 **Progreso**: de los frentes de esta sección, ya están hechos la tabla de
 referencia, la revisión de drops (poder y coherencia), el rebalanceo de
-poder temprano (equipo/nivel), la reclasificación de élites y la revisión
-de la tienda. Quedan pendientes: las variantes de poción y la revisión de
-nombres/habilidades repetidas entre zonas. Cuando se cierren esos dos,
-toca retomar el ROADMAP (`ROADMAP.md`), que sigue con la fase "Enemies
-III" (habilidades de clase de hito alto, misiones secundarias) y "Main
-story" tras esto.
+poder temprano (equipo/nivel, dos pasadas), la reclasificación de élites y
+la revisión de la tienda. Queda por delante aplicar esta misma segunda
+pasada (turnos reales) al resto de zonas (Bosque en adelante, hoy solo
+calibradas contra la primera pasada de `power_score()`), además de las
+variantes de poción y la revisión de nombres/habilidades repetidas entre
+zonas. Cuando se cierren esos frentes, toca retomar el ROADMAP
+(`ROADMAP.md`), que sigue con la fase "Enemies III" (habilidades de clase
+de hito alto, misiones secundarias) y "Main story" tras esto.
 
 ## Pulido final (casi lo último antes de 1.0)
 
