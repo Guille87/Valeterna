@@ -172,7 +172,12 @@ class Shop:
                 buy_price=15,
             ),
             ShopItem(
-                Weapon("Espada de Hierro", "Una espada bien forjada, superior a las improvisadas", 6, damage=2),
+                Weapon(
+                    "Espada de Hierro",
+                    "Una espada sencilla, fabricada en serie; fácil de conseguir, pero nada especial.",
+                    4,
+                    damage=1,
+                ),
                 buy_price=15,
             ),
             ShopItem(
@@ -265,8 +270,11 @@ class Shop:
         for idx, item in enumerate(items, 1):
             qty = player.inventory.quantities.get(item.name, 1)
             qty_str = console.colorize(f" x{qty}", console.Fore.YELLOW) if qty > 1 else ""
+            is_equipped = item == player.equipped_weapon or item in player.equipped_armor.values()
+            is_eq = f"{console.colorize('(E)', console.Fore.BLUE)} " if is_equipped else ""
             print(
-                f"{console.colorize(f'{idx}.', console.Fore.CYAN)} {_item_name(item)}{qty_str} · vale {_gold(item.value)}"
+                f"{console.colorize(f'{idx}.', console.Fore.CYAN)} {is_eq}{_item_name(item)}{qty_str} · "
+                f"vale {_gold(item.value)}"
             )
         print(f"{console.colorize(f'{len(items) + 1}.', console.Fore.CYAN)} Volver")
 

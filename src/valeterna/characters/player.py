@@ -615,6 +615,27 @@ class Player(Character):
             stats_line += f" | Poder Mágico +{magic_power_gain}"
         print(console.colorize(stats_line, console.Fore.WHITE))
 
+        self._announce_new_skills()
+
+    def _announce_new_skills(self) -> None:
+        """Anuncia (con nombre y descripción, igual que el menú Habilidades) las
+        habilidades cuyo nivel de desbloqueo es justo el nivel al que se acaba de
+        subir — antes no se avisaba de nada, el jugador solo lo descubría si
+        entraba al menú Habilidades por su cuenta."""
+        from valeterna.characters import skills
+
+        new_skills = [s for s in skills.pool_for(self.char_class) if s.unlock_level == self.level]
+        for skill in new_skills:
+            kind_label = "Pasiva" if skill.kind is skills.SkillKind.PASSIVE else "Activa"
+            print(
+                console.colorize(
+                    f"\n✨ ¡Nueva habilidad desbloqueada! ({kind_label})", console.Fore.MAGENTA, bright=True
+                )
+            )
+            print(
+                f"  · {console.colorize(skill.name, console.Fore.MAGENTA)} — {console.tint_status(skill.description)}"
+            )
+
     def show_stats(self) -> None:
         print(f"\n{console.colorize('=' * 10 + ' ESTADÍSTICAS ' + '=' * 10, console.Fore.CYAN)}")
         print(

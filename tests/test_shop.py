@@ -46,6 +46,18 @@ def test_sell_item_from_inventory_grants_gold_and_removes_it(player, monkeypatch
     assert weapon not in player.inventory.items
 
 
+def test_sell_menu_marks_equipped_item_with_e(player, monkeypatch, capsys):
+    shop = Shop()
+    weapon = Weapon("Espada Equipada", "desc", value=7, damage=3)
+    player.inventory.add_item(weapon)
+    player.equipped_weapon = weapon
+
+    monkeypatch.setattr("valeterna.shop.shop.console.ask", lambda prompt: "2")  # "Volver" (único ítem = índice 2)
+    shop._sell_menu(player)
+
+    assert "(E)" in capsys.readouterr().out
+
+
 def test_cannot_sell_equipped_item(player, monkeypatch):
     shop = Shop()
     weapon = Weapon("Espada Equipada", "desc", value=7, damage=3)

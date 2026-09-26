@@ -100,7 +100,8 @@ class Inventory:
             is_eq = f"{console.colorize('(E)', console.Fore.BLUE)} " if is_equipped else ""
             qty_str = console.colorize(f" x{qty}", console.Fore.YELLOW) if qty > 1 else ""
 
-            print(console.tint_status(f"{idx}. {is_eq}{item.name}{qty_str} | {item.description}"))
+            material_tag = " (material)" if isinstance(item, Material) else ""
+            print(console.tint_status(f"{idx}. {is_eq}{item.name}{qty_str} | {item.description}{material_tag}"))
             stats_info = item.get_stats_info()
             if stats_info:
                 print(console.tint_status(f"   [{stats_info}]"))
