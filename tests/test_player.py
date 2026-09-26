@@ -272,6 +272,39 @@ def test_gain_experience_can_trigger_multiple_level_ups():
     assert player.level > 2
 
 
+def test_xp_curve_has_one_entry_per_enemy_of_the_chain():
+    from valeterna.combat.battle import ENEMY_PROGRESSION
+
+    assert len(Player._XP_CURVE) == len(ENEMY_PROGRESSION) == 61
+
+
+def test_xp_curve_is_strictly_increasing():
+    curve = Player._XP_CURVE
+    assert curve == sorted(set(curve))
+
+
+def test_beating_exactly_the_first_n_enemies_lands_on_level_n_plus_one():
+    """El nivel debe reflejar la posición en la cadena real (pedido explícito
+    del usuario): vencer exactamente a los primeros N enemigos (uno cada
+    uno) debe dejar al jugador en el nivel N+1, ni más ni menos."""
+    for n in (1, 5, 10, 30, 61):
+        fresh = Player("Heroe", Stats(health=100, max_health=100, min_atk=5, max_atk=10, armor=2))
+        fresh.gain_experience(Player._XP_CURVE[n - 1])
+        assert fresh.level == n + 1
+
+
+def test_required_xp_keeps_growing_steeply_past_the_last_real_enemy(player):
+    """Más allá del nivel 61 (todo el juego ya limpiado) no hay tabla — cada
+    nivel de más debe seguir costando más que el anterior, sin tope fijo."""
+    player.level = 61
+    at_61 = player.required_xp()
+    player.level = 62
+    at_62 = player.required_xp()
+    player.level = 65
+    at_65 = player.required_xp()
+    assert at_61 < at_62 < at_65
+
+
 def test_level_up_announces_a_new_skill_when_reaching_its_milestone(player, capsys):
     for _ in range(3):  # nivel 1 -> 4: hito 2 del Vagabundo ("Aguante") en nivel 4
         player._level_up()

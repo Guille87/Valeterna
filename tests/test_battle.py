@@ -6,13 +6,16 @@ from valeterna.characters.enemies.goblin import Goblin
 from valeterna.characters.enemies.mage import Mago
 from valeterna.characters.enemies.troll import Troll
 from valeterna.combat.battle import (
+    _MIN_XP_MULTIPLIER,
     ENEMY_PROGRESSION,
     _announce_encounter,
     _attempt_flee,
+    _enemy_chain_position,
     _execute_turn,
     _handle_defeat,
     _run_enemy_turn,
     _run_player_turn,
+    _xp_multiplier_for_overlevel,
     initiate_battle,
 )
 from valeterna.items.equipment import Armor, Weapon
@@ -68,6 +71,40 @@ def test_victory_shows_gold_total_and_xp_with_current_level_progress(player, mon
     out = re.sub(r"\x1b\[[0-9;]*m", "", capsys.readouterr().out)
     assert f"(Total: {player.inventory.gold})" in out
     assert f"Nivel {player.level}: {player.experience}/{player.required_xp()}" in out
+
+
+def test_enemy_chain_position_matches_the_real_order():
+    assert _enemy_chain_position("Goblin") == 1
+    assert _enemy_chain_position("Dragón") == 61
+    assert _enemy_chain_position("Enemigo Inventado") is None
+
+
+def test_xp_multiplier_is_full_while_not_ahead_of_the_enemys_own_tier():
+    # Goblin es la posición 1 (nivel "esperado" 2): en el nivel 2 exacto, o
+    # por debajo, todavía no hay penalización.
+    assert _xp_multiplier_for_overlevel(1, "Goblin") == 1.0
+    assert _xp_multiplier_for_overlevel(2, "Goblin") == 1.0
+
+
+def test_xp_multiplier_decays_with_each_level_ahead_and_floors_out():
+    # Un nivel por delante ya penaliza; muy por delante, cae al suelo mínimo,
+    # nunca a 0 (matar al enemigo más débil del juego debe seguir dando algo).
+    base = _xp_multiplier_for_overlevel(3, "Goblin")
+    further = _xp_multiplier_for_overlevel(4, "Goblin")
+    assert 0 < further < base < 1.0
+    assert _xp_multiplier_for_overlevel(50, "Goblin") == _MIN_XP_MULTIPLIER
+
+
+def test_handle_victory_notes_reduced_xp_when_overleveled(player, monkeypatch, capsys):
+    from valeterna.characters.enemies.goblin import Goblin
+    from valeterna.combat.battle import _handle_victory
+
+    monkeypatch.setattr("valeterna.combat.battle.time.sleep", lambda *a, **k: None)
+    player.level = 40  # muy por delante de lo que le "toca" al Goblin (posición 1)
+
+    _handle_victory(player, Goblin(), [], ["Goblin"])
+
+    assert "rendimiento reducido" in capsys.readouterr().out
 
 
 def test_victory_drop_line_shows_type_and_equipment_stats(player, monkeypatch, capsys):

@@ -19,7 +19,7 @@ class Huargo(Enemy):
         # Lobo salvaje: rápido y evasivo, pero frágil (poca vida y armadura).
         super().__init__(
             "Huargo",
-            Stats(52, 52, 11, 16, 1, speed=13, precision=6, evasion=4, crit_chance=0.05, crit_damage=1.5),
+            Stats(66, 66, 19, 28, 1, speed=13, precision=6, evasion=4, crit_chance=0.05, crit_damage=1.5),
             gold_min=6,
             gold_max=9,
         )

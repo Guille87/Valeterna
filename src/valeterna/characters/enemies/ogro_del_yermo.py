@@ -30,10 +30,10 @@ class OgroDelYermo(Enemy):
         super().__init__(
             "Ogro del Yermo",
             Stats(
-                141,
-                141,
-                19,
-                27,
+                241,
+                241,
+                56,
+                80,
                 5,
                 speed=9,
                 precision=8,

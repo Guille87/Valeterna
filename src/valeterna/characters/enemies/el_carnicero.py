@@ -35,10 +35,10 @@ class ElCarnicero(Enemy):
         super().__init__(
             "El Carnicero",
             Stats(
-                170,
-                170,
-                24,
-                34,
+                306,
+                306,
+                77,
+                109,
                 6,
                 magic_resist=2,
                 speed=8,
