@@ -272,6 +272,21 @@ def test_gain_experience_can_trigger_multiple_level_ups():
     assert player.level > 2
 
 
+def test_level_up_announces_a_new_skill_when_reaching_its_milestone(player, capsys):
+    for _ in range(3):  # nivel 1 -> 4: hito 2 del Vagabundo ("Aguante") en nivel 4
+        player._level_up()
+
+    out = capsys.readouterr().out
+    assert "Nueva habilidad desbloqueada" in out
+    assert "Aguante" in out
+
+
+def test_level_up_does_not_announce_anything_off_a_milestone_level(player, capsys):
+    player._level_up()  # nivel 1 -> 2, ningún hito del Vagabundo cae aquí
+    out = capsys.readouterr().out
+    assert "Nueva habilidad desbloqueada" not in out
+
+
 def test_level_up_grants_magic_resist_only_on_even_levels(player):
     assert player.stats.magic_resist == 0
 

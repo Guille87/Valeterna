@@ -154,6 +154,8 @@ def test_show_inventory_renders_mixed_bag_without_crashing(player, capsys):
     assert "Piel de Troll" in out
     # El material no debe imprimir una línea de stats vacía "[]".
     assert "[]" not in out
+    # Cada material lleva "(material)" para que se distinga de un consumible.
+    assert out.count("(material)") == 2
 
 
 def test_using_healing_potion_heals_and_consumes_one(player, monkeypatch):
